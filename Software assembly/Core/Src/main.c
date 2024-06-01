@@ -510,6 +510,38 @@ static void MX_GPIO_Init(void)
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
 	//SCPIencode(TXbuff, RXbuff, AWG1, NOISE1);
+	/*
+	 * void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
+{
+	//HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, 0);
+	//HAL_UART_Transmit(&huart1, RXbuff, RS485BUFFSIZE , 10);
+
+	ReformatString(RXbuff, RS485BUFFSIZE);
+
+	strcpy(TXbuff, "ERR\n\r");
+
+	struct word word = generateWordDirect(RXbuff);
+
+	if(word.address == RackID) executeWord(word);
+
+	for(int i = word.subwordsCount; i > 0 ; i--)
+	{
+		if (word.subwords[i].paramType == OTHER_P && word.subwords[i].otherParam != NULL)
+		{
+			free(word.subwords[i].otherParam);
+			word.subwords[i].otherParam = NULL;
+		}
+	}
+	free(word.subwords);
+	word.subwords = NULL;
+
+	RS485_Transmit(TXbuff);
+
+	HAL_UARTEx_ReceiveToIdle_IT(&huart1, RXbuff, RS485BUFFSIZE);
+	//HAL_UART_Transmit(&huart1, TXbuff, RS485BUFFSIZE , 10);
+}
+	 */
+
 	HAL_UARTEx_ReceiveToIdle_IT(&huart1, RXbuff, RS485BUFFSIZE);
 }
 /* USER CODE END 4 */
