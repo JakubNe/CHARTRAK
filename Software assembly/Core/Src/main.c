@@ -515,6 +515,7 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 	 * void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
 
+
 	//HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, 0);
 	//HAL_UART_Transmit(&huart1, RXbuff, RS485BUFFSIZE , 10);
 
