@@ -29,6 +29,7 @@
 "./libs/OSC.o"
 "./libs/ProgRef.o"
 "./libs/RS485.o"
+"./libs/SCPI_lib.o"
 "./libs/TCA9555.o"
 "./libs/license.o"
 "./libs/trim.o"
