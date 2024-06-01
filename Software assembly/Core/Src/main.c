@@ -22,6 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
+// includes
 #include "LOLA.h"
 #include "AWG.h"
 #include "ProgRef.h"
