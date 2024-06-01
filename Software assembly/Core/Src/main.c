@@ -507,6 +507,7 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+// někdo do setupu addFunction("SCPICOMMAND", commandFunction);
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
 	//SCPIencode(TXbuff, RXbuff, AWG1, NOISE1);
