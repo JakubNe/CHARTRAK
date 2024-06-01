@@ -56,7 +56,13 @@ typedef enum{
 } LOLAfeatures;
 
 uint8_t LOLA_Init(InitType t, uint16_t maxAtempts);
+
 void LOLA_Reset();
+
 void LOLA_enable_features(InitType LOLAfeatures, int ENABLE);
+
+void DAC_DIRECT_DATA(float value);
+
+void LOLA_SET_MAX_AMPLITUDE(float value);
 
 #endif /* LOLA_H_ */

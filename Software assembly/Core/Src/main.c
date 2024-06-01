@@ -147,9 +147,9 @@ int main(void)
     HAL_Delay(100);
     LOLA_Reset();
 
-    RS485_Transmit("awaiting FPGA config");
+    RS485_Transmit("awaiting FPGA config\r\n");
     LOLA_Init(JTAG, 50);
-    RS485_Transmit("FPGA config done");
+    RS485_Transmit("FPGA config done\r\n");
 
     //CharTrak setup
     CHT1.Enable = 0;
