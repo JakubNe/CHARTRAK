@@ -5,7 +5,7 @@
  *      Author: Filip Pavlovic
  */
 
-//#include "main.h"
+#include "main.h"
 #include "RS485.h"
 
 char TXbuff[RS485BUFFSIZE] = {0};
