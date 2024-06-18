@@ -166,15 +166,16 @@ int main(void)
 
     // Noise generator setup
     NOISE1.Enable = 0;
-    NOISE1.Freq = 100.0;
-    NOISE1.Upp = 0.0;
+    NOISE1.Freq = 10000.0;
+    NOISE1.Upp = 1.0;
     NOISE1.Seed = 0x800f000f000f0001;
 
     LOLA_enable_features(ALL_EN, 1); // enable all features
     LOLA_SET_MAX_AMPLITUDE(5.0);
-    DAC_DIRECT_DATA(0.0);
+    DAC_DIRECT_DATA(0.5);
 
-    AWG_Load_Waveform(AWG1, NOISE1);
+    AWG_Load_Waveform(AWG1);
+    NOISE_Load_param(NOISE1);
 
     //AWG_Load_Waveform(AWG1,NOISE1);
 
@@ -184,7 +185,11 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-
+	  LOLA_enable_features(ALL_EN, 1); // enable all features
+	  DAC_DIRECT_DATA(0.5);
+	  AWG_Load_Waveform(AWG1);
+	  NOISE_Load_param(NOISE1);
+	  HAL_Delay(500);
 
     /* USER CODE END WHILE */
 

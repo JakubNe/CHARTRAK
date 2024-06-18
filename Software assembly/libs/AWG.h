@@ -35,7 +35,7 @@ typedef struct{
 	uint64_t Seed;
 } Noise_setup_struct;
 
-void AWG_Load_Waveform(AWG_setup_struct AWG1, Noise_setup_struct NOISE1);
+void AWG_Load_Waveform(AWG_setup_struct AWG1);
 
 void Noise_Set_CLK1(uint32_t freq);
 

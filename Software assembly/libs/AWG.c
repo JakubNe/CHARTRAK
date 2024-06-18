@@ -14,10 +14,12 @@
 #include "trim.h"
 #include "math.h"
 
-#define MaxDepth 256 // max AWG samples
+#define MaxDepth 2048 // max AWG samples
 
-void AWG_Load_Waveform(AWG_setup_struct AWG1, Noise_setup_struct NOISE1)
+void AWG_Load_Waveform(AWG_setup_struct AWG1)
 {
+	LOLA_enable_features(AWG_EN, 0); // disable AWG
+
 	uint8_t byte[4];
 	int16_t data;
 
@@ -33,8 +35,8 @@ void AWG_Load_Waveform(AWG_setup_struct AWG1, Noise_setup_struct NOISE1)
 
 	// setting sample count
 	byte[0] = 0;
-	byte[1] = 0;
-	byte[2] = (uint8_t)(depth-1);
+	byte[1] = (uint8_t)((depth>>8)&0x00ff);
+	byte[2] = (uint8_t)(depth&0x00ff);
 	byte[3] = (uint8_t)AWG_MAXADRESS;
 
 	HAL_SPI_Transmit(&hspi1, byte, 4, 100);
@@ -42,7 +44,19 @@ void AWG_Load_Waveform(AWG_setup_struct AWG1, Noise_setup_struct NOISE1)
 	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 1);
 	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 0);
 
-	//NOISE_Load_param(NOISE1);
+	//Setting up clock
+	uint32_t D = 100;
+
+	data = D;
+
+	byte[0] = (int8_t)((data>>16)&0x00ff);
+	byte[1] = (int8_t)((data>>8)&0x00ff);
+	byte[2] = (int8_t)(data&0x00ff);
+	byte[3] = (int8_t)AWG_D;
+
+	HAL_SPI_Transmit(&hspi1, byte, 4, 100);
+	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 1);
+	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 0);
 
 	// loading waveform
 	float relativeDACcode = 2047*AWG1.Upp/(2*MAX_AMPLITUDE); // multiply any number from -1 to 1 and you will get direct code for DAC
@@ -70,6 +84,8 @@ void AWG_Load_Waveform(AWG_setup_struct AWG1, Noise_setup_struct NOISE1)
 		HAL_SPI_Transmit(&hspi1, byte, 4, 100);
 		HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 1);
 		HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 0);
+
+		LOLA_enable_features(AWG_EN, 1); // enable AWG
 	}
 
 }
@@ -159,6 +175,8 @@ void Noise_Set_CLK1(uint32_t freq)
 
 void NOISE_Load_param(Noise_setup_struct NOISE1)
 {
+	LOLA_enable_features(NOISE_EN, 0); // disable Noise generator
+
 	uint8_t byte[4];
 	uint16_t data;
 
@@ -186,7 +204,9 @@ void NOISE_Load_param(Noise_setup_struct NOISE1)
 
 	Noise_Set_CLK1(NOISE1.Freq);
 
-	data = (uint16_t)trimInt((int)(1023*NOISE1.Upp/(2.0*DACref)), 0, 1023); // Load noise amplitude
+	float relativeDACcode = 2047*NOISE1.Upp/(2*MAX_AMPLITUDE); // multiply any number from -1 to 1 and you will get direct code for DAC
+
+	data = (uint16_t)relativeDACcode;
 
 	byte[0] = 0;
 	byte[1] = (uint8_t)((data>>8)&0x0003);
@@ -196,4 +216,6 @@ void NOISE_Load_param(Noise_setup_struct NOISE1)
 	HAL_SPI_Transmit(&hspi1, byte, 4, 100);
 	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 1);
 	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 0);
+
+	LOLA_enable_features(NOISE_EN, 1); // enable Noise generator
 }
