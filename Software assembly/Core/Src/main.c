@@ -170,12 +170,9 @@ int main(void)
     NOISE1.Upp = 0.0;
     NOISE1.Seed = 0x800f000f000f0001;
 
-    LOLA_enable_features(ALL_EN, 1);
+    LOLA_enable_features(ALL_EN, 0); // disable all features
 
     //AWG_Load_Waveform(AWG1,NOISE1);
-
-    DACREF(2.5);
-    DACOFFS(0);
 
   /* USER CODE END 2 */
 
@@ -184,12 +181,12 @@ int main(void)
   while (1)
   {
 	  HAL_Delay(1000);
-	  DAC_DIRECT_DATA(2.0);
 	  LOLA_SET_MAX_AMPLITUDE(5.0);
+	  DAC_DIRECT_DATA(2.0);
 	  RS485_Transmit("MAX\r\n");
 	  HAL_Delay(1000);
+	  LOLA_SET_MAX_AMPLITUDE(4.0);
 	  DAC_DIRECT_DATA(-2.0);
-	  LOLA_SET_MAX_AMPLITUDE(5.0);
 	  RS485_Transmit("MIN\r\n");
 	  /* while(CH1_DC < 65535)
 	 	  	         {
