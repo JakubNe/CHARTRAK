@@ -55,6 +55,8 @@ typedef enum{
 	CHT_EN
 } LOLAfeatures;
 
+extern float MAX_AMPLITUDE;
+
 uint8_t LOLA_Init(InitType t, uint16_t maxAtempts);
 
 void LOLA_Reset();

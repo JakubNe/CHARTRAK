@@ -19,7 +19,7 @@
 void AWG_Load_Waveform(AWG_setup_struct AWG1, Noise_setup_struct NOISE1)
 {
 	uint8_t byte[4];
-	uint16_t data;
+	int16_t data;
 
 	uint16_t depth = trimInt((int)(DACmaxFreq/AWG1.Freq), 1, (MaxDepth-1));
 
@@ -30,9 +30,6 @@ void AWG_Load_Waveform(AWG_setup_struct AWG1, Noise_setup_struct NOISE1)
 	// setting frequency
 	//LOLA_Set_CLK1(AWG1.Freq*depth);
 
-	//these functions need to run before NOISE_Load_param() cause that function works with DAC actual voltage, which must be set before!!
-	DACREF((AWG1.Upp)*2/6.4);	// setting DAC reference
-	DACOFFS(AWG1.Uavg);		// setting DAC offset
 
 	// setting sample count
 	byte[0] = 0;
@@ -45,27 +42,30 @@ void AWG_Load_Waveform(AWG_setup_struct AWG1, Noise_setup_struct NOISE1)
 	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 1);
 	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 0);
 
-	NOISE_Load_param(NOISE1);
+	//NOISE_Load_param(NOISE1);
 
 	// loading waveform
+	float relativeDACcode = 2047*AWG1.Upp/(2*MAX_AMPLITUDE); // multiply any number from -1 to 1 and you will get direct code for DAC
+
 	for(uint16_t addr = 0; addr < depth; addr++)
 	{
+
 		switch(AWG1.waveform)
 		{
-			case Square: data = (uint16_t)((addr>=(depth*AWG1.DutyCycle/100))*2047); break;
+			case Square: data = (int16_t)((addr>=(depth*AWG1.DutyCycle/100))*relativeDACcode); break;
 
-			case Triangle:	if(addr <= DepthPos) data = (uint16_t)(2047*addr/(DepthPos*1.0)); // rising edge
-							else data = (uint16_t)(2047*(1-(addr-DepthPos)/(DepthNeg*1.0))); break; // falling edge
+			case Triangle:	if(addr <= DepthPos) data = (int16_t)(relativeDACcode*addr/(DepthPos*1.0)); // rising edge
+							else data = (int16_t)(relativeDACcode*(1-(addr-DepthPos)/(DepthNeg*1.0))); break; // falling edge
 
-			case Sine: data = (uint16_t)(1023.0*sinf((addr*3.14159*2)/(1.0*depth))+1024); break;
+			case Sine: data = (int16_t)(relativeDACcode*sinf((addr*3.14159*2)/(1.0*depth))); break;
 
 			case Func: break;
 		}
 
-		byte[0] = (uint8_t)((addr>>4)&0x000f);
-		byte[1] = (uint8_t)(((data>>8)&0x000f)|((addr<<4)&0x00f0));
-		byte[2] = (uint8_t)(data&0x00ff);
-		byte[3] = (uint8_t)AWG_DATA;
+		byte[0] = (int8_t)((addr>>4)&0x000f);
+		byte[1] = (int8_t)(((data>>8)&0x000f)|((addr<<4)&0x00f0));
+		byte[2] = (int8_t)(data&0x00ff);
+		byte[3] = (int8_t)AWG_DATA;
 
 		HAL_SPI_Transmit(&hspi1, byte, 4, 100);
 		HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 1);

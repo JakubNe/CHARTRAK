@@ -170,7 +170,11 @@ int main(void)
     NOISE1.Upp = 0.0;
     NOISE1.Seed = 0x800f000f000f0001;
 
-    LOLA_enable_features(ALL_EN, 0); // disable all features
+    LOLA_enable_features(ALL_EN, 1); // enable all features
+    LOLA_SET_MAX_AMPLITUDE(5.0);
+    DAC_DIRECT_DATA(0.0);
+
+    AWG_Load_Waveform(AWG1, NOISE1);
 
     //AWG_Load_Waveform(AWG1,NOISE1);
 
@@ -180,49 +184,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  HAL_Delay(1000);
-	  LOLA_SET_MAX_AMPLITUDE(5.0);
-	  DAC_DIRECT_DATA(2.0);
-	  RS485_Transmit("MAX\r\n");
-	  HAL_Delay(1000);
-	  LOLA_SET_MAX_AMPLITUDE(4.0);
-	  DAC_DIRECT_DATA(-2.0);
-	  RS485_Transmit("MIN\r\n");
-	  /* while(CH1_DC < 65535)
-	 	  	         {
-	 	  	             TIM2->CCR1 = CH1_DC;
-	 	  	             CH1_DC += 70;
-	 	  	             //HAL_Delay(1);
-	 	  	         }
-	 	  	         while(CH1_DC > 0)
-	 	  	         {
-	 	  	             TIM2->CCR1 = CH1_DC;
-	 	  	             CH1_DC -= 70;
-	 	  	             //HAL_Delay(1);
-	 	  	         }
-	 	//HAL_GPIO_ToggePin(COOLER_GPIO_Port, COOLER_Pin);*/
 
-	 	/*HAL_Delay(200);
-	 	NOISE1.Upp=0.1;;
-	 	if(NOISE1.Upp > 2) NOISE1.Upp = 0;
 
-	 	AWG_Load_Waveform(AWG1,NOISE1);
-	 	LOLA_set_mode(AWG_only);
-
-	 	//AWG1.waveform = Square;
-
-	 	/*for(float DutyCyc = 0; DutyCyc<100; DutyCyc+=1)
-	 	{
-	 		AWG1.DutyCycle = DutyCyc;
-	 		AWG_Load_Waveform(AWG1,NOISE1);
-	 		HAL_Delay(1);
-	 	}
-	 	for(float DutyCyc = 100; DutyCyc>0; DutyCyc-=1)
-	 	{
-	 		AWG1.DutyCycle = DutyCyc;
-	 		AWG_Load_Waveform(AWG1,NOISE1);
-	 		HAL_Delay(1);
-	 	}*/
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -380,7 +343,7 @@ static void MX_SPI1_Init(void)
   hspi1.Init.CLKPolarity = SPI_POLARITY_HIGH;
   hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi1.Init.NSS = SPI_NSS_SOFT;
-  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_64;
   hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
