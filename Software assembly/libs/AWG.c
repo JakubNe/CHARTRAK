@@ -29,10 +29,6 @@ void AWG_Load_Waveform(AWG_setup_struct AWG1)
 	uint16_t DepthPos = trimInt((int)(depth*AWG1.DutyCycle/100), 1, (MaxDepth-1));
 	uint16_t DepthNeg = trimInt((int)(depth-DepthPos), 1, (MaxDepth-1));
 
-	// setting frequency
-	//LOLA_Set_CLK1(AWG1.Freq*depth);
-
-
 	// setting sample count
 	byte[0] = 0;
 	byte[1] = (uint8_t)((depth>>8)&0x00ff);
@@ -45,14 +41,14 @@ void AWG_Load_Waveform(AWG_setup_struct AWG1)
 	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 0);
 
 	//Setting up clock
-	uint32_t D = 100;
+	uint32_t D = (uint32_t)(MCLKfreq/(depth*AWG1.Freq));
 
 	data = D;
 
-	byte[0] = (int8_t)((data>>16)&0x00ff);
-	byte[1] = (int8_t)((data>>8)&0x00ff);
-	byte[2] = (int8_t)(data&0x00ff);
-	byte[3] = (int8_t)AWG_D;
+	byte[0] = (uint8_t)((data>>16)&0x00ff);
+	byte[1] = (uint8_t)((data>>8)&0x00ff);
+	byte[2] = (uint8_t)(data&0x00ff);
+	byte[3] = (uint8_t)AWG_D;
 
 	HAL_SPI_Transmit(&hspi1, byte, 4, 100);
 	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 1);
@@ -61,22 +57,22 @@ void AWG_Load_Waveform(AWG_setup_struct AWG1)
 	// loading waveform
 	float relativeDACcode = 2047*AWG1.Upp/(2*MAX_AMPLITUDE); // multiply any number from -1 to 1 and you will get direct code for DAC
 
-	for(uint16_t addr = 0; addr < depth; addr++)
+	for(int16_t addr = 0; addr < depth; addr++)
 	{
 
 		switch(AWG1.waveform)
 		{
-			case Square: data = (int16_t)((addr>=(depth*AWG1.DutyCycle/100))*relativeDACcode); break;
+			case Square: data = (int16_t)((addr>=(depth*AWG1.DutyCycle/100))*relativeDACcode-(relativeDACcode/2.0)); break;
 
-			case Triangle:	if(addr <= DepthPos) data = (int16_t)(relativeDACcode*addr/(DepthPos*1.0)); // rising edge
-							else data = (int16_t)(relativeDACcode*(1-(addr-DepthPos)/(DepthNeg*1.0))); break; // falling edge
+			case Triangle:	if(addr <= DepthPos) data = (int16_t)(relativeDACcode*addr/(DepthPos*1.0)-(relativeDACcode/2.0)); // rising edge
+							else data = (int16_t)(relativeDACcode*(1-(addr-DepthPos)/(DepthNeg*1.0))-(relativeDACcode/2.0)); break; // falling edge
 
 			case Sine: data = (int16_t)(relativeDACcode*sinf((addr*3.14159*2)/(1.0*depth))); break;
 
 			case Func: break;
 		}
 
-		byte[0] = (int8_t)((addr>>4)&0x000f);
+		byte[0] = (int8_t)((addr>>4)&0x00ff);
 		byte[1] = (int8_t)(((data>>8)&0x000f)|((addr<<4)&0x00f0));
 		byte[2] = (int8_t)(data&0x00ff);
 		byte[3] = (int8_t)AWG_DATA;
@@ -84,10 +80,8 @@ void AWG_Load_Waveform(AWG_setup_struct AWG1)
 		HAL_SPI_Transmit(&hspi1, byte, 4, 100);
 		HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 1);
 		HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 0);
-
-		LOLA_enable_features(AWG_EN, 1); // enable AWG
 	}
-
+		LOLA_enable_features(AWG_EN, 1); // enable AWG
 }
 
 /*void AWG_Set_CLK1(uint32_t freq)
@@ -190,7 +184,7 @@ void NOISE_Load_param(Noise_setup_struct NOISE1)
 	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 1);
 	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 0);
 
-	for(uint8_t part = 0; part < 4; part++)	// Load noise seed
+	/*for(uint8_t part = 0; part < 4; part++)	// Load noise seed
 	{
 		byte[0] = (uint8_t)((NOISE1.Seed>>(8+(16*part)))&0x00ff);
 		byte[1] = (uint8_t)((NOISE1.Seed>>(16*part))&0x00ff);
@@ -200,7 +194,7 @@ void NOISE_Load_param(Noise_setup_struct NOISE1)
 		HAL_SPI_Transmit(&hspi1, byte, 4, 100);
 		HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 1);
 		HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 0);
-	}
+	}*/
 
 	Noise_Set_CLK1(NOISE1.Freq);
 
@@ -209,7 +203,7 @@ void NOISE_Load_param(Noise_setup_struct NOISE1)
 	data = (uint16_t)relativeDACcode;
 
 	byte[0] = 0;
-	byte[1] = (uint8_t)((data>>8)&0x0003);
+	byte[1] = (uint8_t)((data>>8)&0x0007);
 	byte[2] = (uint8_t)(data&0x00ff);
 	byte[3] = (uint8_t)NOISE_AMPLITUDE;
 

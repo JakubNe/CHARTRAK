@@ -99,14 +99,15 @@ void LOLA_Reset()
 
 uint16_t enablersReg = 0;
 
-void LOLA_enable_features(InitType LOLAfeatures, int ENABLE)
+void LOLA_enable_features(LOLAfeatures LOLAfeatures1, uint8_t ENABLE)
 {
-	uint16_t enablersMask = 0x0001 >> LOLAfeatures;
+	uint16_t enablersMask = 0x0001 << LOLAfeatures1;
 	uint8_t byte[4];
 
-	if((uint16_t)LOLAfeatures == (uint16_t)ALL_EN) 	enablersReg = 0xffff;
-	else if(ENABLE) 			enablersReg |= enablersMask;
-	else 						enablersReg &= ~enablersMask;
+	if((uint16_t)LOLAfeatures1 == (uint16_t)ALL_EN) 	enablersMask = 0xffff;
+
+	if(ENABLE) 	enablersReg |= enablersMask;
+	else 		enablersReg &= ~enablersMask;
 
 	byte[0] = 0;
 	byte[1] = (uint8_t)((enablersReg>>8)&0x00ff);

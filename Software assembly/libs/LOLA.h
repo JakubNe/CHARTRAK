@@ -49,7 +49,8 @@ typedef enum{
 
 typedef enum{
 	ALL_EN = -1,
-	NOISE_EN = 1,
+	OUT_EN = 0,
+	NOISE_EN,
 	AWG_EN,
 	OSC_EN,
 	CHT_EN
@@ -61,7 +62,7 @@ uint8_t LOLA_Init(InitType t, uint16_t maxAtempts);
 
 void LOLA_Reset();
 
-void LOLA_enable_features(InitType LOLAfeatures, int ENABLE);
+void LOLA_enable_features(LOLAfeatures LOLAfeatures, uint8_t ENABLE);
 
 void DAC_DIRECT_DATA(float value);
 
