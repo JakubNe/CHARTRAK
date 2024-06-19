@@ -121,6 +121,29 @@ void LOLA_enable_features(LOLAfeatures LOLAfeatures1, uint8_t ENABLE)
 	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 0);
 }
 
+uint16_t LOLA_GET_FIRMWAREID()
+{
+	uint16_t FirmwareID = 0;
+	uint8_t byte[4];
+
+	byte[0] = (int8_t)0;
+	byte[1] = (int8_t)0;
+	byte[2] = (int8_t)0;
+	byte[3] = (int8_t)FIRMWARE_ID;
+
+	HAL_SPI_Transmit(&hspi1, byte, 4, 100);
+
+	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 0);
+	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 1);
+	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 0);
+
+	FirmwareID = HAL_SPI_Receive(&hspi1, 0, 4, 100);
+
+	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 0);
+	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 1);
+	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 0);
+}
+
 float MAX_AMPLITUDE = 0;
 
 void LOLA_SET_MAX_AMPLITUDE(float value)

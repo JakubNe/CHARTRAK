@@ -23,10 +23,10 @@ void AWG_Load_Waveform(AWG_setup_struct AWG1)
 	uint8_t byte[4];
 	int16_t data;
 
-	uint16_t depth = trimInt((int)(DACmaxFreq/AWG1.Freq), 1, (MaxDepth-1));
+	uint16_t depth = trimInt((int)round(DACmaxFreq/AWG1.Freq), 1, (MaxDepth-1));
 
 
-	uint16_t DepthPos = trimInt((int)(depth*AWG1.DutyCycle/100), 1, (MaxDepth-1));
+	uint16_t DepthPos = trimInt((int)round(depth*AWG1.DutyCycle/100), 1, (MaxDepth-1));
 	uint16_t DepthNeg = trimInt((int)(depth-DepthPos), 1, (MaxDepth-1));
 
 	// setting sample count
@@ -41,7 +41,7 @@ void AWG_Load_Waveform(AWG_setup_struct AWG1)
 	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 0);
 
 	//Setting up clock
-	uint32_t D = (uint32_t)(MCLKfreq/(depth*AWG1.Freq));
+	uint32_t D = (uint32_t)round(MCLKfreq/(depth*AWG1.Freq));
 
 	data = D;
 
@@ -62,12 +62,12 @@ void AWG_Load_Waveform(AWG_setup_struct AWG1)
 
 		switch(AWG1.waveform)
 		{
-			case Square: data = (int16_t)((addr>=(depth*AWG1.DutyCycle/100))*relativeDACcode-(relativeDACcode/2.0)); break;
+			case Square: data = (int16_t)round((addr>=(depth*AWG1.DutyCycle/100))*relativeDACcode-(relativeDACcode/2.0)); break;
 
-			case Triangle:	if(addr <= DepthPos) data = (int16_t)(relativeDACcode*addr/(DepthPos*1.0)-(relativeDACcode/2.0)); // rising edge
-							else data = (int16_t)(relativeDACcode*(1-(addr-DepthPos)/(DepthNeg*1.0))-(relativeDACcode/2.0)); break; // falling edge
+			case Triangle:	if(addr <= DepthPos) data = (int16_t)round(relativeDACcode*addr/(DepthPos*1.0)-(relativeDACcode/2.0)); // rising edge
+							else data = (int16_t)round(relativeDACcode*(1-(addr-DepthPos)/(DepthNeg*1.0))-(relativeDACcode/2.0)); break; // falling edge
 
-			case Sine: data = (int16_t)(relativeDACcode*sinf((addr*3.14159*2)/(1.0*depth))); break;
+			case Sine: data = (int16_t)round(relativeDACcode*sinf((addr*3.14159*2)/(1.0*depth))); break;
 
 			case Func: break;
 		}

@@ -191,11 +191,12 @@ int main(void)
 	  //AWG_Load_Waveform(AWG1);
 	  //LOLA_enable_features(ALL_EN, 0); // disable
 	  //LOLA_enable_features(AWG_EN, 0);
-	  HAL_Delay(500);
 	  //AWG_Load_Waveform(AWG1);
 	  //LOLA_enable_features(AWG_EN, 1);
 	  HAL_Delay(100);
-	  uint8_t byte[4];
+	  //LOLA_GET_FIRMWAREID();
+	  HAL_Delay(100);
+	  AWG_Load_Waveform(AWG1);
 	  //HAL_SPI_Receive(&hspi1, byte, 4, 100);
 
     /* USER CODE END WHILE */
