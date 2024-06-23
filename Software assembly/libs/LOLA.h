@@ -63,6 +63,8 @@ uint8_t LOLA_Init(InitType t, uint16_t maxAtempts);
 
 void LOLA_Reset();
 
+uint16_t LOLA_GET_FIRMWAREID();
+
 void LOLA_enable_features(LOLAfeatures LOLAfeatures, uint8_t ENABLE);
 
 void DAC_DIRECT_DATA(float value);
