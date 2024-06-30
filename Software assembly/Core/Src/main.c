@@ -160,72 +160,52 @@ int main(void)
     AWG1.Enable = 0;
     AWG1.waveform = Sine;
     AWG1.Uavg = 0.0;
-    AWG1.Upp = 2.0;
-    AWG1.DutyCycle = 50.0;
+    AWG1.Upp = 5.0;
+    AWG1.DutyCycle = 20.0;
     AWG1.Freq = 332.0;
 
     // Noise generator setup
     NOISE1.Enable = 0;
-    NOISE1.Freq = 100.0;
-    NOISE1.Upp = 0.0;
+    NOISE1.Freq = 10000.0;
+    NOISE1.Upp = 1.0;
     NOISE1.Seed = 0x800f000f000f0001;
 
-    LOLA_enable_features(ALL_EN, 1);
+    LOLA_enable_features(ALL_EN, 0); // disable all features
+    LOLA_SET_MAX_AMPLITUDE(6.0);
+    DAC_DIRECT_DATA(0.0);
+    AWG_Load_Waveform(AWG1);
+    //NOISE_Load_param(NOISE1);
 
     //AWG_Load_Waveform(AWG1,NOISE1);
-
-    DACREF(2.5);
-    DACOFFS(0);
-
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  HAL_Delay(1000);
-	  DAC_DIRECT_DATA(2.0);
-	  LOLA_SET_MAX_AMPLITUDE(5.0);
-	  RS485_Transmit("MAX\r\n");
-	  HAL_Delay(1000);
-	  DAC_DIRECT_DATA(-2.0);
-	  LOLA_SET_MAX_AMPLITUDE(5.0);
-	  RS485_Transmit("MIN\r\n");
-	  /* while(CH1_DC < 65535)
-	 	  	         {
-	 	  	             TIM2->CCR1 = CH1_DC;
-	 	  	             CH1_DC += 70;
-	 	  	             //HAL_Delay(1);
-	 	  	         }
-	 	  	         while(CH1_DC > 0)
-	 	  	         {
-	 	  	             TIM2->CCR1 = CH1_DC;
-	 	  	             CH1_DC -= 70;
-	 	  	             //HAL_Delay(1);
-	 	  	         }
-	 	//HAL_GPIO_ToggePin(COOLER_GPIO_Port, COOLER_Pin);*/
+	  //LOLA_enable_features(ALL_EN, 1); // enable
+	  //DAC_DIRECT_DATA(0.0);
+	  //AWG_Load_Waveform(AWG1);
+	  //NOISE_Load_param(NOISE1);
+	  //AWG_Load_Waveform(AWG1);
+	  //LOLA_enable_features(ALL_EN, 0); // disable
+	  //LOLA_enable_features(AWG_EN, 0);
+	  //AWG_Load_Waveform(AWG1);
+	  //LOLA_enable_features(AWG_EN, 1);
+	  HAL_Delay(100);
+	  uint16_t dataVolake = LOLA_GET_FIRMWAREID();
+	  //HAL_Delay(100);
+	 /* 	  	byte[0] = (int8_t)2;
+	  		byte[1] = (int8_t)3;
+	  		byte[2] = (int8_t)8;
+	  		byte[3] = (int8_t)AWG_DATA;
 
-	 	/*HAL_Delay(200);
-	 	NOISE1.Upp=0.1;;
-	 	if(NOISE1.Upp > 2) NOISE1.Upp = 0;
+	  		HAL_SPI_Transmit(&hspi1, byte, 4, 100);
+	  		HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 0);
+	  		HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 1);
+	  		HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 0);*/
+	  //HAL_SPI_Receive(&hspi1, byte, 4, 100);
 
-	 	AWG_Load_Waveform(AWG1,NOISE1);
-	 	LOLA_set_mode(AWG_only);
-
-	 	//AWG1.waveform = Square;
-
-	 	/*for(float DutyCyc = 0; DutyCyc<100; DutyCyc+=1)
-	 	{
-	 		AWG1.DutyCycle = DutyCyc;
-	 		AWG_Load_Waveform(AWG1,NOISE1);
-	 		HAL_Delay(1);
-	 	}
-	 	for(float DutyCyc = 100; DutyCyc>0; DutyCyc-=1)
-	 	{
-	 		AWG1.DutyCycle = DutyCyc;
-	 		AWG_Load_Waveform(AWG1,NOISE1);
-	 		HAL_Delay(1);
-	 	}*/
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -383,7 +363,7 @@ static void MX_SPI1_Init(void)
   hspi1.Init.CLKPolarity = SPI_POLARITY_HIGH;
   hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi1.Init.NSS = SPI_NSS_SOFT;
-  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
   hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;

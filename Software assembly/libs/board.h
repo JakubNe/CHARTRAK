@@ -12,7 +12,8 @@
 #ifndef BOARD_H_
 #define BOARD_H_
 
-#define MCLKfreq 	100000000.0	//Hz
+#define XCLKfreq	100000000.0 //Hz	External crystal oscillator
+#define MCLKfreq 	280000000.0	//Hz	Internal Master clock frequency
 
 #define DACmaxFreq 	20000000.0 	//Hz
 
