@@ -157,6 +157,7 @@ int main(void)
     CHT1.Upp = 0;
 
     // Arbitrary waveform generator setup
+    AWG1.Enable = 0;
     AWG1.waveform = Sine;
     AWG1.Uavg = 0.0;
     AWG1.Upp = 2.0;
