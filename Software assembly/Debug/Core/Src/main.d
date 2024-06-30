@@ -26,14 +26,14 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_spi.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h \
- C:/Users/Admin/git/CHARTRAK/Software\ assembly/libs/LOLA.h \
- C:/Users/Admin/git/CHARTRAK/Software\ assembly/libs/AWG.h \
- C:/Users/Admin/git/CHARTRAK/Software\ assembly/libs/ProgRef.h \
- C:/Users/Admin/git/CHARTRAK/Software\ assembly/libs/units.h \
- C:/Users/Admin/git/CHARTRAK/Software\ assembly/libs/board.h \
- C:/Users/Admin/git/CHARTRAK/Software\ assembly/libs/RS485.h \
- C:/Users/Admin/git/CHARTRAK/Software\ assembly/libs/CHARTRAK.h \
- C:/Users/Admin/git/CHARTRAK/Software\ assembly/libs/TCA9555.h
+ C:/Users/kuban/git/CHARTRAK/Software\ assembly/libs/LOLA.h \
+ C:/Users/kuban/git/CHARTRAK/Software\ assembly/libs/AWG.h \
+ C:/Users/kuban/git/CHARTRAK/Software\ assembly/libs/ProgRef.h \
+ C:/Users/kuban/git/CHARTRAK/Software\ assembly/libs/units.h \
+ C:/Users/kuban/git/CHARTRAK/Software\ assembly/libs/board.h \
+ C:/Users/kuban/git/CHARTRAK/Software\ assembly/libs/RS485.h \
+ C:/Users/kuban/git/CHARTRAK/Software\ assembly/libs/CHARTRAK.h \
+ C:/Users/kuban/git/CHARTRAK/Software\ assembly/libs/TCA9555.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
 ../Core/Inc/stm32f1xx_hal_conf.h:
@@ -62,11 +62,11 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_spi.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h:
-C:/Users/Admin/git/CHARTRAK/Software\ assembly/libs/LOLA.h:
-C:/Users/Admin/git/CHARTRAK/Software\ assembly/libs/AWG.h:
-C:/Users/Admin/git/CHARTRAK/Software\ assembly/libs/ProgRef.h:
-C:/Users/Admin/git/CHARTRAK/Software\ assembly/libs/units.h:
-C:/Users/Admin/git/CHARTRAK/Software\ assembly/libs/board.h:
-C:/Users/Admin/git/CHARTRAK/Software\ assembly/libs/RS485.h:
-C:/Users/Admin/git/CHARTRAK/Software\ assembly/libs/CHARTRAK.h:
-C:/Users/Admin/git/CHARTRAK/Software\ assembly/libs/TCA9555.h:
+C:/Users/kuban/git/CHARTRAK/Software\ assembly/libs/LOLA.h:
+C:/Users/kuban/git/CHARTRAK/Software\ assembly/libs/AWG.h:
+C:/Users/kuban/git/CHARTRAK/Software\ assembly/libs/ProgRef.h:
+C:/Users/kuban/git/CHARTRAK/Software\ assembly/libs/units.h:
+C:/Users/kuban/git/CHARTRAK/Software\ assembly/libs/board.h:
+C:/Users/kuban/git/CHARTRAK/Software\ assembly/libs/RS485.h:
+C:/Users/kuban/git/CHARTRAK/Software\ assembly/libs/CHARTRAK.h:
+C:/Users/kuban/git/CHARTRAK/Software\ assembly/libs/TCA9555.h:
