@@ -99,15 +99,14 @@ void LOLA_Reset()
 
 uint16_t enablersReg = 0;
 
-void LOLA_enable_features(LOLAfeatures LOLAfeatures1, uint8_t ENABLE)
+void LOLA_enable_features(InitType LOLAfeatures, int ENABLE)
 {
-	uint16_t enablersMask = 0x0001 << LOLAfeatures1;
+	uint16_t enablersMask = 0x0001 >> LOLAfeatures;
 	uint8_t byte[4];
 
-	if((uint16_t)LOLAfeatures1 == (uint16_t)ALL_EN) 	enablersMask = 0xffff;
-
-	if(ENABLE) 	enablersReg |= enablersMask;
-	else 		enablersReg &= ~enablersMask;
+	if((uint16_t)LOLAfeatures == (uint16_t)ALL_EN) 	enablersReg = 0xffff;
+	else if(ENABLE) 			enablersReg |= enablersMask;
+	else 						enablersReg &= ~enablersMask;
 
 	byte[0] = 0;
 	byte[1] = (uint8_t)((enablersReg>>8)&0x00ff);
@@ -121,54 +120,23 @@ void LOLA_enable_features(LOLAfeatures LOLAfeatures1, uint8_t ENABLE)
 	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 0);
 }
 
-uint16_t LOLA_GET_FIRMWAREID()
-{
-	uint16_t FirmwareID = 0;
-	uint8_t byte[4];
-	uint8_t receivedData[4]; // Array to store 4 bytes of received data
-
-	byte[0] = (int8_t)0;
-	byte[1] = (int8_t)0;
-	byte[2] = (int8_t)0;
-	byte[3] = (int8_t)FIRMWARE_ID;
-
-	HAL_SPI_Transmit(&hspi1, byte, 4, 100);
-
-	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 0);
-	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 1);
-	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 0);
-
-	if (HAL_SPI_Receive(&hspi1, receivedData, 4, HAL_MAX_DELAY) == HAL_OK)
-	{
-	            // Reconstruct 32-bit data from 4 received bytes
-		FirmwareID = ((uint32_t)receivedData[2] << 8) | (uint32_t)receivedData[3];
-	}
-	else
-	{
-	            // Error handling
-	}
-
-	return FirmwareID;
-}
-
-float MAX_AMPLITUDE = 0;
-
 void LOLA_SET_MAX_AMPLITUDE(float value)
 {
 	DACREF((value)*2/6.4);	// setting DAC Voltage reference
-	MAX_AMPLITUDE = value;
 }
 
 void DAC_DIRECT_DATA(float value)
 {
 	uint8_t byte[4];
+	uint16_t data;
 
-	int16_t data = (int16_t)(2048*value/MAX_AMPLITUDE);
+	if(value > 100) data = 0xffff;
+	else data = 0x0000;
 
 	byte[0] = 0;
-	byte[1] = (int8_t)((data>>8)&0x000f);
-	byte[2] = (int8_t)(data&0x00ff);
-	byte[3] = (int8_t)DAC_DIRECTDATA;
+	byte[1] = (uint8_t)((data>>8)&0x000f);
+	byte[2] = (uint8_t)(data&0x00ff);
+	byte[3] = (uint8_t)DAC_DIRECTDATA;
 
 	HAL_SPI_Transmit(&hspi1, byte, 4, 100);
 	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 0);

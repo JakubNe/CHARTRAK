@@ -44,31 +44,19 @@ typedef enum{
 	OSC_TRIGADDRESS,
 	OSC_READY,
 	OSC_SAMPLE,
-	CHT_DATA,
-	FIRMWARE_ID
+	CHT_DATA
 } LOLAregs;
 
 typedef enum{
 	ALL_EN = -1,
-	OUT_EN = 0,
-	NOISE_EN,
+	NOISE_EN = 1,
 	AWG_EN,
 	OSC_EN,
 	CHT_EN
 } LOLAfeatures;
 
-extern float MAX_AMPLITUDE;
-
 uint8_t LOLA_Init(InitType t, uint16_t maxAtempts);
-
 void LOLA_Reset();
-
-uint16_t LOLA_GET_FIRMWAREID();
-
-void LOLA_enable_features(LOLAfeatures LOLAfeatures, uint8_t ENABLE);
-
-void DAC_DIRECT_DATA(float value);
-
-void LOLA_SET_MAX_AMPLITUDE(float value);
+void LOLA_enable_features(InitType LOLAfeatures, int ENABLE);
 
 #endif /* LOLA_H_ */
