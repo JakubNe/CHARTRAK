@@ -137,11 +137,12 @@ uint16_t LOLA_GET_FIRMWAREID()
 	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 1);
 	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 0);
 
-	FirmwareID = HAL_SPI_Receive(&hspi1, 0, 4, 100);
+	uint8_t rxBuffer[4];
 
-	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 0);
-	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 1);
-	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 0);
+	 // Receive 4 bytes
+	if (HAL_SPI_Receive(&hspi1, rxBuffer, 4, HAL_MAX_DELAY) == HAL_OK) FirmwareID = (rxBuffer[2] << 8) | rxBuffer[3];
+
+	return FirmwareID;
 }
 
 float MAX_AMPLITUDE = 0;

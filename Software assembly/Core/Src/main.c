@@ -31,6 +31,7 @@
 #include "RS485.h"
 #include "CHARTRAK.h"
 #include "TCA9555.h"
+#include "DVM.h"
 
 /* USER CODE END Includes */
 
@@ -193,8 +194,10 @@ int main(void)
 	  //LOLA_enable_features(AWG_EN, 0);
 	  //AWG_Load_Waveform(AWG1);
 	  //LOLA_enable_features(AWG_EN, 1);
-	  HAL_Delay(100);
-	  LOLA_GET_FIRMWAREID();
+	  HAL_Delay(10);
+	  uint16_t firmwareID = LOLA_GET_FIRMWAREID();
+	  HAL_Delay(10);
+	  float value = DVM_GET_DATA();
 	  //HAL_Delay(100);
 	   //AWG_Load_Waveform(AWG1);
 	  //HAL_SPI_Receive(&hspi1, byte, 4, 100);
