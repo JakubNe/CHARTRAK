@@ -11,7 +11,7 @@
 #include "stdint.h"
 #include "stm32f1xx_hal.h"
 
-typedef enum TCA_pins{
+typedef enum tca_pins{
 	P00 = 0,
 	P01,
 	P02,
@@ -28,7 +28,7 @@ typedef enum TCA_pins{
 	P15,
 	P16,
 	P17
-};
+}TCA_pins;
 
 #define INPUT_REGISTER_LOW 		0x00
 #define INPUT_REGISTER_HIGH 	0x01

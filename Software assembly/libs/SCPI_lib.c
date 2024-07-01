@@ -27,14 +27,14 @@ void ReformatString(char* chararr, int arrMaxSize)
 
 struct subword generateSubwordn(char* subcommand, int length)
 {
-	struct subword finalSubword = { .type = params, .function = 0, .integerParam = 0, .otherParam = NULL, .paramType = 0};
+	struct subword finalSubword = { .type = params, .functionIndex = 0, .integerParam = 0, .otherParam = NULL, .paramType = 0};
 
 	for (int i = 0; i < functionLength; i++)
 	{
 		if (!strncmp(subcommand, functionList[i].name, length))
 		{
 			finalSubword.type = function;
-			finalSubword.function = (enum functionTypes)i;
+			finalSubword.functionIndex = i;
 			return finalSubword;
 		}
 	}
@@ -129,7 +129,7 @@ void executeWord(struct word word)
 	if (word.subwordsCount < 1) return;
 	if (word.subwords == NULL) return;
 	if (word.subwords[0].type != function) return;
-	int listIndex = (int)word.subwords[0].function;
+	int listIndex = word.subwords[0].functionIndex;
 	functionList[listIndex].run(word.subwords + 1, word.subwordsCount - 1);
 }
 
