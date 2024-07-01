@@ -172,11 +172,12 @@ int main(void)
 
     LOLA_enable_features(ALL_EN, 0); // disable all features
     LOLA_SET_MAX_AMPLITUDE(6.0);
-    DAC_DIRECT_DATA(0.0);
+    DAC_DIRECT_DATA(2.0);
     AWG_Load_Waveform(AWG1);
     //NOISE_Load_param(NOISE1);
 
     //AWG_Load_Waveform(AWG1,NOISE1);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -193,17 +194,9 @@ int main(void)
 	  //AWG_Load_Waveform(AWG1);
 	  //LOLA_enable_features(AWG_EN, 1);
 	  HAL_Delay(100);
-	  uint16_t dataVolake = LOLA_GET_FIRMWAREID();
+	  LOLA_GET_FIRMWAREID();
 	  //HAL_Delay(100);
-	 /* 	  	byte[0] = (int8_t)2;
-	  		byte[1] = (int8_t)3;
-	  		byte[2] = (int8_t)8;
-	  		byte[3] = (int8_t)AWG_DATA;
-
-	  		HAL_SPI_Transmit(&hspi1, byte, 4, 100);
-	  		HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 0);
-	  		HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 1);
-	  		HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 0);*/
+	   //AWG_Load_Waveform(AWG1);
 	  //HAL_SPI_Receive(&hspi1, byte, 4, 100);
 
     /* USER CODE END WHILE */
@@ -363,7 +356,7 @@ static void MX_SPI1_Init(void)
   hspi1.Init.CLKPolarity = SPI_POLARITY_HIGH;
   hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi1.Init.NSS = SPI_NSS_SOFT;
-  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_64;
   hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
