@@ -31,10 +31,6 @@
 #include "RS485.h"
 #include "CHARTRAK.h"
 #include "TCA9555.h"
-#include "SCPI_lib.h"
-#ifndef RS485BUFFSIZE
-#define RS485BUFFSIZE 128
-#endif
 
 /* USER CODE END Includes */
 
@@ -50,8 +46,7 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-char TXbuff[RS485BUFFSIZE];
-char RXbuff[RS485BUFFSIZE];
+
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -165,22 +160,23 @@ int main(void)
     AWG1.Enable = 0;
     AWG1.waveform = Sine;
     AWG1.Uavg = 0.0;
-    AWG1.Upp = 2.0;
-    AWG1.DutyCycle = 50.0;
+    AWG1.Upp = 5.0;
+    AWG1.DutyCycle = 20.0;
     AWG1.Freq = 332.0;
 
     // Noise generator setup
     NOISE1.Enable = 0;
-    NOISE1.Freq = 100.0;
-    NOISE1.Upp = 0.0;
+    NOISE1.Freq = 10000.0;
+    NOISE1.Upp = 1.0;
     NOISE1.Seed = 0x800f000f000f0001;
 
-    LOLA_enable_features(ALL_EN, 1);
+    LOLA_enable_features(ALL_EN, 0); // disable all features
+    LOLA_SET_MAX_AMPLITUDE(6.0);
+    DAC_DIRECT_DATA(2.0);
+    AWG_Load_Waveform(AWG1);
+    //NOISE_Load_param(NOISE1);
 
     //AWG_Load_Waveform(AWG1,NOISE1);
-
-    DACREF(2.5);
-    DACOFFS(0);
 
   /* USER CODE END 2 */
 
@@ -188,49 +184,21 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  HAL_Delay(1000);
-	  DAC_DIRECT_DATA(2.0);
-	  LOLA_SET_MAX_AMPLITUDE(5.0);
-	  RS485_Transmit("MAX\r\n");
-	  HAL_Delay(1000);
-	  DAC_DIRECT_DATA(-2.0);
-	  LOLA_SET_MAX_AMPLITUDE(5.0);
-	  RS485_Transmit("MIN\r\n");
-	  /* while(CH1_DC < 65535)
-	 	  	         {
-	 	  	             TIM2->CCR1 = CH1_DC;
-	 	  	             CH1_DC += 70;
-	 	  	             //HAL_Delay(1);
-	 	  	         }
-	 	  	         while(CH1_DC > 0)
-	 	  	         {
-	 	  	             TIM2->CCR1 = CH1_DC;
-	 	  	             CH1_DC -= 70;
-	 	  	             //HAL_Delay(1);
-	 	  	         }
-	 	//HAL_GPIO_ToggePin(COOLER_GPIO_Port, COOLER_Pin);*/
+	  //LOLA_enable_features(ALL_EN, 1); // enable
+	  //DAC_DIRECT_DATA(0.0);
+	  //AWG_Load_Waveform(AWG1);
+	  //NOISE_Load_param(NOISE1);
+	  //AWG_Load_Waveform(AWG1);
+	  //LOLA_enable_features(ALL_EN, 0); // disable
+	  //LOLA_enable_features(AWG_EN, 0);
+	  //AWG_Load_Waveform(AWG1);
+	  //LOLA_enable_features(AWG_EN, 1);
+	  HAL_Delay(100);
+	  LOLA_GET_FIRMWAREID();
+	  //HAL_Delay(100);
+	   //AWG_Load_Waveform(AWG1);
+	  //HAL_SPI_Receive(&hspi1, byte, 4, 100);
 
-	 	/*HAL_Delay(200);
-	 	NOISE1.Upp=0.1;;
-	 	if(NOISE1.Upp > 2) NOISE1.Upp = 0;
-
-	 	AWG_Load_Waveform(AWG1,NOISE1);
-	 	LOLA_set_mode(AWG_only);
-
-	 	//AWG1.waveform = Square;
-
-	 	/*for(float DutyCyc = 0; DutyCyc<100; DutyCyc+=1)
-	 	{
-	 		AWG1.DutyCycle = DutyCyc;
-	 		AWG_Load_Waveform(AWG1,NOISE1);
-	 		HAL_Delay(1);
-	 	}
-	 	for(float DutyCyc = 100; DutyCyc>0; DutyCyc-=1)
-	 	{
-	 		AWG1.DutyCycle = DutyCyc;
-	 		AWG_Load_Waveform(AWG1,NOISE1);
-	 		HAL_Delay(1);
-	 	}*/
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -388,7 +356,7 @@ static void MX_SPI1_Init(void)
   hspi1.Init.CLKPolarity = SPI_POLARITY_HIGH;
   hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi1.Init.NSS = SPI_NSS_SOFT;
-  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_64;
   hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -512,43 +480,9 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-// někdo do setupu addFunction("SCPICOMMAND", commandFunction);
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
 	//SCPIencode(TXbuff, RXbuff, AWG1, NOISE1);
-	/*
-	 * void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
-{
-
-	//HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, 0);
-	//HAL_UART_Transmit(&huart1, RXbuff, RS485BUFFSIZE , 10);
-
-	ReformatString(RXbuff, RS485BUFFSIZE);
-
-	strcpy(TXbuff, "ERR\n\r");
-
-	struct word word = generateWordDirect(RXbuff);
-
-	if(word.address == RackID) executeWord(word);
-
-	for(int i = word.subwordsCount; i > 0 ; i--)
-	{
-		if (word.subwords[i].paramType == OTHER_P && word.subwords[i].otherParam != NULL)
-		{
-			free(word.subwords[i].otherParam);
-			word.subwords[i].otherParam = NULL;
-		}
-	}
-	free(word.subwords);
-	word.subwords = NULL;
-
-	RS485_Transmit(TXbuff);
-
-	HAL_UARTEx_ReceiveToIdle_IT(&huart1, RXbuff, RS485BUFFSIZE);
-	//HAL_UART_Transmit(&huart1, TXbuff, RS485BUFFSIZE , 10);
-}
-	 */
-
 	HAL_UARTEx_ReceiveToIdle_IT(&huart1, RXbuff, RS485BUFFSIZE);
 }
 /* USER CODE END 4 */
