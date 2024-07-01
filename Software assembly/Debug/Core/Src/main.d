@@ -38,7 +38,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  C:/Users/kuban/OneDrive/Documents/GitHub/CHARTRAK/Software\ assembly/libs/SCPI_Commands.h \
  C:/Users/kuban/OneDrive/Documents/GitHub/CHARTRAK/Software\ assembly/libs/SCPI_Lib.h \
  C:/Users/kuban/OneDrive/Documents/GitHub/CHARTRAK/Software\ assembly/libs/RS485.h \
- C:/Users/kuban/OneDrive/Documents/GitHub/CHARTRAK/Software\ assembly/libs/LOLA.h
+ C:/Users/kuban/OneDrive/Documents/GitHub/CHARTRAK/Software\ assembly/libs/LOLA.h \
+ C:/Users/kuban/OneDrive/Documents/GitHub/CHARTRAK/Software\ assembly/libs/DVM.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
 ../Core/Inc/stm32f1xx_hal_conf.h:
@@ -80,3 +81,4 @@ C:/Users/kuban/OneDrive/Documents/GitHub/CHARTRAK/Software\ assembly/libs/SCPI_C
 C:/Users/kuban/OneDrive/Documents/GitHub/CHARTRAK/Software\ assembly/libs/SCPI_Lib.h:
 C:/Users/kuban/OneDrive/Documents/GitHub/CHARTRAK/Software\ assembly/libs/RS485.h:
 C:/Users/kuban/OneDrive/Documents/GitHub/CHARTRAK/Software\ assembly/libs/LOLA.h:
+C:/Users/kuban/OneDrive/Documents/GitHub/CHARTRAK/Software\ assembly/libs/DVM.h:

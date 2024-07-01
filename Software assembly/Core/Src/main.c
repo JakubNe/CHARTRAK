@@ -31,6 +31,8 @@
 #include "RS485.h"
 #include "CHARTRAK.h"
 #include "TCA9555.h"
+#include "SCPI_lib.h"
+#include "SCPI_Commands.h"
 #include "DVM.h"
 
 /* USER CODE END Includes */
@@ -143,6 +145,9 @@ int main(void)
 
     // RS485 receive interrupt setup
     HAL_UARTEx_ReceiveToIdle_IT(&huart1, RXbuff, RS485BUFFSIZE);
+
+    //SCPI setup
+    addFunction("LOLA", SCPIC_LOLA);
 
     //SPARTAN3 SETUP
     HAL_Delay(100);
@@ -485,6 +490,28 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
+	ReformatString(RXbuff, RS485BUFFSIZE);
+
+	strcpy(TXbuff, "ERR\n\r");
+
+	struct word word = generateWordDirect(RXbuff);
+
+	//if(word.address == RackID)
+	executeWord(word);
+
+	for(int i = word.subwordsCount; i > 0 ; i--)
+	{
+		if (word.subwords[i].paramType == OTHER_P && word.subwords[i].otherParam != NULL)
+		{
+			free(word.subwords[i].otherParam);
+			word.subwords[i].otherParam = NULL;
+		}
+	}
+	free(word.subwords);
+	word.subwords = NULL;
+
+	RS485_Transmit(TXbuff);
+
 	//SCPIencode(TXbuff, RXbuff, AWG1, NOISE1);
 	HAL_UARTEx_ReceiveToIdle_IT(&huart1, RXbuff, RS485BUFFSIZE);
 }
