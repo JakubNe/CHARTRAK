@@ -45,7 +45,8 @@ typedef enum{
 	OSC_READY,
 	OSC_SAMPLE,
 	CHT_DATA,
-	FIRMWARE_ID
+	FIRMWARE_ID,
+	DVM_DATA
 } LOLAregs;
 
 typedef enum{
