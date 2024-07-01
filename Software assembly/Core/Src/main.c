@@ -31,6 +31,10 @@
 #include "RS485.h"
 #include "CHARTRAK.h"
 #include "TCA9555.h"
+#include "SCPI_lib.h"
+#ifndef RS485BUFFSIZE
+#define RS485BUFFSIZE 128
+#endif
 
 /* USER CODE END Includes */
 
@@ -46,7 +50,8 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-
+char TXbuff[RS485BUFFSIZE];
+char RXbuff[RS485BUFFSIZE];
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
