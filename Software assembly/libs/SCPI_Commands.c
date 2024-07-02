@@ -13,14 +13,15 @@ void SCPIC_LOLA(struct subword* subwords, int length)
 	if(length != 2) return;
 	if(subwords[0].type != params) return;
 	struct subword subword = subwords[0];
-	strcpy(TXbuff,"OK\n\r");
+	strcpy(TXbuff,"OK\r\n");
 
-	if(subword.type == params && subword.paramType == OTHER_P && strcmp(subword.otherParam, "FID"))
+	if(!strcmp(subword.otherParam, "FID"))
 	{
-		if(++subword.paramType == params && subword.paramType == EVAL_P)
+		subword = subwords[1];
+		if(subword.type == params && subword.paramType == EVAL_P)
 		{
 			uint16_t id = LOLA_GET_FIRMWAREID();
-			sprintf(TXbuff, "%d\n\r", id);
+			sprintf(TXbuff, "%x\r\n", id);
 		}
 	}
 	/*switch (subword.paramType)

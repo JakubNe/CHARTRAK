@@ -148,9 +148,11 @@ int main(void)
     HAL_UARTEx_ReceiveToIdle_IT(&huart1, RXbuff, RS485BUFFSIZE);
 
     //SCPI setup
+    uint8_t RackID = 0;
     addFunction("LOLA", SCPIC_LOLA);
 
     //SPARTAN3 SETUP
+
     LOLA1.Config = JTAG;
     LOLA1.Trials = 10;
     LOLA1.compatibleFirmwareID = 0xF103;
@@ -180,7 +182,7 @@ int main(void)
 
     LOLA_enable_features(ALL_EN, 0); // disable all features
     LOLA_SET_MAX_AMPLITUDE(6.0);
-    DAC_DIRECT_DATA(2.0);
+    DAC_DIRECT_DATA(0.0);
     AWG_Load_Waveform(AWG1);
     //NOISE_Load_param(NOISE1);
 
@@ -490,12 +492,11 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
 	ReformatString(RXbuff, RS485BUFFSIZE);
 
-	strcpy(TXbuff, "ERR\n\r");
+	strcpy(TXbuff, "ERR\r\n");
 
 	struct word word = generateWordDirect(RXbuff);
 
-	//if(word.address == RackID)
-	executeWord(word);
+	if(word.address == RackID || word.address == 1) executeWord(word);
 
 	for(int i = word.subwordsCount; i > 0 ; i--)
 	{
