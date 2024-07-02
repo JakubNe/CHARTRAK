@@ -5,80 +5,104 @@
 #include "board.h"
 #include "ProgRef.h"
 
-uint8_t LOLA_Init(InitType t, uint16_t maxAtempts) // waits forever if maxatempts > 10000
+void LOLA_CFG_SEL(InitType t)
 {
-	DACREF(0.0);
-	DACOFFS(0);
-
-	// Reset
-	HAL_GPIO_WritePin(PROGB_GPIO_Port, PROGB_Pin, 0);
-	HAL_Delay(1);
-	HAL_GPIO_WritePin(PROGB_GPIO_Port, PROGB_Pin, 1);
-	HAL_Delay(1);
-
 	switch(t)
-	{
-		// reference: http://dangerousprototypes.com/docs/Xilinx_Spartan_3_FPGA_quick_start#Boot_configuration
-		case Master_Serial:
-			HAL_GPIO_WritePin(M2_GPIO_Port, M2_Pin, 0);
-			HAL_GPIO_WritePin(M1_GPIO_Port, M1_Pin, 0);
-			HAL_GPIO_WritePin(M0_GPIO_Port, M0_Pin, 0);
-		break;
+		{
+			// reference: http://dangerousprototypes.com/docs/Xilinx_Spartan_3_FPGA_quick_start#Boot_configuration
+			case Master_Serial:
+				HAL_GPIO_WritePin(M2_GPIO_Port, M2_Pin, 0);
+				HAL_GPIO_WritePin(M1_GPIO_Port, M1_Pin, 0);
+				HAL_GPIO_WritePin(M0_GPIO_Port, M0_Pin, 0);
+			break;
 
-		case SPI_FLASH:	// SPI FLASH
-			HAL_GPIO_WritePin(M2_GPIO_Port, M2_Pin, 0);
-			HAL_GPIO_WritePin(M1_GPIO_Port, M1_Pin, 0);
-			HAL_GPIO_WritePin(M0_GPIO_Port, M0_Pin, 1);
-		break;
+			case SPI_FLASH:	// SPI FLASH
+				HAL_GPIO_WritePin(M2_GPIO_Port, M2_Pin, 0);
+				HAL_GPIO_WritePin(M1_GPIO_Port, M1_Pin, 0);
+				HAL_GPIO_WritePin(M0_GPIO_Port, M0_Pin, 1);
+			break;
 
-		case BPI_Up:
-			HAL_GPIO_WritePin(M2_GPIO_Port, M2_Pin, 0);
-			HAL_GPIO_WritePin(M1_GPIO_Port, M1_Pin, 1);
-			HAL_GPIO_WritePin(M0_GPIO_Port, M0_Pin, 0);
-		break;
+			case BPI_Up:
+				HAL_GPIO_WritePin(M2_GPIO_Port, M2_Pin, 0);
+				HAL_GPIO_WritePin(M1_GPIO_Port, M1_Pin, 1);
+				HAL_GPIO_WritePin(M0_GPIO_Port, M0_Pin, 0);
+			break;
 
-		case BPI_Down:
-			HAL_GPIO_WritePin(M2_GPIO_Port, M2_Pin, 0);
-			HAL_GPIO_WritePin(M1_GPIO_Port, M1_Pin, 1);
-			HAL_GPIO_WritePin(M0_GPIO_Port, M0_Pin, 1);
-		break;
+			case BPI_Down:
+				HAL_GPIO_WritePin(M2_GPIO_Port, M2_Pin, 0);
+				HAL_GPIO_WritePin(M1_GPIO_Port, M1_Pin, 1);
+				HAL_GPIO_WritePin(M0_GPIO_Port, M0_Pin, 1);
+			break;
 
-		case Slave_parallel:
-			HAL_GPIO_WritePin(M2_GPIO_Port, M2_Pin, 1);
-			HAL_GPIO_WritePin(M1_GPIO_Port, M1_Pin, 1);
-			HAL_GPIO_WritePin(M0_GPIO_Port, M0_Pin, 0);
-		break;
+			case Slave_parallel:
+				HAL_GPIO_WritePin(M2_GPIO_Port, M2_Pin, 1);
+				HAL_GPIO_WritePin(M1_GPIO_Port, M1_Pin, 1);
+				HAL_GPIO_WritePin(M0_GPIO_Port, M0_Pin, 0);
+			break;
 
-		case Slave_Serial:
-			HAL_GPIO_WritePin(M2_GPIO_Port, M2_Pin, 1);
-			HAL_GPIO_WritePin(M1_GPIO_Port, M1_Pin, 1);
-			HAL_GPIO_WritePin(M0_GPIO_Port, M0_Pin, 1);
-		break;
+			case Slave_Serial:
+				HAL_GPIO_WritePin(M2_GPIO_Port, M2_Pin, 1);
+				HAL_GPIO_WritePin(M1_GPIO_Port, M1_Pin, 1);
+				HAL_GPIO_WritePin(M0_GPIO_Port, M0_Pin, 1);
+			break;
 
-		default: // JTAG on default
-			HAL_GPIO_WritePin(M2_GPIO_Port, M2_Pin, 1);
-			HAL_GPIO_WritePin(M1_GPIO_Port, M1_Pin, 0);
-			HAL_GPIO_WritePin(M0_GPIO_Port, M0_Pin, 1);
-			maxAtempts = 10000; // Unlimited wait time on JTAG configuration
-		break;
-	}
+			default: // JTAG on default
+				HAL_GPIO_WritePin(M2_GPIO_Port, M2_Pin, 1);
+				HAL_GPIO_WritePin(M1_GPIO_Port, M1_Pin, 0);
+				HAL_GPIO_WritePin(M0_GPIO_Port, M0_Pin, 1);
+			break;
+		}
+}
 
-	while(HAL_GPIO_ReadPin(INITB_GPIO_Port, INITB_Pin) && maxAtempts > 0)
-	{
-		if(maxAtempts < 10000) maxAtempts--;
+uint8_t LOLA_Init(LOLAconfig_struct LOLAconfig) // waits forever if maxatempts > 10000
+{
+	uint16_t AttemptsLeft;
+	uint16_t FID = 0;
+	uint16_t TrialsLeft = LOLAconfig.Trials;
+
+	LOLAconfig.Status = NO_FIRMWARE;
+
+	do{
+
+		LOLA_Reset();
+
 		HAL_Delay(100);
-	}
 
-	if(maxAtempts > 0) return 1;	// sucesfull configuration
+		LOLA_CFG_SEL(LOLAconfig.Config);
+
+		AttemptsLeft = 20;
+
+		if(LOLAconfig.Config == JTAG)	// unlimited timer for manual JTAG configuration
+			while(HAL_GPIO_ReadPin(INITB_GPIO_Port, INITB_Pin)){}
+		else
+			while(HAL_GPIO_ReadPin(INITB_GPIO_Port, INITB_Pin) && AttemptsLeft > 0)
+			{
+				AttemptsLeft--;
+				HAL_Delay(100);
+			}
+
+		if(AttemptsLeft > 0)
+		{
+			HAL_Delay(1000);
+			FID = LOLA_GET_FIRMWAREID();
+
+			if(LOLAconfig.compatibleFirmwareID = FID) LOLAconfig.Status = FIRMWARE_OK;
+			else LOLAconfig.Status = INVALID_FIRMWARE;
+		}
+		else LOLAconfig.Status = NO_FIRMWARE;
+
+		TrialsLeft--;
+
+	}while(TrialsLeft > 0 && LOLAconfig.Status != FIRMWARE_OK);
+
+	if(LOLAconfig.Status == FIRMWARE_OK) return 1;	// sucesfull configuration
 	else return 0; // timer ran out
 }
 
 void LOLA_Reset()
 {
 	HAL_GPIO_WritePin(PROGB_GPIO_Port, PROGB_Pin, 0);
-	HAL_Delay(1);
 	HAL_GPIO_WritePin(PROGB_GPIO_Port, PROGB_Pin, 1);
-	HAL_Delay(1);
 }
 
 //*********************************************************************************************************************

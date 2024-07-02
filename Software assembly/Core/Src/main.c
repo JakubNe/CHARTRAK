@@ -65,6 +65,7 @@ UART_HandleTypeDef huart1;
 AWG_setup_struct AWG1;
 Noise_setup_struct NOISE1;
 CHT_setup_struct CHT1;
+LOLAconfig_struct LOLA1;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -150,11 +151,12 @@ int main(void)
     addFunction("LOLA", SCPIC_LOLA);
 
     //SPARTAN3 SETUP
-    HAL_Delay(100);
-    LOLA_Reset();
+    LOLA1.Config = JTAG;
+    LOLA1.Trials = 10;
+    LOLA1.compatibleFirmwareID = 0xF103;
 
     RS485_Transmit("awaiting FPGA config\r\n");
-    LOLA_Init(JTAG, 50);
+    LOLA_Init(LOLA1);
     RS485_Transmit("FPGA config done\r\n");
 
     //CharTrak setup
@@ -199,10 +201,6 @@ int main(void)
 	  //LOLA_enable_features(AWG_EN, 0);
 	  //AWG_Load_Waveform(AWG1);
 	  //LOLA_enable_features(AWG_EN, 1);
-	  HAL_Delay(10);
-	  uint16_t firmwareID = LOLA_GET_FIRMWAREID();
-	  HAL_Delay(10);
-	  float value = DVM_GET_DATA();
 	  //HAL_Delay(100);
 	   //AWG_Load_Waveform(AWG1);
 	  //HAL_SPI_Receive(&hspi1, byte, 4, 100);

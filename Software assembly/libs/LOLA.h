@@ -58,9 +58,22 @@ typedef enum{
 	CHT_EN
 } LOLAfeatures;
 
+typedef enum{
+	NO_FIRMWARE = 0,
+	INVALID_FIRMWARE,
+	FIRMWARE_OK
+} LOLAstatus;
+
+typedef struct{
+	LOLAstatus Status;
+	InitType Config;
+	uint16_t Trials; // number of tries to configure FPGA before giving up
+	uint16_t compatibleFirmwareID;
+} LOLAconfig_struct;
+
 extern float MAX_AMPLITUDE;
 
-uint8_t LOLA_Init(InitType t, uint16_t maxAtempts);
+uint8_t LOLA_Init(LOLAconfig_struct LOLAconfig);
 
 void LOLA_Reset();
 

@@ -20,7 +20,7 @@ void SCPIC_LOLA(struct subword* subwords, int length)
 		if(++subword.paramType == params && subword.paramType == EVAL_P)
 		{
 			uint16_t id = LOLA_GET_FIRMWAREID();
-			sprintf(TXbuff, "%d\n", id);
+			sprintf(TXbuff, "%d\n\r", id);
 		}
 	}
 	/*switch (subword.paramType)
