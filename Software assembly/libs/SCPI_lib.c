@@ -33,15 +33,23 @@ char* ReformatString(char* chararr, int arrMaxSize)
 
 Subword* generateSubwordn(char* subcommand, int length, Class* class)
 {
-	Subword finalSubword = { .type = params, .integerParam = 0, .otherParam = NULL, .paramType = 0 };
+	//ubword finalSubword = { .type = params, .integerParam = 0, .otherParam = NULL, .paramType = 0 };
+	Subword* final = (Subword*)malloc(sizeof(Subword));
+	final->type = params;
+	final->integerParam = 0;
+	final->otherParam = NULL;
+	final->paramType = 0;
 
 	for (int i = 0; i < class->functionsLength; i++)
 	{
 		if (!strncmp(subcommand, class->functions[i].name, length))
 		{
-			finalSubword.type = function;
-			finalSubword.functionIndex = i;
-			return &finalSubword;
+			//finalSubword.type = function;
+			//finalSubword.functionIndex = i;
+			//return &finalSubword;
+			final->type = function;
+			final->functionIndex = i;
+			return final;
 		}
 	}
 
@@ -49,23 +57,32 @@ Subword* generateSubwordn(char* subcommand, int length, Class* class)
 	{
 		if (!strncmp(subcommand, paramsList[i], length))
 		{
-			finalSubword.paramType = (ParamTypes)i;
-			return &finalSubword;
+			//finalSubword.paramType = (ParamTypes)i;
+			//return &finalSubword;
+			final->paramType = (ParamTypes)i;
+			return final;
 		}
 	}
 
 	int n;
 	if ((n = atoi(subcommand)))
 	{
-		finalSubword.paramType = INT_P;
-		finalSubword.integerParam = n;
-		return &finalSubword;
+		//finalSubword.paramType = INT_P;
+		//finalSubword.integerParam = n;
+		//return &finalSubword;
+		final->paramType = INT_P;
+		final->integerParam = n;
+		return final;
 	}
 
-	finalSubword.paramType = OTHER_P;
-	finalSubword.otherParam = (char*)calloc(length + 1, sizeof(char));
-	if (finalSubword.otherParam != NULL) strncpy(finalSubword.otherParam, subcommand, length);
-	return &finalSubword;
+	//finalSubword.paramType = OTHER_P;
+	//finalSubword.otherParam = (char*)calloc(length + 1, sizeof(char));
+	//if (finalSubword.otherParam != NULL) strncpy(finalSubword.otherParam, subcommand, length);
+	//return &finalSubword;
+	final->paramType = OTHER_P;
+	final->otherParam = (char*)calloc(length + 1, sizeof(char));
+	if (final->otherParam != NULL) strncpy(final->otherParam, subcommand, length);
+	return final;
 }
 
 int findClassIndex(char* subcommand, int length)
@@ -83,7 +100,11 @@ int findClassIndex(char* subcommand, int length)
 
 Word* generateWordDirect(char* command)
 {
-	Word finalWord = { .address = -1, .subwords = NULL, .subwordsCount = 0 };
+	//Word finalWord = { .address = -1, .subwords = NULL, .subwordsCount = 0 };
+	Word* final = (Word*)malloc(sizeof(Word));
+	final->address = -1;
+	final->subwords = NULL;
+	final->subwordsCount = 0;
 
 	char* currSymbol = command;
 	int intermediateLength = 0;
@@ -103,9 +124,9 @@ Word* generateWordDirect(char* command)
 		case '?':
 
 			if (intermediateLength == 0) break;
-			if (finalWord.address == -1)
+			if (final->address == -1)
 			{
-				finalWord.address = atoi(currSymbol - intermediateLength);
+				final->address = atoi(currSymbol - intermediateLength);
 			}
 
 			else
@@ -114,7 +135,7 @@ Word* generateWordDirect(char* command)
 				{
 					int index = findClassIndex(currSymbol - intermediateLength, intermediateLength);
 					currentClass = &classList[index];
-					finalWord.classIndex = index;
+					final->classIndex = index;
 					currentClassIndex = index;
 					firstSubWord = 0;
 					if (currentClassIndex != defaultClassIndex)
@@ -124,12 +145,12 @@ Word* generateWordDirect(char* command)
 					}
 				}
 
-				finalWord.subwordsCount++;
-				Subword* intermediate = (Subword*)realloc(finalWord.subwords, finalWord.subwordsCount * sizeof(Subword));
+				final->subwordsCount++;
+				Subword* intermediate = (Subword*)realloc(final->subwords, final->subwordsCount * sizeof(Subword));
 				if (intermediate != NULL)
 				{
-					finalWord.subwords = intermediate;																				///??????
-					finalWord.subwords[finalWord.subwordsCount - 1] = *generateSubwordn(currSymbol - intermediateLength, intermediateLength, currentClass);
+					final->subwords = intermediate;																				///??????
+					final->subwords[final->subwordsCount - 1] = *generateSubwordn(currSymbol - intermediateLength, intermediateLength, currentClass);
 				}
 			}
 
@@ -145,19 +166,19 @@ Word* generateWordDirect(char* command)
 
 		if (*currSymbol == '?')
 		{
-			finalWord.subwordsCount++;
-			Subword* intermediate = (Subword*)realloc(finalWord.subwords, finalWord.subwordsCount * sizeof(Subword));
+			final->subwordsCount++;
+			Subword* intermediate = (Subword*)realloc(final->subwords, final->subwordsCount * sizeof(Subword));
 			if (intermediate != NULL)
 			{
-				finalWord.subwords = intermediate;																						///??????
-				finalWord.subwords[finalWord.subwordsCount - 1] = *generateSubwordn("?", 1, currentClass);
+				final->subwords = intermediate;																						///??????
+				final->subwords[final->subwordsCount - 1] = *generateSubwordn("?", 1, currentClass);
 			}
 		}
 
 		currSymbol += !isLast;
 	}
 
-	return &finalWord;
+	return final;
 }
 
 void executeWord(Word* word)
