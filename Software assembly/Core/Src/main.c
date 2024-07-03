@@ -150,7 +150,7 @@ int main(void)
     HAL_UARTEx_ReceiveToIdle_IT(&huart1, RXbuff, RS485BUFFSIZE);
 
     //SCPI setup
-    Function Lolafunctions[] = { {.name = "FID", .run = SCPIC_LOLA} };
+    Function Lolafunctions[] = { {.name = "FID", .run = SCPIC_FID} };
     Class Lolaclass = { .name = "LOLA", .functions = Lolafunctions, .functionsLength = 1 };
     addClass(&Lolaclass, 0);
 

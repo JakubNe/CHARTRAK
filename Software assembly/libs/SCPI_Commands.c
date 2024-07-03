@@ -8,21 +8,17 @@
 #include "SCPI_Commands.h"
 
 
-void SCPIC_LOLA(struct subword* subwords, int length)
+void SCPIC_FID(struct subword* subwords, int length)
 {
-	if(length != 2) return;
-	if(subwords[0].type != params) return;
-	struct subword subword = subwords[0];
+	if(length != 1) return;
+	if(subwords->type != params) return;
+	Subword subword = *subwords;
 	strcpy(TXbuff,"OK\r\n");
 
-	if(!strcmp(subword.otherParam, "FID"))
+	if(subword.type == params && subword.paramType == EVAL_P)
 	{
-		subword = subwords[1];
-		if(subword.type == params && subword.paramType == EVAL_P)
-		{
-			uint16_t id = LOLA_GET_FIRMWAREID();
-			sprintf(TXbuff, "%x\r\n", id);
-		}
+		uint16_t id = LOLA_GET_FIRMWAREID();
+		sprintf(TXbuff, "%x\r\n", id);
 	}
 	/*switch (subword.paramType)
 	{
