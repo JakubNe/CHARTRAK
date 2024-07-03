@@ -68,6 +68,8 @@ CHT_setup_struct CHT1;
 LOLAconfig_struct LOLA1;
 
 uint8_t RackID = 0;
+
+uint8_t UARTready = 1;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -150,7 +152,10 @@ int main(void)
     HAL_UARTEx_ReceiveToIdle_IT(&huart1, RXbuff, RS485BUFFSIZE);
 
     //SCPI setup
-    Function Lolafunctions[] = { {.name = "FID", .run = SCPIC_FID} };
+    Function Lolafunctions[] = { {.name = "FID", .run = SCPIC_FID},
+    							 {.name = "CFS", .run = SCPIC_CFS} };
+
+
     Class Lolaclass = { .name = "LOLA", .functions = Lolafunctions, .functionsLength = 1 };
     addClass(&Lolaclass, 0);
 
@@ -196,6 +201,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+
 	  //LOLA_enable_features(ALL_EN, 1); // enable
 	  //DAC_DIRECT_DATA(0.0);
 	  //AWG_Load_Waveform(AWG1);
@@ -397,7 +403,7 @@ static void MX_USART1_UART_Init(void)
 
   /* USER CODE END USART1_Init 1 */
   huart1.Instance = USART1;
-  huart1.Init.BaudRate = 115200;
+  huart1.Init.BaudRate = 9600;
   huart1.Init.WordLength = UART_WORDLENGTH_8B;
   huart1.Init.StopBits = UART_STOPBITS_1;
   huart1.Init.Parity = UART_PARITY_NONE;
@@ -492,6 +498,7 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
+
 	char* formatedMessage = ReformatString(RXbuff, RS485BUFFSIZE); //tady je změna
 
 	strcpy(TXbuff, "ERR\r\n");
@@ -500,7 +507,8 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 
 	free(formatedMessage);
 
-	if(word->address == RackID || word->address == 1) executeWord(word);
+	//if(word->address == RackID || word->address == 1)
+	executeWord(word);
 
 	for(int i = word->subwordsCount - 1; i >= 0 ; i--)
 	{
@@ -517,7 +525,6 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 
 	RS485_Transmit(TXbuff);
 
-	//SCPIencode(TXbuff, RXbuff, AWG1, NOISE1);
 	HAL_UARTEx_ReceiveToIdle_IT(&huart1, RXbuff, RS485BUFFSIZE);
 }
 /* USER CODE END 4 */

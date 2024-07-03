@@ -7,6 +7,25 @@
 
 #include "SCPI_Commands.h"
 
+void SCPIC_CFS(struct subword* subwords, int length)
+{
+	if(length != 1) return;
+	if(subwords->type != params) return;
+	Subword subword = *subwords;
+
+	if(subword.type == params && subword.paramType == EVAL_P)
+	{
+		char message[20];
+
+		switch((uint8_t)LOLA1.Status)
+		{
+			case INVALID_FIRMWARE: strcpy(message, "INVALID FIRMWARE"); break;
+			case FIRMWARE_OK: strcpy(message, "OK"); break;
+			default: strcpy(message, "ERR"); break;
+		}
+		sprintf(TXbuff, "%s\r\n", message);
+	}
+}
 
 void SCPIC_FID(struct subword* subwords, int length)
 {
