@@ -12,16 +12,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+typedef enum paramTypes { OFF_P = 0, ON_P = 1, EVAL_P = 2, INT_P = 3, OTHER_P = 4 }ParamTypes;
 
-enum paramTypes { OFF_P = 0, ON_P = 1, EVAL_P = 2, INT_P = 3, OTHER_P = 4 };
-
-enum subWordTypes { function = 0, params = 1 };
+typedef enum subWordTypes { function = 0, params = 1, class = 2 }SubWordTypes;
 
 typedef struct subword
 {
-	enum subWordTypes type;
-	int  functionIndex;
-	enum paramTypes paramType;
+	SubWordTypes type;
+	int functionIndex;
+	ParamTypes paramType;
 	int integerParam;
 	char* otherParam;
 }Subword;
@@ -29,25 +28,40 @@ typedef struct subword
 typedef struct word
 {
 	int address;
-	struct subword* subwords;
+	int classIndex;
+	Subword* subwords;
 	int subwordsCount;
 }Word;
 
 typedef struct function
 {
 	char* name;
-	void (*run)(struct subword*, int);
+	void (*run)(Subword*, int);
 }Function;
 
+typedef struct class
+{
+	char* name;
+	Function* functions;
+	int functionsLength;
+}Class;
+
+//Class* classList;
+//int classLength;
+//int defaultClassIndex;
 
 void ReformatString(char* chararr, int arrMaxSize);
 
-struct subword generateSubwordn(char* subcommand, int length);
+Subword* generateSubwordn(char* subcommand, int length, Class* class);
 
-struct word generateWordDirect(char* command);
+Word* generateWordDirect(char* command);
 
-void executeWord(struct word word);
+void executeWord(Word* word);
 
-void addFunction(char *name, void (*func)(struct subword*, int));
+void addFunction(char* name, void (*func)(Subword*, int), Class* class);
+
+void addEmptyClass(char* name, int isDefault);
+
+void addClass(Class* class, int isDefault);
 
 #endif /* INC_SCPI_LIB_H_ */

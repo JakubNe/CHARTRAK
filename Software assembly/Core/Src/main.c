@@ -150,10 +150,11 @@ int main(void)
     HAL_UARTEx_ReceiveToIdle_IT(&huart1, RXbuff, RS485BUFFSIZE);
 
     //SCPI setup
-    addFunction("LOLA", SCPIC_LOLA);
+    Function Lolafunctions[] = { {.name = "FID", .run = SCPIC_LOLA} };
+    Class Lolaclass = { .name = "LOLA", .functions = Lolafunctions, .functionsLength = 1 };
+    addClass(&Lolaclass, 0);
 
     //SPARTAN3 SETUP
-
     LOLA1.Config = JTAG;
     LOLA1.Trials = 10;
     LOLA1.compatibleFirmwareID = 0xF103;
@@ -495,20 +496,20 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 
 	strcpy(TXbuff, "ERR\r\n");
 
-	struct word word = generateWordDirect(RXbuff);
+	Word* word = generateWordDirect(RXbuff);
 
-	if(word.address == RackID || word.address == 1) executeWord(word);
+	if(word->address == RackID || word->address == 1) executeWord(word);
 
-	for(int i = word.subwordsCount; i > 0 ; i--)
+	for(int i = word->subwordsCount; i > 0 ; i--)
 	{
-		if (word.subwords[i].paramType == OTHER_P && word.subwords[i].otherParam != NULL)
+		if (word->subwords[i].paramType == OTHER_P && word->subwords[i].otherParam != NULL)
 		{
-			free(word.subwords[i].otherParam);
-			word.subwords[i].otherParam = NULL;
+			free(word->subwords[i].otherParam);
+			word->subwords[i].otherParam = NULL;
 		}
 	}
-	free(word.subwords);
-	word.subwords = NULL;
+	free(word->subwords);
+	word->subwords = NULL;
 
 	RS485_Transmit(TXbuff);
 
