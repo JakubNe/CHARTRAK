@@ -492,7 +492,7 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
-	char* formatedMessage = ReformatString(RXbuff, RS485BUFFSIZE);
+	char* formatedMessage = ReformatString(RXbuff, RS485BUFFSIZE); //tady je změna
 
 	strcpy(TXbuff, "ERR\r\n");
 
