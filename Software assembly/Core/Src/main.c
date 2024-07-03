@@ -492,15 +492,17 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
-	ReformatString(RXbuff, RS485BUFFSIZE);
+	char* formatedMessage = ReformatString(RXbuff, RS485BUFFSIZE);
 
 	strcpy(TXbuff, "ERR\r\n");
 
-	Word* word = generateWordDirect(RXbuff);
+	Word* word = generateWordDirect(formatedMessage);
+
+	free(formatedMessage);
 
 	if(word->address == RackID || word->address == 1) executeWord(word);
 
-	for(int i = word->subwordsCount; i > 0 ; i--)
+	for(int i = word->subwordsCount - 1; i > 0 ; i--)
 	{
 		if (word->subwords[i].paramType == OTHER_P && word->subwords[i].otherParam != NULL)
 		{

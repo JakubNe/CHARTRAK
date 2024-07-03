@@ -50,7 +50,7 @@ typedef struct class
 //int classLength;
 //int defaultClassIndex;
 
-void ReformatString(char* chararr, int arrMaxSize);
+char* ReformatString(char* chararr, int arrMaxSize);
 
 Subword* generateSubwordn(char* subcommand, int length, Class* class);
 

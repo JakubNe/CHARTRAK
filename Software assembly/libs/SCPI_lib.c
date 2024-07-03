@@ -16,16 +16,19 @@ Class* classList;
 int classLength = 0;
 int defaultClassIndex = -1;
 
-void ReformatString(char* chararr, int arrMaxSize)
+char* ReformatString(char* chararr, int arrMaxSize)
 {
+	char* temp = (char*)calloc(strlen(chararr) + 1, sizeof(char));
+	strcpy(temp, chararr);
 	for (int i = 0; i < arrMaxSize && chararr[i] != '\0'; i++)	// format into proper string so stdlib.h can be used
 	{
 		if (chararr[i] == '\r' || chararr[i] == '\n')
 		{
-			chararr[i] = '\0';
-			return;
+			temp[i] = '\0';
+			return temp;
 		}
 	}
+	return temp;
 }
 
 Subword* generateSubwordn(char* subcommand, int length, Class* class)
