@@ -6,4 +6,4 @@
 ../Core/Src/main.c:389:13:MX_USART1_UART_Init	2
 ../Core/Src/main.c:422:13:MX_GPIO_Init	1
 ../Core/Src/main.c:493:6:HAL_UARTEx_RxEventCallback	6
-../Core/Src/main.c:527:6:Error_Handler	1
+../Core/Src/main.c:529:6:Error_Handler	1
