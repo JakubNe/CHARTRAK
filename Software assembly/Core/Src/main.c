@@ -66,6 +66,8 @@ AWG_setup_struct AWG1;
 Noise_setup_struct NOISE1;
 CHT_setup_struct CHT1;
 LOLAconfig_struct LOLA1;
+
+uint8_t RackID = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -148,7 +150,6 @@ int main(void)
     HAL_UARTEx_ReceiveToIdle_IT(&huart1, RXbuff, RS485BUFFSIZE);
 
     //SCPI setup
-    uint8_t RackID = 0;
     addFunction("LOLA", SCPIC_LOLA);
 
     //SPARTAN3 SETUP
@@ -172,7 +173,7 @@ int main(void)
     AWG1.Uavg = 0.0;
     AWG1.Upp = 5.0;
     AWG1.DutyCycle = 20.0;
-    AWG1.Freq = 332.0;
+    AWG1.Freq = 100.0;
 
     // Noise generator setup
     NOISE1.Enable = 0;
