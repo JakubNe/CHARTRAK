@@ -12,7 +12,7 @@
 
 void RS485_Transmit(char *message);
 
-#define RS485BUFFSIZE	32
+#define RS485BUFFSIZE	125
 
 extern char TXbuff[RS485BUFFSIZE];
 extern char RXbuff[RS485BUFFSIZE];

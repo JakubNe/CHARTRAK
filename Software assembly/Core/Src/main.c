@@ -150,7 +150,7 @@ int main(void)
     DACOFFS(0.0);
 
     // High-speed ADC setup
-    ADCREF(2.0);
+    ADCREF(1.2);
     ADCOFFS(0.0);
 
     // RS485 receive interrupt setup
@@ -207,10 +207,11 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	 int16_t DVM = DVM_GET_FILTERED_DATA_RAW(50);
+
+	 /*int16_t DVM = DVM_GET_FILTERED_DATA_RAW(50);
 	 sprintf(TXbuff, "%d\r\n", DVM);
 	 RS485_Transmit(TXbuff);
-	 HAL_Delay(10);
+	 HAL_Delay(10);*/
 
     /* USER CODE END WHILE */
 
@@ -559,7 +560,7 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 				free(word->subwords[i].otherParam);
 				word->subwords[i].otherParam = NULL;
 			}
-			free(word->subwords + i);
+			free(&word->subwords[i]);
 		}
 		free(word->subwords);
 		word->subwords = NULL;
