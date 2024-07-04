@@ -26,6 +26,7 @@
 "./libs/AWG.o"
 "./libs/CHARTRAK.o"
 "./libs/DVM.o"
+"./libs/HFADC.o"
 "./libs/LOLA.o"
 "./libs/OSC.o"
 "./libs/ProgRef.o"

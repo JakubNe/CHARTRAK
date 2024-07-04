@@ -5,7 +5,7 @@
  *      Author: Admin
  */
 
-float HFADC_CONVERT_DATA(int16_t RAW)
+/*float HFADC_CONVERT_DATA(uint16_t RAW)
 {
 
-}
+}*/

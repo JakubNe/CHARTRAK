@@ -29,14 +29,14 @@ typedef struct word
 {
 	int address;
 	int classIndex;
-	Subword* subwords;
+	Subword** subwords;
 	int subwordsCount;
 }Word;
 
 typedef struct function
 {
 	char* name;
-	void (*run)(Subword*, int);
+	void (*run)(Subword**, int);
 }Function;
 
 typedef struct class
@@ -58,7 +58,7 @@ Word* generateWordDirect(char* command);
 
 void executeWord(Word* word);
 
-void addFunction(char* name, void (*func)(Subword*, int), Class* class);
+void addFunction(char* name, void (*func)(Subword**, int), Class* class);
 
 void addEmptyClass(char* name, int isDefault);
 

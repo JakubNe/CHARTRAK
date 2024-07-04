@@ -553,14 +553,14 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 	if (word != NULL) {
 		executeWord(word);
 
-		for(int i = word->subwordsCount - 1; i >= 0 ; i--)
+		for (int i = word->subwordsCount - 1; i >= 0; i--)
 		{
-			if (word->subwords[i].paramType == OTHER_P && word->subwords[i].otherParam != NULL)
+			if (word->subwords[i]->paramType == OTHER_P && word->subwords[i]->otherParam != NULL)
 			{
-				free(word->subwords[i].otherParam);
-				word->subwords[i].otherParam = NULL;
+				free(word->subwords[i]->otherParam);
+				word->subwords[i]->otherParam = NULL;
 			}
-			free(&word->subwords[i]);
+			free(word->subwords[i]);
 		}
 		free(word->subwords);
 		word->subwords = NULL;

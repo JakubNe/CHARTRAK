@@ -33,7 +33,6 @@ char* ReformatString(char* chararr, int arrMaxSize)
 
 Subword* generateSubwordn(char* subcommand, int length, Class* class)
 {
-	//ubword finalSubword = { .type = params, .integerParam = 0, .otherParam = NULL, .paramType = 0 };
 	Subword* final = (Subword*)malloc(sizeof(Subword));
 	final->type = params;
 	final->integerParam = 0;
@@ -44,9 +43,6 @@ Subword* generateSubwordn(char* subcommand, int length, Class* class)
 	{
 		if (!strncmp(subcommand, class->functions[i].name, length))
 		{
-			//finalSubword.type = function;
-			//finalSubword.functionIndex = i;
-			//return &finalSubword;
 			final->type = function;
 			final->functionIndex = i;
 			return final;
@@ -57,8 +53,6 @@ Subword* generateSubwordn(char* subcommand, int length, Class* class)
 	{
 		if (!strncmp(subcommand, paramsList[i], length))
 		{
-			//finalSubword.paramType = (ParamTypes)i;
-			//return &finalSubword;
 			final->paramType = (ParamTypes)i;
 			return final;
 		}
@@ -67,18 +61,11 @@ Subword* generateSubwordn(char* subcommand, int length, Class* class)
 	int n;
 	if ((n = atoi(subcommand)))
 	{
-		//finalSubword.paramType = INT_P;
-		//finalSubword.integerParam = n;
-		//return &finalSubword;
 		final->paramType = INT_P;
 		final->integerParam = n;
 		return final;
 	}
 
-	//finalSubword.paramType = OTHER_P;
-	//finalSubword.otherParam = (char*)calloc(length + 1, sizeof(char));
-	//if (finalSubword.otherParam != NULL) strncpy(finalSubword.otherParam, subcommand, length);
-	//return &finalSubword;
 	final->paramType = OTHER_P;
 	final->otherParam = (char*)calloc(length + 1, sizeof(char));
 	if (final->otherParam != NULL) strncpy(final->otherParam, subcommand, length);
@@ -100,7 +87,6 @@ int findClassIndex(char* subcommand, int length)
 
 Word* generateWordDirect(char* command)
 {
-	//Word finalWord = { .address = -1, .subwords = NULL, .subwordsCount = 0 };
 	Word* final = (Word*)malloc(sizeof(Word));
 	final->address = -1;
 	final->subwords = NULL;
@@ -146,11 +132,11 @@ Word* generateWordDirect(char* command)
 				}
 
 				final->subwordsCount++;
-				Subword* intermediate = (Subword*)realloc(final->subwords, final->subwordsCount * sizeof(Subword));
+				Subword** intermediate = (Subword*)realloc(final->subwords, final->subwordsCount * sizeof(Subword*));
 				if (intermediate != NULL)
 				{
 					final->subwords = intermediate;																				///??????
-					final->subwords[final->subwordsCount - 1] = *generateSubwordn(currSymbol - intermediateLength, intermediateLength, currentClass);
+					final->subwords[final->subwordsCount - 1] = generateSubwordn(currSymbol - intermediateLength, intermediateLength, currentClass);
 				}
 			}
 
@@ -167,11 +153,11 @@ Word* generateWordDirect(char* command)
 		if (*currSymbol == '?')
 		{
 			final->subwordsCount++;
-			Subword* intermediate = (Subword*)realloc(final->subwords, final->subwordsCount * sizeof(Subword));
+			Subword** intermediate = (Subword*)realloc(final->subwords, final->subwordsCount * sizeof(Subword));
 			if (intermediate != NULL)
 			{
 				final->subwords = intermediate;																						///??????
-				final->subwords[final->subwordsCount - 1] = *generateSubwordn("?", 1, currentClass);
+				final->subwords[final->subwordsCount - 1] = generateSubwordn("?", 1, currentClass);
 			}
 		}
 
@@ -185,16 +171,15 @@ void executeWord(Word* word)
 {
 	if (word->subwordsCount < 1) return;
 	if (word->subwords == NULL) return;
-	if (word->subwords[0].type != function) return;
+	if (word->subwords[0]->type != function) return;
 	int classIndex = word->classIndex;
-	int functionIndex = word->subwords[0].functionIndex;
+	int functionIndex = word->subwords[0]->functionIndex;
 	classList[classIndex].functions[functionIndex].run(word->subwords + 1, word->subwordsCount - 1);
 }
 
-
-void addFunction(char* name, void (*func)(Subword*, int), Class* class)
+void addFunction(char* name, void (*func)(Subword**, int), Class* class)
 {
-	if(defaultClassIndex < 0)
+	if (defaultClassIndex < 0)
 	{
 		classList = (Class*)realloc(classList, (classLength + 1) * sizeof(Class));
 		int index = classLength;

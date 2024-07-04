@@ -7,13 +7,13 @@
 
 #include "SCPI_Commands.h"
 
-void SCPIC_CFS(struct subword* subwords, int length)
+void SCPIC_CFS(struct subword** subwords, int length)
 {
 	if(length != 1) return;
-	if(subwords->type != params) return;
-	Subword subword = *subwords;
+	if(subwords[0]->type != params) return;
+	Subword* subword = subwords[0];
 
-	if(subword.type == params && subword.paramType == EVAL_P)
+	if(subword->type == params && subword->paramType == EVAL_P)
 	{
 		char message[20];
 
@@ -27,14 +27,14 @@ void SCPIC_CFS(struct subword* subwords, int length)
 	}
 }
 
-void SCPIC_FID(struct subword* subwords, int length)
+void SCPIC_FID(struct subword** subwords, int length)
 {
 	if(length != 1) return;
-	if(subwords->type != params) return;
-	Subword subword = *subwords;
+	if(subwords[0]->type != params) return;
+	Subword* subword = subwords[0];
 	strcpy(TXbuff,"OK\r\n");
 
-	if(subword.type == params && subword.paramType == EVAL_P)
+	if(subword->type == params && subword->paramType == EVAL_P)
 	{
 		uint16_t id = LOLA_GET_FIRMWAREID();
 		sprintf(TXbuff, "%x\r\n", id);
