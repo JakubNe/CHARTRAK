@@ -4,13 +4,12 @@
 #include "LOLA.h"
 #include "main.h" // for GPIO names
 #include "board.h"
+#include "trim.h"
 
 
-float DVM_GET_DATA()
+int16_t DVM_GET_DATA_RAW()
 {
-	float value = 0;	// voltage or current
-
-	int16_t RawValue = 0;
+	int16_t RawValue = 0; // voltage or current
 	uint8_t byte[4];
 
 	byte[0] = (int8_t)0;
@@ -26,9 +25,20 @@ float DVM_GET_DATA()
 
 	uint8_t rxBuffer[4];
 
-	if (HAL_SPI_Receive(&hspi1, rxBuffer, 4, HAL_MAX_DELAY) == HAL_OK) RawValue = (int16_t)((rxBuffer[2] << 8) | rxBuffer[3]);
+	if (HAL_SPI_Receive(&hspi1, rxBuffer, 4, HAL_MAX_DELAY) == HAL_OK) RawValue = to_signed_12bit((int16_t)((rxBuffer[2] << 8) | rxBuffer[3]));
 
-	value = RawValue;
+	return RawValue;
+}
 
-	return value;
+int16_t DVM_GET_FILTERED_DATA_RAW(uint16_t NoSamples)
+{
+	int64_t out = 0;
+
+	for(int i = 0; i < NoSamples; i++)
+	{
+		out += DVM_GET_DATA_RAW();
+	}
+	out /= NoSamples;
+
+	return (int16_t)out;
 }

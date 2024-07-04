@@ -34,6 +34,7 @@
 #include "SCPI_lib.h"
 #include "SCPI_Commands.h"
 #include "DVM.h"
+#include <stdint.h>
 
 /* USER CODE END Includes */
 
@@ -69,7 +70,7 @@ LOLAconfig_struct LOLA1;
 
 uint8_t RackID = 0;
 
-uint8_t UARTready = 1;
+uint8_t UARTdataReady = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -152,10 +153,10 @@ int main(void)
     HAL_UARTEx_ReceiveToIdle_IT(&huart1, RXbuff, RS485BUFFSIZE);
 
     //SCPI setup
-    Function Lolafunctions[] = { {.name = "FID", .run = SCPIC_FID},
-    							 {.name = "CFS", .run = SCPIC_CFS} };
+    Function Lolafunctions[] = { {.name = "FID", .run = SCPIC_FID}
+    							 };
 
-
+//{.name = "CFS", .run = SCPIC_CFS}
     Class Lolaclass = { .name = "LOLA", .functions = Lolafunctions, .functionsLength = 1 };
     addClass(&Lolaclass, 0);
 
@@ -177,9 +178,9 @@ int main(void)
     AWG1.Enable = 0;
     AWG1.waveform = Sine;
     AWG1.Uavg = 0.0;
-    AWG1.Upp = 5.0;
+    AWG1.Upp = 2.0;
     AWG1.DutyCycle = 20.0;
-    AWG1.Freq = 100.0;
+    AWG1.Freq = 10000.0;
 
     // Noise generator setup
     NOISE1.Enable = 0;
@@ -201,19 +202,10 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-
-	  //LOLA_enable_features(ALL_EN, 1); // enable
-	  //DAC_DIRECT_DATA(0.0);
-	  //AWG_Load_Waveform(AWG1);
-	  //NOISE_Load_param(NOISE1);
-	  //AWG_Load_Waveform(AWG1);
-	  //LOLA_enable_features(ALL_EN, 0); // disable
-	  //LOLA_enable_features(AWG_EN, 0);
-	  //AWG_Load_Waveform(AWG1);
-	  //LOLA_enable_features(AWG_EN, 1);
-	  //HAL_Delay(100);
-	   //AWG_Load_Waveform(AWG1);
-	  //HAL_SPI_Receive(&hspi1, byte, 4, 100);
+	 int DVM = DVM_GET_FILTERED_DATA_RAW(1000);
+	 sprintf(TXbuff, "%d\r\n", DVM);
+	 RS485_Transmit(TXbuff);
+	 HAL_Delay(10);
 
     /* USER CODE END WHILE */
 
@@ -498,7 +490,6 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
-
 	char* formatedMessage = ReformatString(RXbuff, RS485BUFFSIZE); //tady je změna
 
 	strcpy(TXbuff, "ERR\r\n");
@@ -508,20 +499,22 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 	free(formatedMessage);
 
 	//if(word->address == RackID || word->address == 1)
-	executeWord(word);
+	if (word != NULL) {
+		executeWord(word);
 
-	for(int i = word->subwordsCount - 1; i >= 0 ; i--)
-	{
-		if (word->subwords[i].paramType == OTHER_P && word->subwords[i].otherParam != NULL)
+		for(int i = word->subwordsCount - 1; i >= 0 ; i--)
 		{
-			free(word->subwords[i].otherParam);
-			word->subwords[i].otherParam = NULL;
+			if (word->subwords[i].paramType == OTHER_P && word->subwords[i].otherParam != NULL)
+			{
+				free(word->subwords[i].otherParam);
+				word->subwords[i].otherParam = NULL;
+			}
+			free(word->subwords + i);
 		}
-		free(word->subwords + i);
+		free(word->subwords);
+		word->subwords = NULL;
+		free(word);
 	}
-	free(word->subwords);
-	word->subwords = NULL;
-	free(word);
 
 	RS485_Transmit(TXbuff);
 

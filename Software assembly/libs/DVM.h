@@ -8,6 +8,9 @@
 #ifndef DVM_H_
 #define DVM_H_
 
-float DVM_GET_DATA();
+#include <stdint.h>
+
+int16_t DVM_GET_DATA_RAW();
+int16_t DVM_GET_FILTERED_DATA_RAW(uint16_t NoSamples);
 
 #endif /* DVM_H_ */

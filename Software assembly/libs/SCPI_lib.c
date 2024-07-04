@@ -191,6 +191,7 @@ void executeWord(Word* word)
 	classList[classIndex].functions[functionIndex].run(word->subwords + 1, word->subwordsCount - 1);
 }
 
+
 void addFunction(char* name, void (*func)(Subword*, int), Class* class)
 {
 	if(defaultClassIndex < 0)
