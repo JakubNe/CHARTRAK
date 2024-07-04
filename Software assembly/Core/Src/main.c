@@ -60,6 +60,8 @@ I2C_HandleTypeDef hi2c1;
 
 SPI_HandleTypeDef hspi1;
 
+TIM_HandleTypeDef htim4;
+
 UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
@@ -80,6 +82,7 @@ static void MX_ADC1_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_USART1_UART_Init(void);
+static void MX_TIM4_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -121,6 +124,7 @@ int main(void)
   MX_I2C1_Init();
   MX_SPI1_Init();
   MX_USART1_UART_Init();
+  MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
 
   	//GPIO SETUP
@@ -151,6 +155,7 @@ int main(void)
 
     // RS485 receive interrupt setup
     HAL_UARTEx_ReceiveToIdle_IT(&huart1, RXbuff, RS485BUFFSIZE);
+    //HAL_TIM_Base_Start_IT(&htim4);
 
     //SCPI setup
     Function Lolafunctions[] = { {.name = "FID", .run = SCPIC_FID}
@@ -176,7 +181,7 @@ int main(void)
 
     // Arbitrary waveform generator setup
     AWG1.Enable = 0;
-    AWG1.waveform = Sine;
+    AWG1.waveform = Square;
     AWG1.Uavg = 0.0;
     AWG1.Upp = 2.0;
     AWG1.DutyCycle = 20.0;
@@ -202,7 +207,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	 int DVM = DVM_GET_FILTERED_DATA_RAW(1000);
+	 int16_t DVM = DVM_GET_FILTERED_DATA_RAW(50);
 	 sprintf(TXbuff, "%d\r\n", DVM);
 	 RS485_Transmit(TXbuff);
 	 HAL_Delay(10);
@@ -380,6 +385,51 @@ static void MX_SPI1_Init(void)
 }
 
 /**
+  * @brief TIM4 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM4_Init(void)
+{
+
+  /* USER CODE BEGIN TIM4_Init 0 */
+
+  /* USER CODE END TIM4_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM4_Init 1 */
+
+  /* USER CODE END TIM4_Init 1 */
+  htim4.Instance = TIM4;
+  htim4.Init.Prescaler = 48000-1;
+  htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim4.Init.Period = 50-1;
+  htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim4.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim4) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim4, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim4, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM4_Init 2 */
+
+  /* USER CODE END TIM4_Init 2 */
+
+}
+
+/**
   * @brief USART1 Initialization Function
   * @param None
   * @retval None
@@ -395,7 +445,7 @@ static void MX_USART1_UART_Init(void)
 
   /* USER CODE END USART1_Init 1 */
   huart1.Instance = USART1;
-  huart1.Init.BaudRate = 9600;
+  huart1.Init.BaudRate = 115200;
   huart1.Init.WordLength = UART_WORDLENGTH_8B;
   huart1.Init.StopBits = UART_STOPBITS_1;
   huart1.Init.Parity = UART_PARITY_NONE;
@@ -519,6 +569,11 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 	RS485_Transmit(TXbuff);
 
 	HAL_UARTEx_ReceiveToIdle_IT(&huart1, RXbuff, RS485BUFFSIZE);
+}
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim)
+{
+
 }
 /* USER CODE END 4 */
 
