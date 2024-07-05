@@ -162,9 +162,13 @@ int main(void)
     							 {.name = "CFS", .run = SCPIC_CFS},
 								 {.name = "INIT", .run = SCPIC_INIT}	};
 
-
     Class Lolaclass = { .name = "LOLA", .functions = Lolafunctions, .functionsLength = 3 };
     addClass(&Lolaclass, 0);
+
+    Function DVMfunctions[] = { {.name = "VAL", .run = SCPIC_DVM_VAL}	};
+
+    Class DVMclass = { .name = "DVM", .functions = DVMfunctions, .functionsLength = 1 };
+    addClass(&DVMclass, 0);
 
     //SPARTAN3 SETUP
     LOLA1.Config = JTAG;
@@ -194,7 +198,6 @@ int main(void)
     NOISE1.Upp = 1.0;
     NOISE1.Seed = 0x800f000f000f0001;
 
-    LOLA_enable_features(ALL_EN, 0); // disable all features
     LOLA_SET_MAX_AMPLITUDE(6.0);
     DAC_DIRECT_DATA(0.0);
     AWG_Load_Waveform(AWG1);
