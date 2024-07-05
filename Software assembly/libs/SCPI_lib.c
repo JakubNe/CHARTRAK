@@ -6,6 +6,37 @@
  */
 
 #include "SCPI_Lib.h"
+#include "RS485.h"
+
+void SCPI_EXECUTE()
+{
+	char* formatedMessage = ReformatString(RXbuff, RS485BUFFSIZE); //tady je změna
+
+		strcpy(TXbuff, "ERR\r\n");
+
+		Word* word = generateWordDirect(formatedMessage);
+
+		free(formatedMessage);
+
+		//if(word->address == RackID || word->address == 1)
+		if (word != NULL) {
+			executeWord(word);
+
+			for (int i = word->subwordsCount - 1; i >= 0; i--)
+			{
+				if (word->subwords[i]->paramType == OTHER_P && word->subwords[i]->otherParam != NULL)
+				{
+					free(word->subwords[i]->otherParam);
+					word->subwords[i]->otherParam = NULL;
+				}
+				free(word->subwords[i]);
+			}
+			free(word->subwords);
+			word->subwords = NULL;
+			free(word);
+		}
+}
+
 
 char* paramsList[3] = { "OFF", "ON", "? " };
 int paramsLength = 3;

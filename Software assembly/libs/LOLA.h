@@ -73,7 +73,7 @@ typedef struct{
 
 extern float MAX_AMPLITUDE;
 
-uint8_t LOLA_Init(LOLAconfig_struct LOLAconfig);
+uint8_t LOLA_Init(LOLAconfig_struct* LOLAconfig);
 
 void LOLA_Reset();
 

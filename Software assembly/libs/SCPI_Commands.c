@@ -7,6 +7,27 @@
 
 #include "SCPI_Commands.h"
 
+void SCPIC_INIT(struct subword** subwords, int length)
+{
+	if(length != 1) return;
+		if(subwords[0]->type != params) return;
+		Subword* subword = subwords[0];
+
+		if(subword->type == params && subword->paramType == EVAL_P)
+		{
+
+			LOLA_Init(&LOLA1);
+			LOLA_enable_features(ALL_EN, 0); // disable all features
+
+			switch(LOLA1.Status)
+			{
+				case INVALID_FIRMWARE: strcpy(TXbuff, "INVALID FIRMWARE"); break;
+				case FIRMWARE_OK: strcpy(TXbuff, "OK"); break;
+				default: strcpy(TXbuff, "NO FIRMWARE"); break;
+			}
+		}
+}
+
 void SCPIC_CFS(struct subword** subwords, int length)
 {
 	if(length != 1) return;
@@ -15,15 +36,12 @@ void SCPIC_CFS(struct subword** subwords, int length)
 
 	if(subword->type == params && subword->paramType == EVAL_P)
 	{
-		char message[20];
-
 		switch((uint8_t)LOLA1.Status)
 		{
-			case INVALID_FIRMWARE: strcpy(message, "INVALID FIRMWARE"); break;
-			case FIRMWARE_OK: strcpy(message, "OK"); break;
-			default: strcpy(message, "ERR"); break;
+			case INVALID_FIRMWARE: strcpy(TXbuff, "INVALID FIRMWARE"); break;
+			case FIRMWARE_OK: strcpy(TXbuff, "OK"); break;
+			default: strcpy(TXbuff, "NO FIRMWARE"); break;
 		}
-		sprintf(TXbuff, "%s\r\n", message);
 	}
 }
 

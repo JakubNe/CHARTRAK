@@ -13,6 +13,7 @@
 #include "RS485.h"
 #include "LOLA.h"
 
+void SCPIC_INIT(struct subword** subwords, int length);
 void SCPIC_FID(struct subword** subwords, int length);
 void SCPIC_CFS(struct subword** subwords, int length);
 

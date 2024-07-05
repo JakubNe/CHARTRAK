@@ -72,7 +72,7 @@ LOLAconfig_struct LOLA1;
 
 uint8_t RackID = 0;
 
-uint8_t UARTdataReady = 0;
+uint8_t RS485dataReady = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -158,21 +158,22 @@ int main(void)
     //HAL_TIM_Base_Start_IT(&htim4);
 
     //SCPI setup
-    Function Lolafunctions[] = { {.name = "FID", .run = SCPIC_FID}
-    							 };
+    Function Lolafunctions[] = { {.name = "FID", .run = SCPIC_FID},
+    							 {.name = "CFS", .run = SCPIC_CFS},
+								 {.name = "INIT", .run = SCPIC_INIT}	};
 
-//{.name = "CFS", .run = SCPIC_CFS}
-    Class Lolaclass = { .name = "LOLA", .functions = Lolafunctions, .functionsLength = 1 };
+
+    Class Lolaclass = { .name = "LOLA", .functions = Lolafunctions, .functionsLength = 3 };
     addClass(&Lolaclass, 0);
 
     //SPARTAN3 SETUP
     LOLA1.Config = JTAG;
-    LOLA1.Trials = 10;
+    LOLA1.Trials = 100;
     LOLA1.compatibleFirmwareID = 0xF103;
 
-    RS485_Transmit("awaiting FPGA config\r\n");
+    /*RS485_Transmit("awaiting FPGA config\r\n");
     LOLA_Init(LOLA1);
-    RS485_Transmit("FPGA config done\r\n");
+    RS485_Transmit("FPGA config done\r\n");*/
 
     //CharTrak setup
     CHT1.Enable = 0;
@@ -212,6 +213,14 @@ int main(void)
 	 sprintf(TXbuff, "%d\r\n", DVM);
 	 RS485_Transmit(TXbuff);
 	 HAL_Delay(10);*/
+
+	 if(RS485dataReady)	//EXECUTE command
+	 {
+		 RS485dataReady = 0;
+		 SCPI_EXECUTE();
+		 RS485_Transmit(TXbuff);
+		 HAL_UARTEx_ReceiveToIdle_IT(&huart1, RXbuff, RS485BUFFSIZE);
+	 }
 
     /* USER CODE END WHILE */
 
@@ -541,35 +550,7 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
-	char* formatedMessage = ReformatString(RXbuff, RS485BUFFSIZE); //tady je změna
-
-	strcpy(TXbuff, "ERR\r\n");
-
-	Word* word = generateWordDirect(formatedMessage);
-
-	free(formatedMessage);
-
-	//if(word->address == RackID || word->address == 1)
-	if (word != NULL) {
-		executeWord(word);
-
-		for (int i = word->subwordsCount - 1; i >= 0; i--)
-		{
-			if (word->subwords[i]->paramType == OTHER_P && word->subwords[i]->otherParam != NULL)
-			{
-				free(word->subwords[i]->otherParam);
-				word->subwords[i]->otherParam = NULL;
-			}
-			free(word->subwords[i]);
-		}
-		free(word->subwords);
-		word->subwords = NULL;
-		free(word);
-	}
-
-	RS485_Transmit(TXbuff);
-
-	HAL_UARTEx_ReceiveToIdle_IT(&huart1, RXbuff, RS485BUFFSIZE);
+	RS485dataReady = 1;
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim)

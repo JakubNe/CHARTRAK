@@ -13,7 +13,6 @@
 #define k 1000.0
 #define m 0.001
 #define u 0.000001
-#define n 0.000000001
 
 #define pi 3.14159
 

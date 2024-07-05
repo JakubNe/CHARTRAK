@@ -32,6 +32,17 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "LOLA.h"
+#include "AWG.h"
+#include "ProgRef.h"
+#include "units.h"
+#include "board.h"
+#include "RS485.h"
+#include "CHARTRAK.h"
+#include "TCA9555.h"
+#include "SCPI_lib.h"
+#include "SCPI_Commands.h"
+#include "DVM.h"
+#include <stdint.h>
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -41,6 +52,9 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
+extern AWG_setup_struct AWG1;
+extern Noise_setup_struct NOISE1;
+extern CHT_setup_struct CHT1;
 extern LOLAconfig_struct LOLA1;
 /* USER CODE END EC */
 

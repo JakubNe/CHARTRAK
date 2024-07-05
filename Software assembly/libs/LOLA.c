@@ -55,25 +55,23 @@ void LOLA_CFG_SEL(InitType t)
 		}
 }
 
-uint8_t LOLA_Init(LOLAconfig_struct LOLAconfig) // waits forever if maxatempts > 10000
+uint8_t LOLA_Init(LOLAconfig_struct* LOLAconfig)
 {
 	uint16_t AttemptsLeft;
 	uint16_t FID = 0;
-	uint16_t TrialsLeft = LOLAconfig.Trials;
+	uint16_t TrialsLeft = LOLAconfig->Trials;
 
-	LOLAconfig.Status = NO_FIRMWARE;
+	LOLAconfig->Status = NO_FIRMWARE;
 
 	do{
 
 		LOLA_Reset();
-
-		HAL_Delay(100);
-
-		LOLA_CFG_SEL(LOLAconfig.Config);
+		HAL_Delay(200);
+		LOLA_CFG_SEL(LOLAconfig->Config);
 
 		AttemptsLeft = 20;
 
-		if(LOLAconfig.Config == JTAG)	// unlimited timer for manual JTAG configuration
+		if(LOLAconfig->Config == JTAG)	// unlimited timer for manual JTAG configuration
 			while(HAL_GPIO_ReadPin(INITB_GPIO_Port, INITB_Pin)){}
 		else
 			while(HAL_GPIO_ReadPin(INITB_GPIO_Port, INITB_Pin) && AttemptsLeft > 0)
@@ -82,21 +80,22 @@ uint8_t LOLA_Init(LOLAconfig_struct LOLAconfig) // waits forever if maxatempts >
 				HAL_Delay(100);
 			}
 
-		if(AttemptsLeft > 0)
-		{
-			HAL_Delay(1000);
+		AttemptsLeft = 20;
+		LOLAconfig->Status = NO_FIRMWARE;
+
+		do{
+			HAL_Delay(100);
 			FID = LOLA_GET_FIRMWAREID();
 
-			if(LOLAconfig.compatibleFirmwareID = FID) LOLAconfig.Status = FIRMWARE_OK;
-			else LOLAconfig.Status = INVALID_FIRMWARE;
-		}
-		else LOLAconfig.Status = NO_FIRMWARE;
+			if(LOLAconfig->compatibleFirmwareID == FID) LOLAconfig->Status = FIRMWARE_OK;
+			else LOLAconfig->Status = INVALID_FIRMWARE;
+		}while(AttemptsLeft > 0 && LOLAconfig->Status != FIRMWARE_OK);
 
 		TrialsLeft--;
 
-	}while(TrialsLeft > 0 && LOLAconfig.Status != FIRMWARE_OK);
+	}while(TrialsLeft > 0 && LOLAconfig->Status != FIRMWARE_OK);
 
-	if(LOLAconfig.Status == FIRMWARE_OK) return 1;	// sucesfull configuration
+	if(LOLAconfig->Status == FIRMWARE_OK) return 1;	// sucesfull configuration
 	else return 0; // timer ran out
 }
 
