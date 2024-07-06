@@ -14,10 +14,10 @@
 #define HFADCfrontendGain 3.1 // 6k2 / (1k * 2)
 #define maxValOf11Bit 2048
 
-#define HFADCoutVoltageGain 1
-#define HFADCoutCurrentGain 1
-#define HFADCinGain 1
-#define HFADCuioGain 1
+#define HFADCoutVoltageGain 0
+#define HFADCoutCurrentGain 0
+#define HFADCinGain 47.0 // 47k / 1k
+#define HFADCuioGain 1.0 // direct feed
 
 typedef enum{
 	Voltage_input = 0,
@@ -34,6 +34,7 @@ typedef struct{
 	HFADCsource source;
 	HFADCmode mode;
 	uint8_t UIO_channel;
+	float OUT_MEASURING_OFFSET;
 	float ADCref;
 }HFADC_struct;
 

@@ -12,6 +12,7 @@
 #include "main.h"
 #include "RS485.h"
 #include "LOLA.h"
+#include "HFADC.h"
 
 void SCPIC_DVM_RAW(struct subword** subwords, int length);
 void SCPIC_DVM_VAL(struct subword** subwords, int length);

@@ -15,8 +15,8 @@ float HFADC_CONVERT_RAW2VALUE(HFADC_struct* HFADC, uint16_t RAW)
 
 	switch(HFADC->source)
 	{
-		case OUT: if(HFADC->mode == Voltage_input) VALUE *= HFADCoutVoltageGain;
-				  else 						 	   VALUE *= HFADCoutCurrentGain;
+		case OUT: if(HFADC->mode == Voltage_input) VALUE = VALUE*HFADCoutVoltageGain - HFADC->OUT_MEASURING_OFFSET;
+				  else 						 	   VALUE = VALUE*HFADCoutCurrentGain - HFADC->OUT_MEASURING_OFFSET;
 		break;
 
 		case IN: VALUE *= HFADCinGain; break;
@@ -31,8 +31,20 @@ float HFADC_CONVERT_RAW2VALUE(HFADC_struct* HFADC, uint16_t RAW)
 
 uint16_t HFADC_CONVERT_VALUE2RAW(HFADC_struct* HFADC, float VALUE)
 {
-	uint16_t RAW = 0;
+	switch(HFADC->source)
+	{
+		case OUT: if(HFADC->mode == Voltage_input) VALUE /= HFADCoutVoltageGain;
+				  else 						 	   VALUE /= HFADCoutCurrentGain;
+		break;
 
+		case IN: VALUE /= HFADCinGain; break;
+
+		case UIO: VALUE /= HFADCuioGain; break;
+
+		default: VALUE = 0; break;
+	}
+
+	uint16_t RAW = (uint16_t) maxValOf11Bit*VALUE/(HFADCfrontendGain*HFADC->ADCref);
 
 	return RAW;
 }

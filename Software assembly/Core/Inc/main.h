@@ -43,6 +43,7 @@ extern "C" {
 #include "SCPI_Commands.h"
 #include "DVM.h"
 #include <stdint.h>
+#include "HFADC.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

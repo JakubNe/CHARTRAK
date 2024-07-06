@@ -15,7 +15,7 @@ void SCPIC_DVM_RAW(struct subword** subwords, int length)
 
 		if(subword->type == params && subword->paramType == EVAL_P)
 		{
-			int16_t DVM = DVM_GET_FILTERED_DATA_RAW(50);
+			int16_t DVM = DVM_GET_FILTERED_DATA_RAW(100);
 			sprintf(TXbuff, "%d\r\n", DVM);
 		}
 }
@@ -29,8 +29,8 @@ void SCPIC_DVM_VAL(struct subword** subwords, int length)
 		if(subword->type == params && subword->paramType == EVAL_P)
 		{
 			char unit = 'V';
-			float DVM = DVM_GET_FILTERED_DATA_RAW(50);
-			if(HFADC1.mode == Current_input && HFADC1.source == OUT) unit = 'A';
+			float DVM = HFADC_CONVERT_RAW2VALUE(&HFADC1, DVM_GET_FILTERED_DATA_RAW(100));
+			if(HFADC1.mode == Current_input) unit = 'A';
 			sprintf(TXbuff, "%f%c\r\n", DVM, unit);
 		}
 }
