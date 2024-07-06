@@ -18,7 +18,6 @@ typedef enum{
 
 typedef struct{
 	characteristics characteristic;
-	uint8_t Enable;
 	float Upp;
 } CHT_setup_struct;
 

@@ -21,7 +21,6 @@ typedef enum waveforms_{
 
 typedef struct{
 	waveforms waveform;
-	uint8_t Enable;
 	float Uavg;
 	float Upp;
 	float DutyCycle;

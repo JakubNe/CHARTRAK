@@ -7,7 +7,7 @@
 
 #include "SCPI_Commands.h"
 
-void SCPIC_DVM_VAL(struct subword** subwords, int length)
+void SCPIC_DVM_RAW(struct subword** subwords, int length)
 {
 	if(length != 1) return;
 		if(subwords[0]->type != params) return;
@@ -17,6 +17,21 @@ void SCPIC_DVM_VAL(struct subword** subwords, int length)
 		{
 			int16_t DVM = DVM_GET_FILTERED_DATA_RAW(50);
 			sprintf(TXbuff, "%d\r\n", DVM);
+		}
+}
+
+void SCPIC_DVM_VAL(struct subword** subwords, int length)
+{
+	if(length != 1) return;
+		if(subwords[0]->type != params) return;
+		Subword* subword = subwords[0];
+
+		if(subword->type == params && subword->paramType == EVAL_P)
+		{
+			char unit = 'V';
+			float DVM = DVM_GET_FILTERED_DATA_RAW(50);
+			if(HFADC1.mode == Current_input && HFADC1.source == OUT) unit = 'A';
+			sprintf(TXbuff, "%f%c\r\n", DVM, unit);
 		}
 }
 

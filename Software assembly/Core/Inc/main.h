@@ -56,6 +56,7 @@ extern AWG_setup_struct AWG1;
 extern Noise_setup_struct NOISE1;
 extern CHT_setup_struct CHT1;
 extern LOLAconfig_struct LOLA1;
+extern HFADC_struct HFADC1;
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/

@@ -69,6 +69,7 @@ AWG_setup_struct AWG1;
 Noise_setup_struct NOISE1;
 CHT_setup_struct CHT1;
 LOLAconfig_struct LOLA1;
+HFADC_struct HFADC1;
 
 uint8_t RackID = 0;
 
@@ -165,7 +166,8 @@ int main(void)
     Class Lolaclass = { .name = "LOLA", .functions = Lolafunctions, .functionsLength = 3 };
     addClass(&Lolaclass, 0);
 
-    Function DVMfunctions[] = { {.name = "VAL", .run = SCPIC_DVM_VAL}	};
+    Function DVMfunctions[] = { {.name = "RAW", .run = SCPIC_DVM_RAW},
+    							{.name = "VAL", .run = SCPIC_DVM_VAL}	};
 
     Class DVMclass = { .name = "DVM", .functions = DVMfunctions, .functionsLength = 1 };
     addClass(&DVMclass, 0);
@@ -175,17 +177,20 @@ int main(void)
     LOLA1.Trials = 100;
     LOLA1.compatibleFirmwareID = 0xF103;
 
+    //Hight Frequency ADC setup
+    HFADC1.ADCref = 0;
+    HFADC1.UIO_channel = 0;
+    HFADC1.mode = Voltage_input;
+
     /*RS485_Transmit("awaiting FPGA config\r\n");
     LOLA_Init(LOLA1);
     RS485_Transmit("FPGA config done\r\n");*/
 
     //CharTrak setup
-    CHT1.Enable = 0;
     CHT1.characteristic = Open;
     CHT1.Upp = 0;
 
     // Arbitrary waveform generator setup
-    AWG1.Enable = 0;
     AWG1.waveform = Square;
     AWG1.Uavg = 0.0;
     AWG1.Upp = 2.0;
