@@ -30,10 +30,16 @@ typedef enum{
 	UIO
 }HFADCsource;
 
+typedef enum{
+	OV_P = 10000,
+	OV_N = -10000
+}OVERRANGECODES;
+
 typedef struct{
 	HFADCsource source;
 	HFADCmode mode;
 	uint8_t UIO_channel;
+	char UIO_channelLetter;
 	float OUT_MEASURING_OFFSET;
 	float ADCref;
 }HFADC_struct;

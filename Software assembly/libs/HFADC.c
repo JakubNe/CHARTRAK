@@ -57,9 +57,9 @@ void HFADC_SET_ALL(HFADC_struct* HFADC)
 	return;
 }
 
-void HFADC_SET_REF(float Vref)
+void HFADC_SET_REF(HFADC_struct* HFADC)
 {
-	ADCREF(Vref);
+	ADCREF(HFADC->ADCref);
 }
 
 void HFADC_ENABLE(uint8_t EN)
@@ -67,7 +67,12 @@ void HFADC_ENABLE(uint8_t EN)
 
 }
 
-void HFADC_SET_UIO_SOURCE(uint8_t UIOsource)
+void HFADC_SET_UIO_SOURCE(HFADC_struct* HFADC)
+{
+
+}
+
+void HFADC_SET_MODE(HFADC_struct* HFADC)
 {
 
 }

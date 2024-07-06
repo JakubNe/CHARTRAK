@@ -15,11 +15,6 @@ void HFDAC_SET_MAX_AMPLITUDE(HFDAC_struct* HFDAC)
 	HFDAC->relativeDACcodeCoef = 2047/(HFDAC->maxAmplitude); // multiply any number from -1 to 1 and you will get direct code for DAC
 }
 
-void HFDAC_SET_ALL(HFDAC_struct* HFDAC)
-{
-
-}
-
 void HFDAC_SET_MODE(HFDAC_MODE mode)
 {
 	HAL_GPIO_WritePin(MODE_GPIO_Port, MODE_Pin, mode);
@@ -40,4 +35,11 @@ void HFDAC_DIRECT_DATA(HFDAC_struct* HFDAC, float value)
 	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 0);
 	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 1);
 	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 0);
+}
+
+void HFDAC_SET_ALL(HFDAC_struct* HFDAC)
+{
+	HFDAC_SET_MAX_AMPLITUDE(HFDAC);
+	HFDAC_SET_MODE(HFDAC->mode);
+
 }

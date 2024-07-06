@@ -23,9 +23,7 @@ int16_t DVM_GET_DATA_RAW()
 	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 1);
 	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 0);
 
-	uint8_t rxBuffer[4];
-
-	if (HAL_SPI_Receive(&hspi1, rxBuffer, 4, HAL_MAX_DELAY) == HAL_OK) RawValue = to_signed_12bit((int16_t)((rxBuffer[2] << 8) | rxBuffer[3]));
+	if (HAL_SPI_Receive(&hspi1, byte, 4, HAL_MAX_DELAY) == HAL_OK) RawValue = to_signed_12bit((int16_t)((byte[2] << 8) | byte[3]));
 
 	return RawValue;
 }

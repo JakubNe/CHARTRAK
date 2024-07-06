@@ -46,6 +46,7 @@ Core/Src/stm32f1xx_it.o: ../Core/Src/stm32f1xx_it.c ../Core/Inc/main.h \
  C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/DVM.h \
  C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/HFADC.h \
  C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/HFDAC.h \
+ C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/OSC.h \
  ../Core/Inc/stm32f1xx_it.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
@@ -95,4 +96,5 @@ C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/HFADC.h:
 C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/DVM.h:
 C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/HFADC.h:
 C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/HFDAC.h:
+C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/OSC.h:
 ../Core/Inc/stm32f1xx_it.h:

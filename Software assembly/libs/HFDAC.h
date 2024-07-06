@@ -21,8 +21,7 @@ typedef struct{
 }HFDAC_struct;
 
 void HFDAC_SET_MAX_AMPLITUDE(HFDAC_struct* HFDAC);
-void HFDAC_SET_ALL(HFDAC_struct* HFDAC);
-
 void HFDAC_DIRECT_DATA(HFDAC_struct* HFDAC, float value);
+void HFDAC_SET_ALL(HFDAC_struct* HFDAC);
 
 #endif /* HFDAC_H_ */

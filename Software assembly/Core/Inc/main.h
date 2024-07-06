@@ -45,6 +45,7 @@ extern "C" {
 #include <stdint.h>
 #include "HFADC.h"
 #include "HFDAC.h"
+#include "OSC.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -60,6 +61,7 @@ extern CHT_setup_struct CHT1;
 extern LOLAconfig_struct LOLA1;
 extern HFADC_struct HFADC1;
 extern HFDAC_struct HFDAC1;
+extern OSC_struct OSC1;
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/

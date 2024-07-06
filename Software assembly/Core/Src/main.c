@@ -58,6 +58,7 @@ CHT_setup_struct CHT1;
 LOLAconfig_struct LOLA1;
 HFADC_struct HFADC1;
 HFDAC_struct HFDAC1;
+OSC_struct OSC1;
 
 uint8_t RackID = 0;
 
@@ -156,7 +157,7 @@ int main(void)
     Function DVMfunctions[] = { {.name = "RAW", .run = SCPIC_DVM_RAW},
     							{.name = "VAL", .run = SCPIC_DVM_VAL}	};
 
-    Class DVMclass = { .name = "DVM", .functions = DVMfunctions, .functionsLength = 1 };
+    Class DVMclass = { .name = "DVM", .functions = DVMfunctions, .functionsLength = 2 };
     addClass(&DVMclass, 0);
 
     //SPARTAN3 SETUP
@@ -173,12 +174,15 @@ int main(void)
     HFADC1.ADCref = 2.5;
     HFADC1.OUT_MEASURING_OFFSET = 0;
     HFADC1.source = OUT;
-    HFADC1.UIO_channel = 0;
+    HFADC1.UIO_channel = 1;
+    HFADC1.UIO_channelLetter = 'A';
     HFADC1.mode = Voltage_input;
 
-    /*RS485_Transmit("awaiting FPGA config\r\n");
-    LOLA_Init(LOLA1);
-    RS485_Transmit("FPGA config done\r\n");*/
+    //Oscilloscope setup
+    OSC1.prescaler = 1;
+    OSC1.samplesAfterTrig = 1000;
+    OSC1.trigMode = rising;
+    OSC1.triggerLevel = 0;
 
     //CharTrak setup
     CHT1.characteristic = Open;
@@ -200,6 +204,8 @@ int main(void)
     HFDAC_SET_ALL(&HFDAC1);
     HFADC_SET_ALL(&HFADC1);
 
+    OSC_SET_ALL(&OSC1, &HFADC1);
+
     HFDAC_DIRECT_DATA(&HFDAC1, 0);
     AWG_Load_Waveform(&AWG1, &HFDAC1);
     //NOISE_Load_param(&NOISE1, &HFDAC1);
@@ -218,7 +224,7 @@ int main(void)
 	 RS485_Transmit(TXbuff);
 	 HAL_Delay(10);*/
 
-	 if(RS485dataReady)	//EXECUTE command
+	 if(RS485dataReady)	//execute SCPI command
 	 {
 		 RS485dataReady = 0;
 		 SCPI_EXECUTE();

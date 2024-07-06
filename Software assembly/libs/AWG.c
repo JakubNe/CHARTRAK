@@ -153,7 +153,6 @@ void Noise_Set_CLK1(uint32_t freq)
 {
 	uint8_t byte[4];
 
-
 	uint32_t prescaler = (uint32_t)MCLKfreq/(1.0*freq);
 
 	// setting prescaler
