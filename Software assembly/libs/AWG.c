@@ -16,17 +16,17 @@
 
 #define MaxDepth 2048 // max AWG samples
 
-void AWG_Load_Waveform(AWG_setup_struct AWG1)
+void AWG_Load_Waveform(AWG_setup_struct* AWG, HFDAC_struct* HFDAC)
 {
 	LOLA_enable_features(AWG_EN, 0); // disable AWG
 
 	uint8_t byte[4];
 	int16_t data;
 
-	uint16_t depth = trimInt((int)round(DACmaxFreq/AWG1.Freq), 1, (MaxDepth-1));
+	uint16_t depth = trimInt((int)round(DACmaxFreq/AWG->Freq), 1, (MaxDepth-1));
 
 
-	uint16_t DepthPos = trimInt((int)round(depth*AWG1.DutyCycle/100), 1, (MaxDepth-1));
+	uint16_t DepthPos = trimInt((int)round(depth*AWG->DutyCycle/100), 1, (MaxDepth-1));
 	uint16_t DepthNeg = trimInt((int)(depth-DepthPos), 1, (MaxDepth-1));
 
 	// setting sample count
@@ -41,7 +41,7 @@ void AWG_Load_Waveform(AWG_setup_struct AWG1)
 	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 0);
 
 	//Setting up clock
-	uint32_t D = (uint32_t)round(MCLKfreq/(depth*AWG1.Freq));
+	uint32_t D = (uint32_t)round(MCLKfreq/(depth*AWG->Freq));
 
 	data = D;
 
@@ -55,21 +55,22 @@ void AWG_Load_Waveform(AWG_setup_struct AWG1)
 	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 0);
 
 	// loading waveform
-	float relativeDACcode = 2047*AWG1.Upp/(2*MAX_AMPLITUDE); // multiply any number from -1 to 1 and you will get direct code for DAC
+
+	float relativeDACcode = AWG->Uamp * HFDAC->relativeDACcodeCoef;
 
 	for(int16_t addr = 0; addr < depth; addr++)
 	{
 
-		switch(AWG1.waveform)
+		switch(AWG->waveform)
 		{
-			case Square: data = (int16_t)round((addr>=(depth*AWG1.DutyCycle/100))*relativeDACcode-(relativeDACcode/2.0)); break;
+			case Square: data = (int16_t)round((addr>=(depth*AWG->DutyCycle/100))*relativeDACcode-(relativeDACcode/2.0)); break;
 
 			case Triangle:	if(addr <= DepthPos) data = (int16_t)round(relativeDACcode*addr/(DepthPos*1.0)-(relativeDACcode/2.0)); // rising edge
 							else data = (int16_t)round(relativeDACcode*(1-(addr-DepthPos)/(DepthNeg*1.0))-(relativeDACcode/2.0)); break; // falling edge
 
-			case Sine: data = (int16_t)round(relativeDACcode*sinf((addr*3.14159*2)/(1.0*depth))); break;
+			case Sine: data = (int16_t)round(relativeDACcode*(AWG->Uavg+sinf((addr*3.14159*2)/(1.0*depth)))); break;
 
-			case Func: break;
+			case Func: data = 0; break;
 		}
 
 		byte[0] = (int8_t)((addr>>4)&0x00ff);
@@ -167,7 +168,7 @@ void Noise_Set_CLK1(uint32_t freq)
 	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 0);
 }
 
-void NOISE_Load_param(Noise_setup_struct NOISE1)
+void NOISE_Load_param(Noise_setup_struct* NOISE, HFDAC_struct* HFDAC)
 {
 	LOLA_enable_features(NOISE_EN, 0); // disable Noise generator
 
@@ -196,9 +197,9 @@ void NOISE_Load_param(Noise_setup_struct NOISE1)
 		HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 0);
 	}*/
 
-	Noise_Set_CLK1(NOISE1.Freq);
+	Noise_Set_CLK1(NOISE->Freq);
 
-	float relativeDACcode = 2047*NOISE1.Upp/(2*MAX_AMPLITUDE); // multiply any number from -1 to 1 and you will get direct code for DAC
+	float relativeDACcode = NOISE->Uamp * HFDAC->relativeDACcodeCoef;
 
 	data = (uint16_t)relativeDACcode;
 

@@ -30,6 +30,7 @@ Core/Src/stm32f1xx_it.o: ../Core/Src/stm32f1xx_it.c ../Core/Inc/main.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h \
  C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/LOLA.h \
  C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/AWG.h \
+ C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/HFDAC.h \
  C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/ProgRef.h \
  C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/units.h \
  C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/board.h \
@@ -44,6 +45,7 @@ Core/Src/stm32f1xx_it.o: ../Core/Src/stm32f1xx_it.c ../Core/Inc/main.h \
  C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/HFADC.h \
  C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/DVM.h \
  C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/HFADC.h \
+ C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/HFDAC.h \
  ../Core/Inc/stm32f1xx_it.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
@@ -77,6 +79,7 @@ Core/Src/stm32f1xx_it.o: ../Core/Src/stm32f1xx_it.c ../Core/Inc/main.h \
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h:
 C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/LOLA.h:
 C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/AWG.h:
+C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/HFDAC.h:
 C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/ProgRef.h:
 C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/units.h:
 C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/board.h:
@@ -91,4 +94,5 @@ C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/LOLA.h:
 C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/HFADC.h:
 C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/DVM.h:
 C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/HFADC.h:
+C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/HFDAC.h:
 ../Core/Inc/stm32f1xx_it.h:

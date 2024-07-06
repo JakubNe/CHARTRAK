@@ -8,6 +8,7 @@
  *
  */
 #include <stdint.h>
+#include "HFDAC.h"
 
 #ifndef AWG_H_
 #define AWG_H_
@@ -22,23 +23,23 @@ typedef enum waveforms_{
 typedef struct{
 	waveforms waveform;
 	float Uavg;
-	float Upp;
+	float Uamp;
 	float DutyCycle;
 	double Freq;
 } AWG_setup_struct;
 
 typedef struct{
 	uint8_t Enable;
-	float Upp;
+	float Uamp;
 	float Freq;
 	uint64_t Seed;
 } Noise_setup_struct;
 
-void AWG_Load_Waveform(AWG_setup_struct AWG1);
+void AWG_Load_Waveform(AWG_setup_struct* AWG, HFDAC_struct* HFDAC);
 
 void Noise_Set_CLK1(uint32_t freq);
 
-void NOISE_Load_param(Noise_setup_struct NOISE1);
+void NOISE_Load_param(Noise_setup_struct* NOISE1, HFDAC_struct* HFDAC);
 
 
 #endif /* AWG_H_ */

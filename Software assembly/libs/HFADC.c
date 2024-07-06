@@ -2,7 +2,7 @@
  * HFADC.c
  *
  *  Created on: Jul 4, 2024
- *      Author: Admin
+ *      Author: Pavlovic
  */
 
 #include "HFADC.h"
@@ -51,10 +51,15 @@ uint16_t HFADC_CONVERT_VALUE2RAW(HFADC_struct* HFADC, float VALUE)
 
 void HFADC_SET_ALL(HFADC_struct* HFADC)
 {
-	ADCREF(HFADC->ADCref);
-
+	HFADC_SET_REF(HFADC->ADCref);
+	HFADC_SET_UIO_SOURCE(HFADC->UIO_channel);
 
 	return;
+}
+
+void HFADC_SET_REF(float Vref)
+{
+	ADCREF(Vref);
 }
 
 void HFADC_ENABLE(uint8_t EN)
@@ -62,7 +67,7 @@ void HFADC_ENABLE(uint8_t EN)
 
 }
 
-void HFADC_SET_SOURCE(uint8_t UIOsource)
+void HFADC_SET_UIO_SOURCE(uint8_t UIOsource)
 {
 
 }

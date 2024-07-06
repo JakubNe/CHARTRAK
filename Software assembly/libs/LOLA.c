@@ -169,29 +169,5 @@ uint16_t LOLA_GET_FIRMWAREID()
 	return FirmwareID;
 }
 
-float MAX_AMPLITUDE = 0;
-
-void LOLA_SET_MAX_AMPLITUDE(float value)
-{
-	DACREF((value)*2/6.4);	// setting DAC Voltage reference
-	MAX_AMPLITUDE = value;
-}
-
-void DAC_DIRECT_DATA(float value)
-{
-	uint8_t byte[4];
-
-	int16_t data = (int16_t)(2048*value/MAX_AMPLITUDE);
-
-	byte[0] = 0;
-	byte[1] = (int8_t)((data>>8)&0x000f);
-	byte[2] = (int8_t)(data&0x00ff);
-	byte[3] = (int8_t)DAC_DIRECTDATA;
-
-	HAL_SPI_Transmit(&hspi1, byte, 4, 100);
-	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 0);
-	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 1);
-	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 0);
-}
 
 

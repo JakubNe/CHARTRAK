@@ -1,5 +1,6 @@
-Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
- ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h \
+Core/HFDAC.o: ../Core/HFDAC.c \
+ C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/HFDAC.h \
+ ../Core/Inc/main.h ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h \
  ../Core/Inc/stm32f1xx_hal_conf.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h \
@@ -44,8 +45,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/LOLA.h \
  C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/HFADC.h \
  C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/DVM.h \
- C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/HFADC.h \
- C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/HFDAC.h
+ C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/HFADC.h
+C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/HFDAC.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
 ../Core/Inc/stm32f1xx_hal_conf.h:
@@ -93,4 +94,3 @@ C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/LOLA.h:
 C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/HFADC.h:
 C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/DVM.h:
 C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/HFADC.h:
-C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/HFDAC.h:

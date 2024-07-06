@@ -45,4 +45,5 @@ void HFADC_SET_ALL(HFADC_struct* HFADC);
 void HFADC_ENABLE(uint8_t EN);
 
 
+
 #endif /* HFADC_H_ */

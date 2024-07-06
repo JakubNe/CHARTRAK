@@ -57,6 +57,7 @@ Noise_setup_struct NOISE1;
 CHT_setup_struct CHT1;
 LOLAconfig_struct LOLA1;
 HFADC_struct HFADC1;
+HFDAC_struct HFDAC1;
 
 uint8_t RackID = 0;
 
@@ -119,7 +120,6 @@ int main(void)
     HAL_GPIO_WritePin(SPI1_DACS_GPIO_Port, SPI1_DACS_Pin, 0);
     HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 1);
     HAL_GPIO_WritePin(LDAC_GPIO_Port, LDAC_Pin, 0);
-    HAL_GPIO_WritePin(MODE_GPIO_Port, MODE_Pin, Voltage_output);
     HAL_GPIO_WritePin(DIR_GPIO_Port, DIR_Pin, 0);
 
     // ADC board expander setup
@@ -164,8 +164,15 @@ int main(void)
     LOLA1.Trials = 100;
     LOLA1.compatibleFirmwareID = 0xF103;
 
+    //High frequency DAC setup
+    HFDAC1.maxAmplitude = 6;
+    HFDAC1.mode = Voltage_output;
+    HFDAC1.offset = 0;
+
     //Hight Frequency ADC setup
-    HFADC1.ADCref = 0;
+    HFADC1.ADCref = 2.5;
+    HFADC1.OUT_MEASURING_OFFSET = 0;
+    HFADC1.source = OUT;
     HFADC1.UIO_channel = 0;
     HFADC1.mode = Voltage_input;
 
@@ -180,20 +187,22 @@ int main(void)
     // Arbitrary waveform generator setup
     AWG1.waveform = Square;
     AWG1.Uavg = 0.0;
-    AWG1.Upp = 2.0;
+    AWG1.Uamp = 2.0;
     AWG1.DutyCycle = 20.0;
     AWG1.Freq = 10000.0;
 
     // Noise generator setup
     NOISE1.Enable = 0;
     NOISE1.Freq = 10000.0;
-    NOISE1.Upp = 1.0;
+    NOISE1.Uamp = 1.0;
     NOISE1.Seed = 0x800f000f000f0001;
 
-    LOLA_SET_MAX_AMPLITUDE(6.0);
-    DAC_DIRECT_DATA(0.0);
-    AWG_Load_Waveform(AWG1);
-    //NOISE_Load_param(NOISE1);
+    HFDAC_SET_ALL(&HFDAC1);
+    HFADC_SET_ALL(&HFADC1);
+
+    HFDAC_DIRECT_DATA(&HFDAC1, 0);
+    AWG_Load_Waveform(&AWG1, &HFDAC1);
+    //NOISE_Load_param(&NOISE1, &HFDAC1);
 
     //AWG_Load_Waveform(AWG1,NOISE1);
 

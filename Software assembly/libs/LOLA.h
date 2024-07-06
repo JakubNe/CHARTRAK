@@ -22,11 +22,6 @@ typedef enum{
 } InitType;
 
 typedef enum{
-	Voltage_output = 0,
-	Current_output
-} DACoutputMode;
-
-typedef enum{
 	AWG_M = 1,
 	AWG_D,
 	ENABLERS,
@@ -71,8 +66,6 @@ typedef struct{
 	uint16_t compatibleFirmwareID;
 } LOLAconfig_struct;
 
-extern float MAX_AMPLITUDE;
-
 uint8_t LOLA_Init(LOLAconfig_struct* LOLAconfig);
 
 void LOLA_Reset();
@@ -80,9 +73,5 @@ void LOLA_Reset();
 uint16_t LOLA_GET_FIRMWAREID();
 
 void LOLA_enable_features(LOLAfeatures LOLAfeatures, uint8_t ENABLE);
-
-void DAC_DIRECT_DATA(float value);
-
-void LOLA_SET_MAX_AMPLITUDE(float value);
 
 #endif /* LOLA_H_ */

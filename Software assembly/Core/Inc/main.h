@@ -44,6 +44,7 @@ extern "C" {
 #include "DVM.h"
 #include <stdint.h>
 #include "HFADC.h"
+#include "HFDAC.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -58,6 +59,7 @@ extern Noise_setup_struct NOISE1;
 extern CHT_setup_struct CHT1;
 extern LOLAconfig_struct LOLA1;
 extern HFADC_struct HFADC1;
+extern HFDAC_struct HFDAC1;
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
