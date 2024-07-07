@@ -16,7 +16,7 @@
 
 #define MaxDepth 2048 // max AWG samples
 
-void AWG_Load_Waveform(AWG_setup_struct* AWG, HFDAC_struct* HFDAC)
+void AWG_Load_Waveform(AWG_struct* AWG, HFDAC_struct* HFDAC)
 {
 	LOLA_enable_features(AWG_EN, 0); // disable AWG
 
@@ -167,7 +167,7 @@ void Noise_Set_CLK1(uint32_t freq)
 	HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 0);
 }
 
-void NOISE_Load_param(Noise_setup_struct* NOISE, HFDAC_struct* HFDAC)
+void NOISE_Load_param(Noise_struct* NOISE, HFDAC_struct* HFDAC)
 {
 	LOLA_enable_features(NOISE_EN, 0); // disable Noise generator
 

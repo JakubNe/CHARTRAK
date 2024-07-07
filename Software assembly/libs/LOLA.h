@@ -10,8 +10,6 @@
 #define LOLA_H_
 
 //#include "main.h"
-#ifndef MAX_PROCCESSES
-#define MAX_PROCESS 20
 
 typedef enum{
 	Master_Serial = 0,
@@ -67,17 +65,6 @@ typedef struct{
 	uint16_t Trials; // number of tries to configure FPGA before giving up
 	uint16_t compatibleFirmwareID;
 } LOLAconfig_struct;
-
-typedef enum{
-	PROCESS_DONE = 0,
-	PROCESS_LOLA_CONFIG
-}processes;
-
-typedef struct{
-	uint8_t processQuery[MAX_PROCESS];
-	uint8_t processSize;
-}ProcessList_struct;
-
 
 uint8_t LOLA_Init(LOLAconfig_struct* LOLAconfig);
 

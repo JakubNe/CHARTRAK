@@ -10,6 +10,7 @@
 
 #include "SCPI_Lib.h"
 #include "main.h"
+#include "process.h"
 #include "RS485.h"
 #include "LOLA.h"
 #include "HFADC.h"

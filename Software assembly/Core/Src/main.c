@@ -52,17 +52,16 @@ TIM_HandleTypeDef htim4;
 UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
-AWG_setup_struct AWG1;
-Noise_setup_struct NOISE1;
-CHT_setup_struct CHT1;
+AWG_struct AWG1;
+Noise_struct NOISE1;
+CHT_struct CHT1;
 LOLAconfig_struct LOLA1;
 HFADC_struct HFADC1;
 HFDAC_struct HFDAC1;
 OSC_struct OSC1;
+ProcessList_struct PROCESS;
 
 uint8_t RackID = 0;
-
-uint8_t RS485dataReady = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -160,6 +159,9 @@ int main(void)
     Class DVMclass = { .name = "DVM", .functions = DVMfunctions, .functionsLength = 2 };
     addClass(&DVMclass, 0);
 
+    //process config
+    process_init(&PROCESS);
+
     //SPARTAN3 SETUP
     LOLA1.Config = JTAG;
     LOLA1.Trials = 100;
@@ -186,7 +188,7 @@ int main(void)
 
     //CharTrak setup
     CHT1.characteristic = Open;
-    CHT1.Upp = 0;
+    CHT1.Uamp = 0;
 
     // Arbitrary waveform generator setup
     AWG1.waveform = Square;
@@ -218,19 +220,20 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	 switch(PROCESS.processQuery[0])
+	 {
+	 	 default: break;
+
+	 	 case PROCESS_LOLA_CONFIG:
+	 		 LOLA_Init(&LOLA1);
+	 		 process_finish(&PROCESS);
+	 		 break;
+	 }
 
 	 /*int16_t DVM = DVM_GET_FILTERED_DATA_RAW(50);
 	 sprintf(TXbuff, "%d\r\n", DVM);
 	 RS485_Transmit(TXbuff);
 	 HAL_Delay(10);*/
-
-	 if(RS485dataReady)	//execute SCPI command
-	 {
-		 RS485dataReady = 0;
-		 SCPI_EXECUTE();
-		 RS485_Transmit(TXbuff);
-		 HAL_UARTEx_ReceiveToIdle_IT(&huart1, RXbuff, RS485BUFFSIZE);
-	 }
 
     /* USER CODE END WHILE */
 
@@ -560,7 +563,9 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
-	RS485dataReady = 1;
+	 SCPI_EXECUTE();
+	 RS485_Transmit(TXbuff);
+	 HAL_UARTEx_ReceiveToIdle_IT(&huart1, RXbuff, RS485BUFFSIZE);
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim)

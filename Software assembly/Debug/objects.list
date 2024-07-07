@@ -36,4 +36,5 @@
 "./libs/SCPI_lib.o"
 "./libs/TCA9555.o"
 "./libs/license.o"
+"./libs/process.o"
 "./libs/trim.o"

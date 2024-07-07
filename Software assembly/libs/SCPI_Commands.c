@@ -43,10 +43,6 @@ void SCPIC_INIT(struct subword** subwords, int length)
 
 		if(subword->type == params && subword->paramType == EVAL_P)
 		{
-
-			LOLA_Init(&LOLA1);
-			LOLA_enable_features(ALL_EN, 0); // disable all features
-
 			switch(LOLA1.Status)
 			{
 				case INVALID_FIRMWARE: strcpy(TXbuff, "INVALID FIRMWARE"); break;
@@ -54,6 +50,8 @@ void SCPIC_INIT(struct subword** subwords, int length)
 				default: strcpy(TXbuff, "NO FIRMWARE"); break;
 			}
 		}
+	// ak :1 tak if(process_add(PROCESS, PROCESS_LOLA_CONFIG)) strcpy(TXbuff, "OK");
+	//	 	 	 else										 strcpy(TXbuff, "ERR:PROCESS QUERY FULL");
 }
 
 void SCPIC_CFS(struct subword** subwords, int length)

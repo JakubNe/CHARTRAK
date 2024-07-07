@@ -40,6 +40,7 @@ Core/Src/stm32f1xx_it.o: ../Core/Src/stm32f1xx_it.c ../Core/Inc/main.h \
  C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/SCPI_lib.h \
  C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/SCPI_Commands.h \
  C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/SCPI_Lib.h \
+ C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/process.h \
  C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/RS485.h \
  C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/LOLA.h \
  C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/HFADC.h \
@@ -47,6 +48,7 @@ Core/Src/stm32f1xx_it.o: ../Core/Src/stm32f1xx_it.c ../Core/Inc/main.h \
  C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/HFADC.h \
  C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/HFDAC.h \
  C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/OSC.h \
+ C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/process.h \
  ../Core/Inc/stm32f1xx_it.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
@@ -90,6 +92,7 @@ C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/TCA9555.h:
 C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/SCPI_lib.h:
 C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/SCPI_Commands.h:
 C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/SCPI_Lib.h:
+C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/process.h:
 C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/RS485.h:
 C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/LOLA.h:
 C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/HFADC.h:
@@ -97,4 +100,5 @@ C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/DVM.h:
 C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/HFADC.h:
 C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/HFDAC.h:
 C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/OSC.h:
+C:/Users/pavlo/Documents/GitHub/CHARTRAK/Software\ assembly/libs/process.h:
 ../Core/Inc/stm32f1xx_it.h:

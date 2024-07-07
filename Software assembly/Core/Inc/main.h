@@ -46,6 +46,7 @@ extern "C" {
 #include "HFADC.h"
 #include "HFDAC.h"
 #include "OSC.h"
+#include "process.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -55,13 +56,14 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-extern AWG_setup_struct AWG1;
+extern AWG_struct AWG1;
 extern Noise_struct NOISE1;
 extern CHT_struct CHT1;
 extern LOLAconfig_struct LOLA1;
 extern HFADC_struct HFADC1;
 extern HFDAC_struct HFDAC1;
 extern OSC_struct OSC1;
+extern ProcessList_struct PROCESS;
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/

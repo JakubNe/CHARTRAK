@@ -26,20 +26,20 @@ typedef struct{
 	float Uamp;
 	float DutyCycle;
 	double Freq;
-} AWG_setup_struct;
+} AWG_struct;
 
 typedef struct{
 	uint8_t Enable;
 	float Uamp;
 	float Freq;
 	uint64_t Seed;
-} Noise_setup_struct;
+} Noise_struct;
 
-void AWG_Load_Waveform(AWG_setup_struct* AWG, HFDAC_struct* HFDAC);
+void AWG_Load_Waveform(AWG_struct* AWG, HFDAC_struct* HFDAC);
 
 void Noise_Set_CLK1(uint32_t freq);
 
-void NOISE_Load_param(Noise_setup_struct* NOISE1, HFDAC_struct* HFDAC);
+void NOISE_Load_param(Noise_struct* NOISE1, HFDAC_struct* HFDAC);
 
 
 #endif /* AWG_H_ */
