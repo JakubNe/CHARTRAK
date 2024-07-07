@@ -18,9 +18,9 @@ typedef enum{
 
 typedef struct{
 	characteristics characteristic;
-	float Upp;
-} CHT_setup_struct;
+	float Uamp;
+} CHT_struct;
 
-void CHARTRAK_Load_Characteristics(CHT_setup_struct CHT1);
+void CHT_Load_Characteristics(CHT_struct CHT1);
 
 #endif /* CHARTRAK_H_ */

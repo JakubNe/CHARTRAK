@@ -56,8 +56,8 @@ extern "C" {
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
 extern AWG_setup_struct AWG1;
-extern Noise_setup_struct NOISE1;
-extern CHT_setup_struct CHT1;
+extern Noise_struct NOISE1;
+extern CHT_struct CHT1;
 extern LOLAconfig_struct LOLA1;
 extern HFADC_struct HFADC1;
 extern HFDAC_struct HFDAC1;

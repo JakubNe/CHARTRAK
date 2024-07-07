@@ -123,6 +123,28 @@ void LOLA_Reset()
 
 uint16_t enablersReg = 0;
 
+void LOLA_process_init(ProcessList_struct* PROCESSLIST)
+{
+	memset(PROCESSLIST->processQuery, 0, MAX_PROCESS-1 * sizeof(uint8_t));
+	PROCESSLIST->processSize = 0;
+}
+
+uint8_t LOLA_process_add(ProcessList_struct* PROCESSLIST, processes process)
+{
+	if(PROCESSLIST->processSize >= MAX_PROCESS) return;
+
+	PROCESSLIST->processQuery[PROCESSLIST->processSize] = process;
+}
+
+void LOLA_process_finish(ProcessList_struct* PROCESSLIST)
+{
+	if(PROCESSLIST->processSize != 0) return;
+
+	for(uint8_t i = 0; i < MAX_PROCESS-1; i++) PROCESSLIST->processQuery[i] = PROCESSLIST->processQuery[i+1];
+	PROCESSLIST->processQuery[MAX_PROCESS-1] = 0;
+	PROCESSLIST->processSize -= 1;
+}
+
 void LOLA_enable_features(LOLAfeatures LOLAfeatures1, uint8_t ENABLE)
 {
 	uint16_t enablersMask = 0x0001 << LOLAfeatures1;

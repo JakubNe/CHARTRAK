@@ -11,12 +11,10 @@
 #include "LOLA.h"
 #include "ProgRef.h"
 
-void CHT_Load(CHT_setup_struct CHT1)
+void CHT_Load(CHT_struct CHT1)
 {
 	uint8_t byte[4];
 	uint16_t data;
-
-	DACREF((CHT1.Upp)*2/6.4);	// setting DAC reference
 
 	// loading waveform
 	for(uint16_t adcInput = 0; adcInput < ADCMAXVAL; adcInput++)
@@ -25,15 +23,15 @@ void CHT_Load(CHT_setup_struct CHT1)
 		{
 			default: data = (uint16_t)adcInput; break;	// open
 
-			case Short:	data = (uint16_t)(ADCMAXVAL/2); break; //Midscale = 0
+			case Short:	data = 0; break;
 
-			case CharFunc:  break;
+			case CharFunc: data = 0; break;
 		}
 
-		byte[0] = (uint8_t)((adcInput>>4)&0x000f);
-		byte[1] = (uint8_t)(((data>>8)&0x000f)|((adcInput<<4)&0x00f0));
-		byte[2] = (uint8_t)(data&0x00ff);
-		byte[3] = (uint8_t)CHT_DATA;
+		byte[0] = (int8_t)((adcInput>>4)&0x000f);
+		byte[1] = (int8_t)(((data>>8)&0x000f)|((adcInput<<4)&0x00f0));
+		byte[2] = (int8_t)(data&0x00ff);
+		byte[3] = (int8_t)CHT_DATA;
 
 		HAL_SPI_Transmit(&hspi1, byte, 4, 100);
 		HAL_GPIO_WritePin(SPI1_FPGAS_GPIO_Port, SPI1_FPGAS_Pin, 1);
