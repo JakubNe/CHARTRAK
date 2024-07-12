@@ -89,6 +89,17 @@ Subword* generateSubwordn(char* subcommand, int length, Class* class)
 		}
 	}
 
+	float f;
+	if (strchr(subcommand, '.'))
+	{
+		if ((f = atof(subcommand)) != 0)
+		{
+			final->paramType = FLOAT_P;
+			final->floatParam = f;
+			return final;
+		}
+	}
+
 	int n;
 	if ((n = atoi(subcommand)))
 	{
