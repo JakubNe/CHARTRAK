@@ -35,6 +35,16 @@ float trimFloat(float floating, float min, float max)
 	return floating;
 }
 
+int checkFloat(float input, float max, float min)
+{
+	return (input <= max)&&(input >= min);
+}
+
+int checkInt(int input, int max, int min)
+{
+	return (input < max)&&(input > min);
+}
+
 int trimString(char* str, uint16_t size)
 {
 	int i;

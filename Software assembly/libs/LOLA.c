@@ -61,10 +61,9 @@ uint8_t LOLA_Init(LOLAconfig_struct* LOLAconfig)
 	uint16_t FID = 0;
 	uint16_t TrialsLeft = LOLAconfig->Trials;
 
-	LOLAconfig->Status = NO_FIRMWARE;
 
 	do{
-
+		LOLAconfig->Status = NO_FIRMWARE;
 		LOLA_Reset();
 		HAL_Delay(200);
 		LOLA_CFG_SEL(LOLAconfig->Config);
@@ -72,16 +71,15 @@ uint8_t LOLA_Init(LOLAconfig_struct* LOLAconfig)
 		AttemptsLeft = 20;
 
 		if(LOLAconfig->Config == JTAG)	// unlimited timer for manual JTAG configuration
-			while(HAL_GPIO_ReadPin(INITB_GPIO_Port, INITB_Pin)){}
+			while(!HAL_GPIO_ReadPin(DONE_GPIO_Port, DONE_Pin)){}
 		else
-			while(HAL_GPIO_ReadPin(INITB_GPIO_Port, INITB_Pin) && AttemptsLeft > 0)
+			while(!HAL_GPIO_ReadPin(DONE_GPIO_Port, DONE_Pin) && AttemptsLeft > 0)
 			{
 				AttemptsLeft--;
 				HAL_Delay(100);
 			}
 
 		AttemptsLeft = 20;
-		LOLAconfig->Status = NO_FIRMWARE;
 
 		do{
 			HAL_Delay(100);

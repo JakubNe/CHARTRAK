@@ -20,6 +20,8 @@
 #define ADCmaxFreq 	40000000.0	//Hz
 #define ADCMAXVAL	4096		// 12bit ADC
 
+#define DEVICE_ID 0x000f
+
 extern SPI_HandleTypeDef hspi1;
 
 #define SerialNumber 1

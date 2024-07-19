@@ -59,7 +59,6 @@ LOLAconfig_struct LOLA1;
 HFADC_struct HFADC1;
 HFDAC_struct HFDAC1;
 OSC_struct OSC1;
-ProcessList_struct PROCESS;
 
 uint8_t RackID = 0;
 /* USER CODE END PV */
@@ -141,16 +140,28 @@ int main(void)
     ADCREF(1.2);
     ADCOFFS(0.0);
 
-    // RS485 receive interrupt setup
-    HAL_UARTEx_ReceiveToIdle_IT(&huart1, RXbuff, RS485BUFFSIZE);
     //HAL_TIM_Base_Start_IT(&htim4);
+
+    // system functions setup
+    Function SYSfunctions[] = { {.name = "ID", .run = SCPIC_SYS_ID},
+       							 {.name = "RESET", .run = SCPIC_SYS_RESET},
+   								 {.name = "APPLY", .run = SCPIC_SYS_APPLY}	};
+
+    Class SYSclass = { .name = "SYS", .functions = SYSfunctions, .functionsLength = 3 };
+    addClass(&SYSclass, 0);
+
+    // output functions setup
+    Function OUTfunctions[] = { {.name = "MAXAMPLITUDE", .run = SCPIC_OUT_MAXAMPLITUDE},
+           						{.name = "MODE", .run = SCPIC_OUT_MODE} };
+
+    Class OUTclass = { .name = "OUT", .functions = OUTfunctions, .functionsLength = 2 };
+    addClass(&OUTclass, 0);
 
     //SCPI setup
     Function Lolafunctions[] = { {.name = "FID", .run = SCPIC_FID},
-    							 {.name = "CFS", .run = SCPIC_CFS},
 								 {.name = "INIT", .run = SCPIC_INIT}	};
 
-    Class Lolaclass = { .name = "LOLA", .functions = Lolafunctions, .functionsLength = 3 };
+    Class Lolaclass = { .name = "LOLA", .functions = Lolafunctions, .functionsLength = 2 };
     addClass(&Lolaclass, 0);
 
     Function DVMfunctions[] = { {.name = "RAW", .run = SCPIC_DVM_RAW},
@@ -159,8 +170,8 @@ int main(void)
     Class DVMclass = { .name = "DVM", .functions = DVMfunctions, .functionsLength = 2 };
     addClass(&DVMclass, 0);
 
-    //process config
-    process_init(&PROCESS);
+    //SimpleOS setup
+    kernel_init(20); // max 20 tasks
 
     //SPARTAN3 SETUP
     LOLA1.Config = JTAG;
@@ -168,7 +179,7 @@ int main(void)
     LOLA1.compatibleFirmwareID = 0xF103;
 
     //High frequency DAC setup
-    HFDAC1.maxAmplitude = 6;
+    HFDAC1.maxAmplitude = 0;
     HFDAC1.mode = Voltage_output;
     HFDAC1.offset = 0;
 
@@ -214,21 +225,17 @@ int main(void)
 
     //AWG_Load_Waveform(AWG1,NOISE1);
 
+    // RS485 receive interrupt setup
+    HAL_UARTEx_ReceiveToIdle_IT(&huart1, RXbuff, RS485BUFFSIZE);
+
+    kernel_begin(); //////////////////////////////////// CODE DOESNT GET FURTHER
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	 switch(PROCESS.processQuery[0])
-	 {
-	 	 default: break;
-
-	 	 case PROCESS_LOLA_CONFIG:
-	 		 LOLA_Init(&LOLA1);
-	 		 process_finish(&PROCESS);
-	 		 break;
-	 }
 
 	 /*int16_t DVM = DVM_GET_FILTERED_DATA_RAW(50);
 	 sprintf(TXbuff, "%d\r\n", DVM);
