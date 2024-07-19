@@ -161,6 +161,7 @@ int main(void)
     Function Lolafunctions[] = { {.name = "FID", .run = SCPIC_FID},
 								 {.name = "INIT", .run = SCPIC_INIT}	};
 
+
     Class Lolaclass = { .name = "LOLA", .functions = Lolafunctions, .functionsLength = 2 };
     addClass(&Lolaclass, 0);
 
@@ -172,6 +173,7 @@ int main(void)
 
     //SimpleOS setup
     kernel_init(20); // max 20 tasks
+
 
     //SPARTAN3 SETUP
     LOLA1.Config = JTAG;
@@ -222,6 +224,9 @@ int main(void)
     HFDAC_DIRECT_DATA(&HFDAC1, 0);
     AWG_Load_Waveform(&AWG1, &HFDAC1);
     //NOISE_Load_param(&NOISE1, &HFDAC1);
+    LOLA_enable_features(ALL_EN, 0); // disable all features
+
+    //NOISE_Load_param(NOISE1);
 
     //AWG_Load_Waveform(AWG1,NOISE1);
 

@@ -139,6 +139,7 @@ void SCPIC_DVM_VAL(struct subword** subwords, int length)
 		}
 }
 
+
 void SCPIC_INIT(struct subword** subwords, int length)
 {
 	if(length != 1) return;
