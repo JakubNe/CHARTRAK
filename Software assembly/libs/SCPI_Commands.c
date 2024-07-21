@@ -266,6 +266,7 @@ void SCPIC_AWG_DC(struct subword** subwords, int length)
 	if(subwords[0]->type != params) return;
 	Subword* subword = subwords[0];
 
+	float* param = NULL;
 	switch(subword->paramType)
 	{
 		case EVAL_P:
@@ -273,7 +274,7 @@ void SCPIC_AWG_DC(struct subword** subwords, int length)
 		break;
 
 		case FLOAT_P:
-			float* param = (float*) subword->param;
+			param = (float*) subword->param;
 			if(checkFloat(*param, 0, 100))
 			{
 				strcpy(TXbuff, "Invalid value\r\n");
