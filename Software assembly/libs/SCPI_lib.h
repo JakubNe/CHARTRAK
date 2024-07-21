@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef enum paramTypes { OFF_P = 0, ON_P = 1, EVAL_P = 2, INT_P = 3, FLOAT_P = 4,  OTHER_P = 5 }ParamTypes;
+typedef enum paramTypes { OFF_P = 0, ON_P = 1, EVAL_P = 2, INT_P = 3, FLOAT_P = 4, DOUBLE_P = 5,  OTHER_P = 6 }ParamTypes;
 
 typedef enum subWordTypes { function = 0, params = 1, class = 2 }SubWordTypes;
 
@@ -21,9 +21,10 @@ typedef struct subword
 	SubWordTypes type;
 	int functionIndex;
 	ParamTypes paramType;
-	float floatParam;
-	int integerParam;
-	char* otherParam;
+	//float floatParam;
+	//int integerParam;
+	//char* otherParam;
+	void* param;
 }Subword;
 
 typedef struct word

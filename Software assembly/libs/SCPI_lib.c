@@ -24,11 +24,9 @@ void SCPI_EXECUTE()
 
 			for (int i = word->subwordsCount - 1; i >= 0; i--)
 			{
-				if (word->subwords[i]->paramType == OTHER_P && word->subwords[i]->otherParam != NULL)
-				{
-					free(word->subwords[i]->otherParam);
-					word->subwords[i]->otherParam = NULL;
-				}
+				free(word->subwords[i]->param);
+				word->subwords[i]->param = NULL;
+
 				free(word->subwords[i]);
 			}
 			free(word->subwords);
@@ -66,8 +64,7 @@ Subword* generateSubwordn(char* subcommand, int length, Class* class)
 {
 	Subword* final = (Subword*)malloc(sizeof(Subword));
 	final->type = params;
-	final->integerParam = 0;
-	final->otherParam = NULL;
+	final->param = NULL;
 	final->paramType = 0;
 
 	for (int i = 0; i < class->functionsLength; i++)
@@ -95,7 +92,9 @@ Subword* generateSubwordn(char* subcommand, int length, Class* class)
 		if ((f = atof(subcommand)) != 0)
 		{
 			final->paramType = FLOAT_P;
-			final->floatParam = f;
+			float* floatParam = (float*)malloc(sizeof(float));
+			*floatParam = f;
+			final->param = floatParam;
 			return final;
 		}
 	}
@@ -104,13 +103,15 @@ Subword* generateSubwordn(char* subcommand, int length, Class* class)
 	if ((n = atoi(subcommand)))
 	{
 		final->paramType = INT_P;
-		final->integerParam = n;
+		int* intParam = (int*)malloc(sizeof(int));
+		*intParam = n;
+		final->param = intParam;
 		return final;
 	}
 
 	final->paramType = OTHER_P;
-	final->otherParam = (char*)calloc(length + 1, sizeof(char));
-	if (final->otherParam != NULL) strncpy(final->otherParam, subcommand, length);
+	final->param = (char*)calloc(length + 1, sizeof(char));
+	if (final->param != NULL) strncpy(final->param, subcommand, length);
 	return final;
 }
 

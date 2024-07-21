@@ -15,7 +15,8 @@ void SCPIC_SYS_APPLY(struct subword** subwords, int length)
 
 	if(subword->paramType == INT_P)
 	{
-		if(subword->integerParam)
+		int* param = (int*)subword->param;
+		if(*param)
 		{
 			HFDAC_SET_ALL(&HFDAC1);
 			HFADC_SET_ALL(&HFADC1);
@@ -30,17 +31,18 @@ void SCPIC_SYS_APPLY(struct subword** subwords, int length)
 void SCPIC_SYS_RESET(struct subword** subwords, int length)
 {
 	if(length != 1) return;
-		if(subwords[0]->type != params) return;
-		Subword* subword = subwords[0];
+	if(subwords[0]->type != params) return;
+	Subword* subword = subwords[0];
 
-		if(subword->paramType == INT_P)
+	if(subword->paramType == INT_P)
+	{
+		int* param = (int*)subword->param;
+		if(*param)
 		{
-			if(subword->integerParam)
-			{
-				strcpy(TXbuff, "OK");
-				HAL_NVIC_SystemReset();
-			}
+			strcpy(TXbuff, "OK");
+			HAL_NVIC_SystemReset();
 		}
+	}
 }
 
 void SCPIC_SYS_ID(struct subword** subwords, int length)
@@ -65,9 +67,10 @@ void SCPIC_OUT_MAXAMPLITUDE(struct subword** subwords, int length)
 
 	if(subword->paramType == FLOAT_P)
 	{
-		if(checkFloat(subword->floatParam, 20, 0))
+		float* param = (float*) subword->param;
+		if(checkFloat(*param, 20, 0))
 		{
-			HFDAC1.maxAmplitude = subword->floatParam;
+			HFDAC1.maxAmplitude = *param;
 			strcpy(TXbuff, "OK");
 		}
 		else strcpy(TXbuff, "ERR:VAL");
@@ -91,12 +94,12 @@ void SCPIC_OUT_MODE(struct subword** subwords, int length)
 		break;
 
 		case OTHER_P:
-			if(!strcmp(subword->otherParam, "VOLTAGE"))
+			if(!strcmp(subword->param, "VOLTAGE"))
 			{
 				HFDAC1.mode = Voltage_output;
 				strcpy(TXbuff, "OK");
 			}
-			else if(!strcmp(subword->otherParam, "CURRENT"))
+			else if(!strcmp(subword->param, "CURRENT"))
 			{
 				HFDAC1.mode = Current_output;
 				strcpy(TXbuff, "OK");
@@ -155,12 +158,12 @@ void SCPIC_INIT(struct subword** subwords, int length)
 		break;
 
 		case OTHER_P:
-			if(!strcmp(subword->otherParam, "JTAG"))
+			if(!strcmp(subword->param, "JTAG"))
 			{
 				LOLA1.Config = JTAG;
 				if(Task_add(Task_LOLA_INIT, PRIORITY_URGENT, 10000, 20)) strcpy(TXbuff, "OK");
 			}
-			else if(!strcmp(subword->otherParam, "FLASH"))
+			else if(!strcmp(subword->param, "FLASH"))
 			{
 				LOLA1.Config = SPI_FLASH;
 				if(Task_add(Task_LOLA_INIT, PRIORITY_URGENT, 10000, 20)) strcpy(TXbuff, "OK");
@@ -231,19 +234,19 @@ void SCPIC_AWG_WF(struct subword** subwords, int length)
 		break;
 
 		case OTHER_P:
-			if(!strcmp(subword->otherParam, "Square"))
+			if(!strcmp(subword->param, "Square"))
 			{
 				AWG1.waveform = Square;
 			}
-			else if(!strcmp(subword->otherParam, "Triangle"))
+			else if(!strcmp(subword->param, "Triangle"))
 			{
 				AWG1.waveform = Triangle;
 			}
-			else if(!strcmp(subword->otherParam, "Sine"))
+			else if(!strcmp(subword->param, "Sine"))
 			{
 				AWG1.waveform = Sine;
 			}
-			else if(!strcmp(subword->otherParam, "Func"))
+			else if(!strcmp(subword->param, "Func"))
 			{
 				AWG1.waveform = Func;
 			}
@@ -270,12 +273,13 @@ void SCPIC_AWG_DC(struct subword** subwords, int length)
 		break;
 
 		case FLOAT_P:
-			if(subword->floatParam < 0 || subword->floatParam > 100)
+			float* param = (float*) subword->param;
+			if(checkFloat(*param, 0, 100))
 			{
 				strcpy(TXbuff, "Invalid value\r\n");
 				break;
 			}
-			AWG1.DutyCycle = subword->floatParam;
+			AWG1.DutyCycle = *param;
 			strcpy(TXbuff, "OK\r\n");
 		break;
 	}
