@@ -211,7 +211,72 @@ void SCPIC_FID(struct subword** subwords, int length)
 
 
 
-//void SCPIC_AWG_WF(struct subword** subwords, int length)
-//{
+void SCPIC_AWG_WF(struct subword** subwords, int length)
+{
+	if(length != 1) return;
+	if(subwords[0]->type != params) return;
+	Subword* subword = subwords[0];
 
-//}
+	switch(subword->paramType)
+	{
+		case EVAL_P:
+			switch(AWG1.waveform)
+			{
+				case Square: strcpy(TXbuff, "Square\r\n"); break;
+				case Triangle: strcpy(TXbuff, "Triangle\r\n"); break;
+				case Sine: strcpy(TXbuff, "Sine\r\n"); break;
+				case Func: strcpy(TXbuff, "Func\r\n"); break;
+				default: strcpy(TXbuff, "Wrong waveform\r\n"); break;
+			}
+		break;
+
+		case OTHER_P:
+			if(!strcmp(subword->otherParam, "Square"))
+			{
+				AWG1.waveform = Square;
+			}
+			else if(!strcmp(subword->otherParam, "Triangle"))
+			{
+				AWG1.waveform = Triangle;
+			}
+			else if(!strcmp(subword->otherParam, "Sine"))
+			{
+				AWG1.waveform = Sine;
+			}
+			else if(!strcmp(subword->otherParam, "Func"))
+			{
+				AWG1.waveform = Func;
+			}
+			else
+			{
+				strcpy(TXbuff, "Wrong value!!\r\n");
+				break;
+			}
+			strcpy(TXbuff, "OK\r\n");
+		break;
+	}
+}
+
+void SCPIC_AWG_DC(struct subword** subwords, int length)
+{
+	if(length != 1) return;
+	if(subwords[0]->type != params) return;
+	Subword* subword = subwords[0];
+
+	switch(subword->paramType)
+	{
+		case EVAL_P:
+			sprintf(TXbuff, "%f\r\n", AWG1.DutyCycle);
+		break;
+
+		case FLOAT_P:
+			if(subword->floatParam < 0 || subword->floatParam > 100)
+			{
+				strcpy(TXbuff, "Invalid value\r\n");
+				break;
+			}
+			AWG1.DutyCycle = subword->floatParam;
+			strcpy(TXbuff, "OK\r\n");
+		break;
+	}
+}

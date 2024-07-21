@@ -7,45 +7,45 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
   1 .text         0000ed38  08000110  08000110  00001110  2**3
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .rodata       00001090  0800ee48  0800ee48  0000fe48  2**3
+  2 .rodata       00001118  0800ee48  0800ee48  0000fe48  2**3
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  3 .ARM.extab    00000018  0800fed8  0800fed8  00010ed8  2**2
+  3 .ARM.extab    00000018  0800ff60  0800ff60  00010f60  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  4 .ARM          000000c0  0800fef0  0800fef0  00010ef0  2**2
+  4 .ARM          000000c0  0800ff78  0800ff78  00010f78  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  5 .preinit_array 00000000  0800ffb0  0800ffb0  000111f0  2**0
+  5 .preinit_array 00000000  08010038  08010038  000121f0  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  6 .init_array   00000004  0800ffb0  0800ffb0  00010fb0  2**2
+  6 .init_array   00000004  08010038  08010038  00011038  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  7 .fini_array   00000004  0800ffb4  0800ffb4  00010fb4  2**2
+  7 .fini_array   00000004  0801003c  0801003c  0001103c  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  8 .data         000001f0  20000000  0800ffb8  00011000  2**2
+  8 .data         000001f0  20000000  08010040  00012000  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  9 .bss          00000558  200001f0  080101a8  000111f0  2**3
+  9 .bss          00000558  200001f0  08010230  000121f0  2**3
                   ALLOC
- 10 ._user_heap_stack 00000600  20000748  080101a8  00011748  2**0
+ 10 ._user_heap_stack 00000600  20000748  08010230  00012748  2**0
                   ALLOC
- 11 .ARM.attributes 00000029  00000000  00000000  000111f0  2**0
+ 11 .ARM.attributes 00000029  00000000  00000000  000121f0  2**0
                   CONTENTS, READONLY
- 12 .debug_info   0001932c  00000000  00000000  00011219  2**0
+ 12 .debug_info   000193ad  00000000  00000000  00012219  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_abbrev 000040f0  00000000  00000000  0002a545  2**0
+ 13 .debug_abbrev 00004130  00000000  00000000  0002b5c6  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_aranges 00001680  00000000  00000000  0002e638  2**3
+ 14 .debug_aranges 00001690  00000000  00000000  0002f6f8  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_rnglists 00001178  00000000  00000000  0002fcb8  2**0
+ 15 .debug_rnglists 00001186  00000000  00000000  00030d88  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_macro  0001d36b  00000000  00000000  00030e30  2**0
+ 16 .debug_macro  0001d36b  00000000  00000000  00031f0e  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   0001fc57  00000000  00000000  0004e19b  2**0
+ 17 .debug_line   0001fd4a  00000000  00000000  0004f279  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    0009732e  00000000  00000000  0006ddf2  2**0
+ 18 .debug_str    00097348  00000000  00000000  0006efc3  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000043  00000000  00000000  00105120  2**0
+ 19 .comment      00000043  00000000  00000000  0010630b  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00007adc  00000000  00000000  00105164  2**2
+ 20 .debug_frame  00007b2c  00000000  00000000  00106350  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 21 .debug_line_str 00000072  00000000  00000000  0010cc40  2**0
+ 21 .debug_line_str 00000072  00000000  00000000  0010de7c  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -1994,8 +1994,8 @@ Disassembly of section .text:
  8001674:	e7e3      	b.n	800163e <get_eit_entry+0x4e>
  8001676:	bf00      	nop
  8001678:	00000000 	.word	0x00000000
- 800167c:	0800fef0 	.word	0x0800fef0
- 8001680:	0800ffb0 	.word	0x0800ffb0
+ 800167c:	0800ff78 	.word	0x0800ff78
+ 8001680:	08010038 	.word	0x08010038
 
 08001684 <restore_non_core_regs>:
  8001684:	6803      	ldr	r3, [r0, #0]
@@ -5860,7 +5860,7 @@ LoopFillZerobss:
   ldr r1, =_edata
  800315c:	200001f0 	.word	0x200001f0
   ldr r2, =_sidata
- 8003160:	0800ffb8 	.word	0x0800ffb8
+ 8003160:	08010040 	.word	0x08010040
   ldr r2, =_sbss
  8003164:	200001f0 	.word	0x200001f0
   ldr r4, =_ebss
@@ -10876,7 +10876,7 @@ if (((RCC_ClkInitStruct->ClockType) & RCC_CLOCKTYPE_PCLK1) == RCC_CLOCKTYPE_PCLK
  8004dd6:	bf00      	nop
  8004dd8:	40022000 	.word	0x40022000
  8004ddc:	40021000 	.word	0x40021000
- 8004de0:	0800f024 	.word	0x0800f024
+ 8004de0:	0800f0ac 	.word	0x0800f0ac
  8004de4:	20000000 	.word	0x20000000
  8004de8:	20000004 	.word	0x20000004
 
@@ -11011,8 +11011,8 @@ uint32_t HAL_RCC_GetSysClockFreq(void)
  8004e7e:	bf00      	nop
  8004e80:	40021000 	.word	0x40021000
  8004e84:	007a1200 	.word	0x007a1200
- 8004e88:	0800f03c 	.word	0x0800f03c
- 8004e8c:	0800f04c 	.word	0x0800f04c
+ 8004e88:	0800f0c4 	.word	0x0800f0c4
+ 8004e8c:	0800f0d4 	.word	0x0800f0d4
  8004e90:	003d0900 	.word	0x003d0900
 
 08004e94 <HAL_RCC_GetHCLKFreq>:
@@ -11058,7 +11058,7 @@ uint32_t HAL_RCC_GetPCLK1Freq(void)
  8004ec4:	4618      	mov	r0, r3
  8004ec6:	bd80      	pop	{r7, pc}
  8004ec8:	40021000 	.word	0x40021000
- 8004ecc:	0800f034 	.word	0x0800f034
+ 8004ecc:	0800f0bc 	.word	0x0800f0bc
 
 08004ed0 <HAL_RCC_GetPCLK2Freq>:
   * @note   Each time PCLK2 changes, this function must be called to update the
@@ -11084,7 +11084,7 @@ uint32_t HAL_RCC_GetPCLK2Freq(void)
  8004eec:	4618      	mov	r0, r3
  8004eee:	bd80      	pop	{r7, pc}
  8004ef0:	40021000 	.word	0x40021000
- 8004ef4:	0800f034 	.word	0x0800f034
+ 8004ef4:	0800f0bc 	.word	0x0800f0bc
 
 08004ef8 <RCC_Delay>:
   * @brief  This function provides delay (in milliseconds) based on CPU cycles method.
@@ -20326,7 +20326,7 @@ void SCPI_EXECUTE()
  8008742:	bd80      	pop	{r7, pc}
  8008744:	20000470 	.word	0x20000470
  8008748:	200003f0 	.word	0x200003f0
- 800874c:	0800ef50 	.word	0x0800ef50
+ 800874c:	0800efd8 	.word	0x0800efd8
 
 08008750 <ReformatString>:
 //int defaultClassIndex;
@@ -20971,7 +20971,7 @@ Word* generateWordDirect(char* command)
  8008b2e:	bf00      	nop
  8008b30:	200004f0 	.word	0x200004f0
  8008b34:	2000001c 	.word	0x2000001c
- 8008b38:	0800ef64 	.word	0x0800ef64
+ 8008b38:	0800efec 	.word	0x0800efec
 
 08008b3c <executeWord>:
 
@@ -21211,7 +21211,7 @@ int kernel_init(long MaxTasksinput) {
  8008cac:	bd80      	pop	{r7, pc}
  8008cae:	bf00      	nop
  8008cb0:	200004f8 	.word	0x200004f8
- 8008cb4:	0800ef70 	.word	0x0800ef70
+ 8008cb4:	0800eff8 	.word	0x0800eff8
 
 08008cb8 <Task_add>:
 
@@ -21994,8 +21994,8 @@ int Task_remove(long index)
  80091da:	bd80      	pop	{r7, pc}
  80091dc:	200004f8 	.word	0x200004f8
  80091e0:	200001a0 	.word	0x200001a0
- 80091e4:	0800efa8 	.word	0x0800efa8
- 80091e8:	0800efc0 	.word	0x0800efc0
+ 80091e4:	0800f030 	.word	0x0800f030
+ 80091e8:	0800f048 	.word	0x0800f048
 
 080091ec <Task_execute>:
 
@@ -23194,9 +23194,9 @@ int checkFloat(float input, float max, float min)
  8009ad0:	e785      	b.n	80099de <_strtod_l+0x18e>
  8009ad2:	f04f 0c01 	mov.w	ip, #1
  8009ad6:	e7f8      	b.n	8009aca <_strtod_l+0x27a>
- 8009ad8:	0800f064 	.word	0x0800f064
+ 8009ad8:	0800f0ec 	.word	0x0800f0ec
  8009adc:	7ff00000 	.word	0x7ff00000
- 8009ae0:	0800f04e 	.word	0x0800f04e
+ 8009ae0:	0800f0d6 	.word	0x0800f0d6
  8009ae4:	9a19      	ldr	r2, [sp, #100]	@ 0x64
  8009ae6:	1c51      	adds	r1, r2, #1
  8009ae8:	9119      	str	r1, [sp, #100]	@ 0x64
@@ -23487,14 +23487,14 @@ int checkFloat(float input, float max, float min)
  8009dbe:	6013      	str	r3, [r2, #0]
  8009dc0:	e768      	b.n	8009c94 <_strtod_l+0x444>
  8009dc2:	bf00      	nop
- 8009dc4:	0800f1ae 	.word	0x0800f1ae
- 8009dc8:	0800f050 	.word	0x0800f050
- 8009dcc:	0800f1a6 	.word	0x0800f1a6
- 8009dd0:	0800f876 	.word	0x0800f876
+ 8009dc4:	0800f236 	.word	0x0800f236
+ 8009dc8:	0800f0d8 	.word	0x0800f0d8
+ 8009dcc:	0800f22e 	.word	0x0800f22e
+ 8009dd0:	0800f8fe 	.word	0x0800f8fe
  8009dd4:	7ff00000 	.word	0x7ff00000
- 8009dd8:	0800fb04 	.word	0x0800fb04
- 8009ddc:	0800f9f0 	.word	0x0800f9f0
- 8009de0:	0800f9c8 	.word	0x0800f9c8
+ 8009dd8:	0800fb8c 	.word	0x0800fb8c
+ 8009ddc:	0800fa78 	.word	0x0800fa78
+ 8009de0:	0800fa50 	.word	0x0800fa50
  8009de4:	7ca00000 	.word	0x7ca00000
  8009de8:	7fefffff 	.word	0x7fefffff
  8009dec:	f014 0310 	ands.w	r3, r4, #16
@@ -23782,7 +23782,7 @@ int checkFloat(float input, float max, float min)
  800a09e:	9a05      	ldr	r2, [sp, #20]
  800a0a0:	6013      	str	r3, [r2, #0]
  800a0a2:	e5fb      	b.n	8009c9c <_strtod_l+0x44c>
- 800a0a4:	0800f078 	.word	0x0800f078
+ 800a0a4:	0800f100 	.word	0x0800f100
  800a0a8:	fffffc02 	.word	0xfffffc02
  800a0ac:	39500000 	.word	0x39500000
  800a0b0:	7ff00000 	.word	0x7ff00000
@@ -24214,7 +24214,7 @@ int checkFloat(float input, float max, float min)
  800a500:	d1f6      	bne.n	800a4f0 <_strtol_l.constprop.0+0xd8>
  800a502:	f8c8 1000 	str.w	r1, [r8]
  800a506:	e794      	b.n	800a432 <_strtol_l.constprop.0+0x1a>
- 800a508:	0800f0a1 	.word	0x0800f0a1
+ 800a508:	0800f129 	.word	0x0800f129
 
 0800a50c <strtol>:
  800a50c:	4613      	mov	r3, r2
@@ -24980,11 +24980,11 @@ int checkFloat(float input, float max, float min)
  800ac2a:	f10a 0a01 	add.w	sl, sl, #1
  800ac2e:	e7ee      	b.n	800ac0e <_printf_float+0x2aa>
  800ac30:	7fefffff 	.word	0x7fefffff
- 800ac34:	0800f1a1 	.word	0x0800f1a1
- 800ac38:	0800f1a5 	.word	0x0800f1a5
- 800ac3c:	0800f1a9 	.word	0x0800f1a9
- 800ac40:	0800f1ad 	.word	0x0800f1ad
- 800ac44:	0800f1b1 	.word	0x0800f1b1
+ 800ac34:	0800f229 	.word	0x0800f229
+ 800ac38:	0800f22d 	.word	0x0800f22d
+ 800ac3c:	0800f231 	.word	0x0800f231
+ 800ac40:	0800f235 	.word	0x0800f235
+ 800ac44:	0800f239 	.word	0x0800f239
  800ac48:	6da3      	ldr	r3, [r4, #88]	@ 0x58
  800ac4a:	f8dd a038 	ldr.w	sl, [sp, #56]	@ 0x38
  800ac4e:	4553      	cmp	r3, sl
@@ -25465,8 +25465,8 @@ int checkFloat(float input, float max, float min)
  800b0d0:	2500      	movs	r5, #0
  800b0d2:	f104 0619 	add.w	r6, r4, #25
  800b0d6:	e7f5      	b.n	800b0c4 <_printf_i+0x224>
- 800b0d8:	0800f1b3 	.word	0x0800f1b3
- 800b0dc:	0800f1c4 	.word	0x0800f1c4
+ 800b0d8:	0800f23b 	.word	0x0800f23b
+ 800b0dc:	0800f24c 	.word	0x0800f24c
 
 0800b0e0 <std>:
  800b0e0:	2300      	movs	r3, #0
@@ -25824,8 +25824,8 @@ int checkFloat(float input, float max, float min)
  800b414:	f000 fbb0 	bl	800bb78 <__retarget_lock_release_recursive>
  800b418:	e7b6      	b.n	800b388 <_perror_r+0x70>
  800b41a:	bf00      	nop
- 800b41c:	0800fb03 	.word	0x0800fb03
- 800b420:	0800fad3 	.word	0x0800fad3
+ 800b41c:	0800fb8b 	.word	0x0800fb8b
+ 800b420:	0800fb5b 	.word	0x0800fb5b
 
 0800b424 <perror>:
  800b424:	4b02      	ldr	r3, [pc, #8]	@ (800b430 <perror+0xc>)
@@ -26330,87 +26330,87 @@ int checkFloat(float input, float max, float min)
  800b8d2:	e757      	b.n	800b784 <_strerror_r+0x134>
  800b8d4:	4b50      	ldr	r3, [pc, #320]	@ (800ba18 <_strerror_r+0x3c8>)
  800b8d6:	e755      	b.n	800b784 <_strerror_r+0x134>
- 800b8d8:	0800f1d5 	.word	0x0800f1d5
- 800b8dc:	0800f1e7 	.word	0x0800f1e7
- 800b8e0:	0800f201 	.word	0x0800f201
- 800b8e4:	0800f211 	.word	0x0800f211
- 800b8e8:	0800f229 	.word	0x0800f229
- 800b8ec:	0800f233 	.word	0x0800f233
- 800b8f0:	0800f24d 	.word	0x0800f24d
- 800b8f4:	0800f25f 	.word	0x0800f25f
- 800b8f8:	0800f271 	.word	0x0800f271
- 800b8fc:	0800f28a 	.word	0x0800f28a
- 800b900:	0800f29a 	.word	0x0800f29a
- 800b904:	0800f2a6 	.word	0x0800f2a6
- 800b908:	0800f2c3 	.word	0x0800f2c3
- 800b90c:	0800f2d5 	.word	0x0800f2d5
- 800b910:	0800f2e6 	.word	0x0800f2e6
- 800b914:	0800f2f8 	.word	0x0800f2f8
- 800b918:	0800f304 	.word	0x0800f304
- 800b91c:	0800f31c 	.word	0x0800f31c
- 800b920:	0800f328 	.word	0x0800f328
- 800b924:	0800f33a 	.word	0x0800f33a
- 800b928:	0800f349 	.word	0x0800f349
- 800b92c:	0800f359 	.word	0x0800f359
- 800b930:	0800f366 	.word	0x0800f366
- 800b934:	0800f385 	.word	0x0800f385
- 800b938:	0800f394 	.word	0x0800f394
- 800b93c:	0800f3a5 	.word	0x0800f3a5
- 800b940:	0800f3c9 	.word	0x0800f3c9
- 800b944:	0800f3e7 	.word	0x0800f3e7
- 800b948:	0800f405 	.word	0x0800f405
- 800b94c:	0800f425 	.word	0x0800f425
- 800b950:	0800f43c 	.word	0x0800f43c
- 800b954:	0800f44b 	.word	0x0800f44b
- 800b958:	0800f45a 	.word	0x0800f45a
- 800b95c:	0800f46e 	.word	0x0800f46e
- 800b960:	0800f486 	.word	0x0800f486
- 800b964:	0800f494 	.word	0x0800f494
- 800b968:	0800f4a1 	.word	0x0800f4a1
- 800b96c:	0800f4b7 	.word	0x0800f4b7
- 800b970:	0800f4c6 	.word	0x0800f4c6
- 800b974:	0800f4d2 	.word	0x0800f4d2
- 800b978:	0800f501 	.word	0x0800f501
- 800b97c:	0800f512 	.word	0x0800f512
- 800b980:	0800f52d 	.word	0x0800f52d
- 800b984:	0800f540 	.word	0x0800f540
- 800b988:	0800f556 	.word	0x0800f556
- 800b98c:	0800f55f 	.word	0x0800f55f
- 800b990:	0800f576 	.word	0x0800f576
- 800b994:	0800f57e 	.word	0x0800f57e
- 800b998:	0800f58b 	.word	0x0800f58b
- 800b99c:	0800f5a0 	.word	0x0800f5a0
- 800b9a0:	0800f5b4 	.word	0x0800f5b4
- 800b9a4:	0800f5cc 	.word	0x0800f5cc
- 800b9a8:	0800f5db 	.word	0x0800f5db
- 800b9ac:	0800f5ec 	.word	0x0800f5ec
- 800b9b0:	0800f5ff 	.word	0x0800f5ff
- 800b9b4:	0800f60b 	.word	0x0800f60b
- 800b9b8:	0800f624 	.word	0x0800f624
- 800b9bc:	0800f638 	.word	0x0800f638
- 800b9c0:	0800f653 	.word	0x0800f653
- 800b9c4:	0800f66b 	.word	0x0800f66b
- 800b9c8:	0800f685 	.word	0x0800f685
- 800b9cc:	0800f68d 	.word	0x0800f68d
- 800b9d0:	0800f6bd 	.word	0x0800f6bd
- 800b9d4:	0800f6dc 	.word	0x0800f6dc
- 800b9d8:	0800f6fb 	.word	0x0800f6fb
- 800b9dc:	0800f712 	.word	0x0800f712
- 800b9e0:	0800f725 	.word	0x0800f725
- 800b9e4:	0800f73e 	.word	0x0800f73e
- 800b9e8:	0800f755 	.word	0x0800f755
- 800b9ec:	0800f76b 	.word	0x0800f76b
- 800b9f0:	0800f78c 	.word	0x0800f78c
- 800b9f4:	0800f7a4 	.word	0x0800f7a4
- 800b9f8:	0800f7c0 	.word	0x0800f7c0
- 800b9fc:	0800f7d3 	.word	0x0800f7d3
- 800ba00:	0800f7e9 	.word	0x0800f7e9
- 800ba04:	0800f7fd 	.word	0x0800f7fd
- 800ba08:	0800f81f 	.word	0x0800f81f
- 800ba0c:	0800f845 	.word	0x0800f845
- 800ba10:	0800f856 	.word	0x0800f856
- 800ba14:	0800fb04 	.word	0x0800fb04
- 800ba18:	0800f1dd 	.word	0x0800f1dd
+ 800b8d8:	0800f25d 	.word	0x0800f25d
+ 800b8dc:	0800f26f 	.word	0x0800f26f
+ 800b8e0:	0800f289 	.word	0x0800f289
+ 800b8e4:	0800f299 	.word	0x0800f299
+ 800b8e8:	0800f2b1 	.word	0x0800f2b1
+ 800b8ec:	0800f2bb 	.word	0x0800f2bb
+ 800b8f0:	0800f2d5 	.word	0x0800f2d5
+ 800b8f4:	0800f2e7 	.word	0x0800f2e7
+ 800b8f8:	0800f2f9 	.word	0x0800f2f9
+ 800b8fc:	0800f312 	.word	0x0800f312
+ 800b900:	0800f322 	.word	0x0800f322
+ 800b904:	0800f32e 	.word	0x0800f32e
+ 800b908:	0800f34b 	.word	0x0800f34b
+ 800b90c:	0800f35d 	.word	0x0800f35d
+ 800b910:	0800f36e 	.word	0x0800f36e
+ 800b914:	0800f380 	.word	0x0800f380
+ 800b918:	0800f38c 	.word	0x0800f38c
+ 800b91c:	0800f3a4 	.word	0x0800f3a4
+ 800b920:	0800f3b0 	.word	0x0800f3b0
+ 800b924:	0800f3c2 	.word	0x0800f3c2
+ 800b928:	0800f3d1 	.word	0x0800f3d1
+ 800b92c:	0800f3e1 	.word	0x0800f3e1
+ 800b930:	0800f3ee 	.word	0x0800f3ee
+ 800b934:	0800f40d 	.word	0x0800f40d
+ 800b938:	0800f41c 	.word	0x0800f41c
+ 800b93c:	0800f42d 	.word	0x0800f42d
+ 800b940:	0800f451 	.word	0x0800f451
+ 800b944:	0800f46f 	.word	0x0800f46f
+ 800b948:	0800f48d 	.word	0x0800f48d
+ 800b94c:	0800f4ad 	.word	0x0800f4ad
+ 800b950:	0800f4c4 	.word	0x0800f4c4
+ 800b954:	0800f4d3 	.word	0x0800f4d3
+ 800b958:	0800f4e2 	.word	0x0800f4e2
+ 800b95c:	0800f4f6 	.word	0x0800f4f6
+ 800b960:	0800f50e 	.word	0x0800f50e
+ 800b964:	0800f51c 	.word	0x0800f51c
+ 800b968:	0800f529 	.word	0x0800f529
+ 800b96c:	0800f53f 	.word	0x0800f53f
+ 800b970:	0800f54e 	.word	0x0800f54e
+ 800b974:	0800f55a 	.word	0x0800f55a
+ 800b978:	0800f589 	.word	0x0800f589
+ 800b97c:	0800f59a 	.word	0x0800f59a
+ 800b980:	0800f5b5 	.word	0x0800f5b5
+ 800b984:	0800f5c8 	.word	0x0800f5c8
+ 800b988:	0800f5de 	.word	0x0800f5de
+ 800b98c:	0800f5e7 	.word	0x0800f5e7
+ 800b990:	0800f5fe 	.word	0x0800f5fe
+ 800b994:	0800f606 	.word	0x0800f606
+ 800b998:	0800f613 	.word	0x0800f613
+ 800b99c:	0800f628 	.word	0x0800f628
+ 800b9a0:	0800f63c 	.word	0x0800f63c
+ 800b9a4:	0800f654 	.word	0x0800f654
+ 800b9a8:	0800f663 	.word	0x0800f663
+ 800b9ac:	0800f674 	.word	0x0800f674
+ 800b9b0:	0800f687 	.word	0x0800f687
+ 800b9b4:	0800f693 	.word	0x0800f693
+ 800b9b8:	0800f6ac 	.word	0x0800f6ac
+ 800b9bc:	0800f6c0 	.word	0x0800f6c0
+ 800b9c0:	0800f6db 	.word	0x0800f6db
+ 800b9c4:	0800f6f3 	.word	0x0800f6f3
+ 800b9c8:	0800f70d 	.word	0x0800f70d
+ 800b9cc:	0800f715 	.word	0x0800f715
+ 800b9d0:	0800f745 	.word	0x0800f745
+ 800b9d4:	0800f764 	.word	0x0800f764
+ 800b9d8:	0800f783 	.word	0x0800f783
+ 800b9dc:	0800f79a 	.word	0x0800f79a
+ 800b9e0:	0800f7ad 	.word	0x0800f7ad
+ 800b9e4:	0800f7c6 	.word	0x0800f7c6
+ 800b9e8:	0800f7dd 	.word	0x0800f7dd
+ 800b9ec:	0800f7f3 	.word	0x0800f7f3
+ 800b9f0:	0800f814 	.word	0x0800f814
+ 800b9f4:	0800f82c 	.word	0x0800f82c
+ 800b9f8:	0800f848 	.word	0x0800f848
+ 800b9fc:	0800f85b 	.word	0x0800f85b
+ 800ba00:	0800f871 	.word	0x0800f871
+ 800ba04:	0800f885 	.word	0x0800f885
+ 800ba08:	0800f8a7 	.word	0x0800f8a7
+ 800ba0c:	0800f8cd 	.word	0x0800f8cd
+ 800ba10:	0800f8de 	.word	0x0800f8de
+ 800ba14:	0800fb8c 	.word	0x0800fb8c
+ 800ba18:	0800f265 	.word	0x0800f265
 
 0800ba1c <strncmp>:
  800ba1c:	b510      	push	{r4, lr}
@@ -26577,10 +26577,10 @@ int checkFloat(float input, float max, float min)
  800bb5e:	4798      	blx	r3
  800bb60:	3601      	adds	r6, #1
  800bb62:	e7f2      	b.n	800bb4a <__libc_init_array+0x1e>
- 800bb64:	0800ffb0 	.word	0x0800ffb0
- 800bb68:	0800ffb0 	.word	0x0800ffb0
- 800bb6c:	0800ffb0 	.word	0x0800ffb0
- 800bb70:	0800ffb4 	.word	0x0800ffb4
+ 800bb64:	08010038 	.word	0x08010038
+ 800bb68:	08010038 	.word	0x08010038
+ 800bb6c:	08010038 	.word	0x08010038
+ 800bb70:	0801003c 	.word	0x0801003c
 
 0800bb74 <__retarget_lock_init_recursive>:
  800bb74:	4770      	bx	lr
@@ -27017,15 +27017,15 @@ int checkFloat(float input, float max, float min)
  800bf9c:	3fc68a28 	.word	0x3fc68a28
  800bfa0:	509f79fb 	.word	0x509f79fb
  800bfa4:	3fd34413 	.word	0x3fd34413
- 800bfa8:	0800f880 	.word	0x0800f880
- 800bfac:	0800f897 	.word	0x0800f897
+ 800bfa8:	0800f908 	.word	0x0800f908
+ 800bfac:	0800f91f 	.word	0x0800f91f
  800bfb0:	7ff00000 	.word	0x7ff00000
- 800bfb4:	0800f87c 	.word	0x0800f87c
- 800bfb8:	0800f1b2 	.word	0x0800f1b2
- 800bfbc:	0800f1b1 	.word	0x0800f1b1
+ 800bfb4:	0800f904 	.word	0x0800f904
+ 800bfb8:	0800f23a 	.word	0x0800f23a
+ 800bfbc:	0800f239 	.word	0x0800f239
  800bfc0:	3ff80000 	.word	0x3ff80000
- 800bfc4:	0800f9f0 	.word	0x0800f9f0
- 800bfc8:	0800f8ef 	.word	0x0800f8ef
+ 800bfc4:	0800fa78 	.word	0x0800fa78
+ 800bfc8:	0800f977 	.word	0x0800f977
  800bfcc:	f8db 301c 	ldr.w	r3, [fp, #28]
  800bfd0:	6018      	str	r0, [r3, #0]
  800bfd2:	9b07      	ldr	r3, [sp, #28]
@@ -27225,8 +27225,8 @@ int checkFloat(float input, float max, float min)
  800c1fa:	9704      	str	r7, [sp, #16]
  800c1fc:	e761      	b.n	800c0c2 <_dtoa_r+0x3e2>
  800c1fe:	bf00      	nop
- 800c200:	0800f9f0 	.word	0x0800f9f0
- 800c204:	0800f9c8 	.word	0x0800f9c8
+ 800c200:	0800fa78 	.word	0x0800fa78
+ 800c204:	0800fa50 	.word	0x0800fa50
  800c208:	3ff00000 	.word	0x3ff00000
  800c20c:	40240000 	.word	0x40240000
  800c210:	401c0000 	.word	0x401c0000
@@ -27396,7 +27396,7 @@ int checkFloat(float input, float max, float min)
  800c3d4:	2800      	cmp	r0, #0
  800c3d6:	f43f aebc 	beq.w	800c152 <_dtoa_r+0x472>
  800c3da:	e6f1      	b.n	800c1c0 <_dtoa_r+0x4e0>
- 800c3dc:	0800f9f0 	.word	0x0800f9f0
+ 800c3dc:	0800fa78 	.word	0x0800fa78
  800c3e0:	3fe00000 	.word	0x3fe00000
  800c3e4:	3ff00000 	.word	0x3ff00000
  800c3e8:	40240000 	.word	0x40240000
@@ -27883,8 +27883,8 @@ int checkFloat(float input, float max, float min)
  800c862:	4681      	mov	r9, r0
  800c864:	e7ea      	b.n	800c83c <_dtoa_r+0xb5c>
  800c866:	bf00      	nop
- 800c868:	0800f8ef 	.word	0x0800f8ef
- 800c86c:	0800f873 	.word	0x0800f873
+ 800c868:	0800f977 	.word	0x0800f977
+ 800c86c:	0800f8fb 	.word	0x0800f8fb
 
 0800c870 <_free_r>:
  800c870:	b538      	push	{r3, r4, r5, lr}
@@ -28321,9 +28321,9 @@ int checkFloat(float input, float max, float min)
  800cc7a:	2b00      	cmp	r3, #0
  800cc7c:	d1dd      	bne.n	800cc3a <__gethex+0x26a>
  800cc7e:	e7ee      	b.n	800cc5e <__gethex+0x28e>
- 800cc80:	0800f04e 	.word	0x0800f04e
- 800cc84:	0800f8ef 	.word	0x0800f8ef
- 800cc88:	0800f900 	.word	0x0800f900
+ 800cc80:	0800f0d6 	.word	0x0800f0d6
+ 800cc84:	0800f977 	.word	0x0800f977
+ 800cc88:	0800f988 	.word	0x0800f988
  800cc8c:	1e6f      	subs	r7, r5, #1
  800cc8e:	f1b9 0f00 	cmp.w	r9, #0
  800cc92:	d130      	bne.n	800ccf6 <__gethex+0x326>
@@ -28458,7 +28458,7 @@ int checkFloat(float input, float max, float min)
  800cde6:	42b0      	cmp	r0, r6
  800cde8:	dbe7      	blt.n	800cdba <__gethex+0x3ea>
  800cdea:	e7f0      	b.n	800cdce <__gethex+0x3fe>
- 800cdec:	0800f8ef 	.word	0x0800f8ef
+ 800cdec:	0800f977 	.word	0x0800f977
 
 0800cdf0 <L_shift>:
  800cdf0:	f1c2 0208 	rsb	r2, r2, #8
@@ -28697,8 +28697,8 @@ int checkFloat(float input, float max, float min)
  800d008:	e9c0 3303 	strd	r3, r3, [r0, #12]
  800d00c:	e7f7      	b.n	800cffe <_Balloc+0x66>
  800d00e:	bf00      	nop
- 800d010:	0800f880 	.word	0x0800f880
- 800d014:	0800f960 	.word	0x0800f960
+ 800d010:	0800f908 	.word	0x0800f908
+ 800d014:	0800f9e8 	.word	0x0800f9e8
 
 0800d018 <_Bfree>:
  800d018:	b570      	push	{r4, r5, r6, lr}
@@ -28726,8 +28726,8 @@ int checkFloat(float input, float max, float min)
  800d04c:	6021      	str	r1, [r4, #0]
  800d04e:	f843 4022 	str.w	r4, [r3, r2, lsl #2]
  800d052:	bd70      	pop	{r4, r5, r6, pc}
- 800d054:	0800f880 	.word	0x0800f880
- 800d058:	0800f960 	.word	0x0800f960
+ 800d054:	0800f908 	.word	0x0800f908
+ 800d058:	0800f9e8 	.word	0x0800f9e8
 
 0800d05c <__multadd>:
  800d05c:	e92d 41f0 	stmdb	sp!, {r4, r5, r6, r7, r8, lr}
@@ -28781,8 +28781,8 @@ int checkFloat(float input, float max, float min)
  800d0d8:	6125      	str	r5, [r4, #16]
  800d0da:	4620      	mov	r0, r4
  800d0dc:	e8bd 81f0 	ldmia.w	sp!, {r4, r5, r6, r7, r8, pc}
- 800d0e0:	0800f8ef 	.word	0x0800f8ef
- 800d0e4:	0800f960 	.word	0x0800f960
+ 800d0e0:	0800f977 	.word	0x0800f977
+ 800d0e4:	0800f9e8 	.word	0x0800f9e8
 
 0800d0e8 <__s2b>:
  800d0e8:	e92d 43f8 	stmdb	sp!, {r3, r4, r5, r6, r7, r8, r9, lr}
@@ -28843,8 +28843,8 @@ int checkFloat(float input, float max, float min)
  800d16c:	f7ff ff76 	bl	800d05c <__multadd>
  800d170:	e7ee      	b.n	800d150 <__s2b+0x68>
  800d172:	bf00      	nop
- 800d174:	0800f8ef 	.word	0x0800f8ef
- 800d178:	0800f960 	.word	0x0800f960
+ 800d174:	0800f977 	.word	0x0800f977
+ 800d178:	0800f9e8 	.word	0x0800f9e8
 
 0800d17c <__hi0bits>:
  800d17c:	4603      	mov	r3, r0
@@ -28934,8 +28934,8 @@ int checkFloat(float input, float max, float min)
  800d232:	6103      	str	r3, [r0, #16]
  800d234:	bd10      	pop	{r4, pc}
  800d236:	bf00      	nop
- 800d238:	0800f8ef 	.word	0x0800f8ef
- 800d23c:	0800f960 	.word	0x0800f960
+ 800d238:	0800f977 	.word	0x0800f977
+ 800d23c:	0800f9e8 	.word	0x0800f9e8
 
 0800d240 <__multiply>:
  800d240:	e92d 4ff0 	stmdb	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, lr}
@@ -29053,8 +29053,8 @@ int checkFloat(float input, float max, float min)
  800d382:	e79a      	b.n	800d2ba <__multiply+0x7a>
  800d384:	3e01      	subs	r6, #1
  800d386:	e79c      	b.n	800d2c2 <__multiply+0x82>
- 800d388:	0800f8ef 	.word	0x0800f8ef
- 800d38c:	0800f960 	.word	0x0800f960
+ 800d388:	0800f977 	.word	0x0800f977
+ 800d38c:	0800f9e8 	.word	0x0800f9e8
 
 0800d390 <__pow5mult>:
  800d390:	e92d 43f8 	stmdb	sp!, {r3, r4, r5, r6, r7, r8, r9, lr}
@@ -29122,9 +29122,9 @@ int checkFloat(float input, float max, float min)
  800d430:	4630      	mov	r0, r6
  800d432:	e8bd 83f8 	ldmia.w	sp!, {r3, r4, r5, r6, r7, r8, r9, pc}
  800d436:	bf00      	nop
- 800d438:	0800f9bc 	.word	0x0800f9bc
- 800d43c:	0800f880 	.word	0x0800f880
- 800d440:	0800f960 	.word	0x0800f960
+ 800d438:	0800fa44 	.word	0x0800fa44
+ 800d43c:	0800f908 	.word	0x0800f908
+ 800d440:	0800f9e8 	.word	0x0800f9e8
 
 0800d444 <__lshift>:
  800d444:	e92d 47f0 	stmdb	sp!, {r4, r5, r6, r7, r8, r9, sl, lr}
@@ -29203,8 +29203,8 @@ int checkFloat(float input, float max, float min)
  800d50e:	d8f9      	bhi.n	800d504 <__lshift+0xc0>
  800d510:	e7ea      	b.n	800d4e8 <__lshift+0xa4>
  800d512:	bf00      	nop
- 800d514:	0800f8ef 	.word	0x0800f8ef
- 800d518:	0800f960 	.word	0x0800f960
+ 800d514:	0800f977 	.word	0x0800f977
+ 800d518:	0800f9e8 	.word	0x0800f9e8
 
 0800d51c <__mcmp>:
  800d51c:	4603      	mov	r3, r0
@@ -29340,8 +29340,8 @@ int checkFloat(float input, float max, float min)
  800d66e:	3f01      	subs	r7, #1
  800d670:	e7e6      	b.n	800d640 <__mdiff+0xec>
  800d672:	bf00      	nop
- 800d674:	0800f8ef 	.word	0x0800f8ef
- 800d678:	0800f960 	.word	0x0800f960
+ 800d674:	0800f977 	.word	0x0800f977
+ 800d678:	0800f9e8 	.word	0x0800f9e8
 
 0800d67c <__ulp>:
  800d67c:	4b0e      	ldr	r3, [pc, #56]	@ (800d6b8 <__ulp+0x3c>)
@@ -29488,8 +29488,8 @@ int checkFloat(float input, float max, float min)
  800d7ea:	f7ff fcc7 	bl	800d17c <__hi0bits>
  800d7ee:	ebc0 1042 	rsb	r0, r0, r2, lsl #5
  800d7f2:	e7e4      	b.n	800d7be <__d2b+0x72>
- 800d7f4:	0800f8ef 	.word	0x0800f8ef
- 800d7f8:	0800f960 	.word	0x0800f960
+ 800d7f4:	0800f977 	.word	0x0800f977
+ 800d7f8:	0800f9e8 	.word	0x0800f9e8
 
 0800d7fc <__ratio>:
  800d7fc:	e92d 4ff0 	stmdb	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, lr}
@@ -29885,9 +29885,9 @@ int checkFloat(float input, float max, float min)
  800dba0:	a904      	add	r1, sp, #16
  800dba2:	f7fd f97d 	bl	800aea0 <_printf_i>
  800dba6:	e7ed      	b.n	800db84 <_svfiprintf_r+0x1c0>
- 800dba8:	0800fab8 	.word	0x0800fab8
- 800dbac:	0800fabe 	.word	0x0800fabe
- 800dbb0:	0800fac2 	.word	0x0800fac2
+ 800dba8:	0800fb40 	.word	0x0800fb40
+ 800dbac:	0800fb46 	.word	0x0800fb46
+ 800dbb0:	0800fb4a 	.word	0x0800fb4a
  800dbb4:	0800a965 	.word	0x0800a965
  800dbb8:	0800d90f 	.word	0x0800d90f
 
@@ -30155,9 +30155,9 @@ int checkFloat(float input, float max, float min)
  800de20:	a904      	add	r1, sp, #16
  800de22:	f7fd f83d 	bl	800aea0 <_printf_i>
  800de26:	e7e4      	b.n	800ddf2 <_vfiprintf_r+0x1e6>
- 800de28:	0800fab8 	.word	0x0800fab8
- 800de2c:	0800fabe 	.word	0x0800fabe
- 800de30:	0800fac2 	.word	0x0800fac2
+ 800de28:	0800fb40 	.word	0x0800fb40
+ 800de2c:	0800fb46 	.word	0x0800fb46
+ 800de30:	0800fb4a 	.word	0x0800fb4a
  800de34:	0800a965 	.word	0x0800a965
  800de38:	0800dbe7 	.word	0x0800dbe7
 
@@ -30516,9 +30516,9 @@ int checkFloat(float input, float max, float min)
  800e144:	e7f4      	b.n	800e130 <__assert_func+0x14>
  800e146:	bf00      	nop
  800e148:	200001a0 	.word	0x200001a0
- 800e14c:	0800fb04 	.word	0x0800fb04
- 800e150:	0800fad6 	.word	0x0800fad6
- 800e154:	0800fac9 	.word	0x0800fac9
+ 800e14c:	0800fb8c 	.word	0x0800fb8c
+ 800e150:	0800fb5e 	.word	0x0800fb5e
+ 800e154:	0800fb51 	.word	0x0800fb51
 
 0800e158 <fiprintf>:
  800e158:	b40e      	push	{r1, r2, r3}
@@ -31146,10 +31146,10 @@ int checkFloat(float input, float max, float min)
  800e7b0:	2e85a308 	.word	0x2e85a308
  800e7b4:	43490f80 	.word	0x43490f80
  800e7b8:	3f22f984 	.word	0x3f22f984
- 800e7bc:	0800fb08 	.word	0x0800fb08
+ 800e7bc:	0800fb90 	.word	0x0800fb90
  800e7c0:	2e85a300 	.word	0x2e85a300
  800e7c4:	248d3132 	.word	0x248d3132
- 800e7c8:	0800fb88 	.word	0x0800fb88
+ 800e7c8:	0800fc10 	.word	0x0800fc10
 
 0800e7cc <fabsf>:
  800e7cc:	f020 4000 	bic.w	r0, r0, #2147483648	@ 0x80000000
@@ -31415,8 +31415,8 @@ int checkFloat(float input, float max, float min)
  800ea92:	3b01      	subs	r3, #1
  800ea94:	430a      	orrs	r2, r1
  800ea96:	e7ab      	b.n	800e9f0 <__kernel_rem_pio2f+0x21c>
- 800ea98:	0800fecc 	.word	0x0800fecc
- 800ea9c:	0800fea0 	.word	0x0800fea0
+ 800ea98:	0800ff54 	.word	0x0800ff54
+ 800ea9c:	0800ff28 	.word	0x0800ff28
  800eaa0:	3301      	adds	r3, #1
  800eaa2:	f852 1d04 	ldr.w	r1, [r2, #-4]!
  800eaa6:	2900      	cmp	r1, #0
