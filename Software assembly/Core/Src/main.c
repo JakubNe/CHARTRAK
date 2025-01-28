@@ -216,6 +216,7 @@ int main(void)
     NOISE1.Uamp = 1.0;
     NOISE1.Seed = 0x800f000f000f0001;
 
+    //cfg of IN/out circuitry
     HFDAC_SET_ALL(&HFDAC1);
     HFADC_SET_ALL(&HFADC1);
 
