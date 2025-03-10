@@ -61,7 +61,6 @@ uint8_t LOLA_Init(LOLAconfig_struct* LOLAconfig)
 	uint16_t FID = 0;
 	uint16_t TrialsLeft = LOLAconfig->Trials;
 
-
 	do{
 		LOLAconfig->Status = NO_FIRMWARE;
 		LOLA_Reset();

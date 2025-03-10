@@ -161,15 +161,16 @@ int main(void)
     Function Lolafunctions[] = { {.name = "FID", .run = SCPIC_FID},
 								 {.name = "INIT", .run = SCPIC_INIT}	};
 
-
     Class Lolaclass = { .name = "LOLA", .functions = Lolafunctions, .functionsLength = 2 };
     addClass(&Lolaclass, 0);
 
+    // Digital Voltmeter setup
     Function DVMfunctions[] = { {.name = "RAW", .run = SCPIC_DVM_RAW},
     							{.name = "VAL", .run = SCPIC_DVM_VAL}	};
 
     Class DVMclass = { .name = "DVM", .functions = DVMfunctions, .functionsLength = 2 };
     addClass(&DVMclass, 0);
+
 
     //SimpleOS setup
     kernel_init(20); // max 20 tasks
@@ -216,6 +217,8 @@ int main(void)
     NOISE1.Uamp = 1.0;
     NOISE1.Seed = 0x800f000f000f0001;
 
+    LOLA_Init(&LOLA1);
+
     //cfg of IN/out circuitry
     HFDAC_SET_ALL(&HFDAC1);
     HFADC_SET_ALL(&HFADC1);
@@ -234,7 +237,7 @@ int main(void)
     // RS485 receive interrupt setup
     HAL_UARTEx_ReceiveToIdle_IT(&huart1, RXbuff, RS485BUFFSIZE);
 
-    kernel_begin(); //////////////////////////////////// CODE DOESNT GET FURTHER
+    //kernel_begin(); //////////////////////////////////// CODE DOESNT GET FURTHER
 
   /* USER CODE END 2 */
 
