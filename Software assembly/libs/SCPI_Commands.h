@@ -18,6 +18,7 @@
 #include "Tasks.h"
 #include "board.h"
 
+void SCPIC_SYS_STATUS(struct subword** subwords, int length);
 void SCPIC_SYS_APPLY(struct subword** subwords, int length);
 void SCPIC_SYS_RESET(struct subword** subwords, int length);
 void SCPIC_SYS_ID(struct subword** subwords, int length);

@@ -7,6 +7,18 @@
 
 #include "SCPI_Commands.h"
 
+void SCPIC_SYS_STATUS(struct subword** subwords, int length)
+{
+	if(length != 1) return;
+	if(subwords[0]->type != params) return;
+	Subword* subword = subwords[0];
+
+	if(subword->paramType == EVAL_P)
+	{
+		sprintf(TXbuff, "not finished yet");
+	}
+}
+
 void SCPIC_SYS_APPLY(struct subword** subwords, int length)
 {
 	if(length != 1) return;

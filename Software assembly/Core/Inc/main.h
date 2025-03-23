@@ -31,6 +31,8 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "math.h"
+
 #include "LOLA.h"
 #include "AWG.h"
 #include "ProgRef.h"

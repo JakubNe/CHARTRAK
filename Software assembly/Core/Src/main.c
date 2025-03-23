@@ -42,6 +42,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 ADC_HandleTypeDef hadc1;
+DMA_HandleTypeDef hdma_adc1;
 
 I2C_HandleTypeDef hi2c1;
 
@@ -66,12 +67,16 @@ uint8_t RackID = 0;
 
 uint32_t adc1_data[3] = {0};
 
-float MCUtemp = 0, DriverTemp = 0;
+float MCUtemp = 25.0, DriverTemp = 25.0;
+
+#define MaxI2Cdevices	20
+uint8_t I2Cdevices[MaxI2Cdevices] = {0};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
+static void MX_DMA_Init(void);
 static void MX_ADC1_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_SPI1_Init(void);
@@ -116,6 +121,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_ADC1_Init();
   MX_I2C1_Init();
   MX_SPI1_Init();
@@ -154,10 +160,11 @@ int main(void)
 
     // system functions setup
     Function SYSfunctions[] = { {.name = "ID", .run = SCPIC_SYS_ID},
-       							 {.name = "RESET", .run = SCPIC_SYS_RESET},
-   								 {.name = "APPLY", .run = SCPIC_SYS_APPLY}	};
+    							{.name = "STATUS", .run = SCPIC_SYS_STATUS},
+       							{.name = "RESET", .run = SCPIC_SYS_RESET},
+   								{.name = "APPLY", .run = SCPIC_SYS_APPLY}	};
 
-    Class SYSclass = { .name = "SYS", .functions = SYSfunctions, .functionsLength = 3 };
+    Class SYSclass = { .name = "SYS", .functions = SYSfunctions, .functionsLength = 4 };
     addClass(&SYSclass, 0);
 
     // output functions setup
@@ -227,11 +234,32 @@ int main(void)
     NOISE1.Uamp = 1.0;
     NOISE1.Seed = 0x800f000f000f0001;
 
+    //****************************************************** scan for I2C devices
+    uint8_t I2Ccount = 0;
+    for(uint8_t i=1; i<128; i++)
+    {
+    	if(HAL_I2C_IsDeviceReady(&hi2c1, (uint16_t)(i << 1), 3, 5) == HAL_OK)
+    	{
+    	    if(I2Ccount < MaxI2Cdevices)
+    	    	I2Cdevices[I2Ccount++] = i;
+    	    else
+    	    	Error_Handler();
+    	}
+    }
+
+    // Programmable power supply setup
+    if(!PSUinit(0x60)) Error_Handler();
+    PSUoutput(1);
+
+
     // ADC temperature measurement
    	HAL_TIM_Base_Start(&htim3); // Start trigger Source For ADC1
    	HAL_ADC_Start_DMA(&hadc1, adc1_data, 3);
 
-   	// Initialise FPGA
+   	// RS485 receive interrupt setup
+   	if(HAL_UARTEx_ReceiveToIdle_IT(&huart1, RXbuff, RS485BUFFSIZE) != HAL_OK) Error_Handler();
+
+   	// Initialize FPGA
     LOLA_CFGFlashWriteUnlock();
     LOLA_Init(&LOLA1);
 
@@ -250,11 +278,19 @@ int main(void)
 
     //AWG_Load_Waveform(AWG1,NOISE1);
 
-    // RS485 receive interrupt setup
-    HAL_UARTEx_ReceiveToIdle_IT(&huart1, RXbuff, RS485BUFFSIZE);
-
     //kernel_begin(); //////////////////////////////////// CODE DOESNT GET FURTHER
 
+    LOLA_enable_features(AWG_EN, 1);
+    PSUsetVoltage(4.0, -7);
+
+    HFDAC1.maxAmplitude = 6;
+    HFDAC_SET_MAX_AMPLITUDE(&HFDAC1);
+
+    AWG1.Freq = 10000;
+    AWG1.Uamp = 2;
+    AWG1.waveform = Triangle;
+    AWG1.DutyCycle = 20;
+    AWG_Load_Waveform(&AWG1, &HFDAC1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -266,6 +302,11 @@ int main(void)
 	 sprintf(TXbuff, "%d\r\n", DVM);
 	 RS485_Transmit(TXbuff);
 	 HAL_Delay(10);*/
+
+	 HAL_Delay(1000);
+	 HFDAC_DIRECT_DATA(&HFDAC1, 0);
+	 HAL_Delay(1000);
+	 HFDAC_DIRECT_DATA(&HFDAC1, 3);
 
     /* USER CODE END WHILE */
 
@@ -629,6 +670,22 @@ static void MX_USART1_UART_Init(void)
   /* USER CODE BEGIN USART1_Init 2 */
 
   /* USER CODE END USART1_Init 2 */
+
+}
+
+/**
+  * Enable DMA controller clock
+  */
+static void MX_DMA_Init(void)
+{
+
+  /* DMA controller clock enable */
+  __HAL_RCC_DMA1_CLK_ENABLE();
+
+  /* DMA interrupt init */
+  /* DMA1_Channel1_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Channel1_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Channel1_IRQn);
 
 }
 

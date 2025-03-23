@@ -25,8 +25,7 @@ void AWG_Load_Waveform(AWG_struct* AWG, HFDAC_struct* HFDAC)
 
 	uint16_t depth = trimInt((int)round(DACmaxFreq/AWG->Freq), 1, (MaxDepth-1));
 
-
-	uint16_t DepthPos = trimInt((int)round(depth*AWG->DutyCycle/100), 1, (MaxDepth-1));
+	uint16_t DepthPos = trimInt((int)round(depth*AWG->DutyCycle/100.0), 1, (MaxDepth-1));
 	uint16_t DepthNeg = trimInt((int)(depth-DepthPos), 1, (MaxDepth-1));
 
 	// setting sample count
