@@ -160,12 +160,17 @@ void SCPIC_INIT(struct subword** subwords, int length)
 		case OTHER_P:
 			if(!strcmp(subword->param, "JTAG"))
 			{
-				LOLA1.Config = JTAG;
+				LOLA1.Config = JTAG_Ext;
 				if(Task_add(Task_LOLA_INIT, PRIORITY_URGENT, 10000, 20)) strcpy(TXbuff, "OK");
 			}
-			else if(!strcmp(subword->param, "FLASH"))
+			else if(!strcmp(subword->param, "FLASH1"))
 			{
-				LOLA1.Config = SPI_FLASH;
+				LOLA1.Config = SPI_FLASH1;
+				if(Task_add(Task_LOLA_INIT, PRIORITY_URGENT, 10000, 20)) strcpy(TXbuff, "OK");
+			}
+			else if(!strcmp(subword->param, "FLASH2"))
+			{
+				LOLA1.Config = SPI_FLASH2;
 				if(Task_add(Task_LOLA_INIT, PRIORITY_URGENT, 10000, 20)) strcpy(TXbuff, "OK");
 			}
 	}

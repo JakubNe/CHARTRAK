@@ -5,9 +5,11 @@
 #include "board.h"
 #include "ProgRef.h"
 
-
 void LOLA_CFG_SEL(InitType t)
 {
+	HAL_GPIO_WritePin(RackJTAGen_OUT_GPIO_Port, RackJTAGen_OUT_Pin, (t == JTAG_Rack)); // JTAG Isolator control
+	HAL_GPIO_WritePin(FCFGSEL_OUT_GPIO_Port, FCFGSEL_OUT_Pin, (t == SPI_FLASH2)); // config FLASH selection
+
 	switch(t)
 		{
 			// reference: http://dangerousprototypes.com/docs/Xilinx_Spartan_3_FPGA_quick_start#Boot_configuration
@@ -17,7 +19,13 @@ void LOLA_CFG_SEL(InitType t)
 				HAL_GPIO_WritePin(M0_GPIO_Port, M0_Pin, 0);
 			break;
 
-			case SPI_FLASH:	// SPI FLASH
+			case SPI_FLASH1:	// external SPI FLASH 1
+				HAL_GPIO_WritePin(M2_GPIO_Port, M2_Pin, 0);
+				HAL_GPIO_WritePin(M1_GPIO_Port, M1_Pin, 0);
+				HAL_GPIO_WritePin(M0_GPIO_Port, M0_Pin, 1);
+			break;
+
+			case SPI_FLASH2:	// external SPI FLASH 2
 				HAL_GPIO_WritePin(M2_GPIO_Port, M2_Pin, 0);
 				HAL_GPIO_WritePin(M1_GPIO_Port, M1_Pin, 0);
 				HAL_GPIO_WritePin(M0_GPIO_Port, M0_Pin, 1);
@@ -69,7 +77,7 @@ uint8_t LOLA_Init(LOLAconfig_struct* LOLAconfig)
 
 		AttemptsLeft = 20;
 
-		if(LOLAconfig->Config == JTAG)	// unlimited timer for manual JTAG configuration
+		if(LOLAconfig->Config == JTAG_Ext)	// unlimited timer for manual JTAG configuration
 			while(!HAL_GPIO_ReadPin(DONE_GPIO_Port, DONE_Pin)){}
 		else
 			while(!HAL_GPIO_ReadPin(DONE_GPIO_Port, DONE_Pin) && AttemptsLeft > 0)
@@ -100,6 +108,21 @@ void LOLA_Reset()
 {
 	HAL_GPIO_WritePin(PROGB_GPIO_Port, PROGB_Pin, 0);
 	HAL_GPIO_WritePin(PROGB_GPIO_Port, PROGB_Pin, 1);
+}
+
+void LOLA_CFGFlashWriteUnlock(void)
+{
+	HAL_GPIO_WritePin(FLASHWP_OUT_GPIO_Port, FLASHWP_OUT_Pin, 1);
+}
+
+void LOLA_CFGFlashWriteLock(void)
+{
+	HAL_GPIO_WritePin(FLASHWP_OUT_GPIO_Port, FLASHWP_OUT_Pin, 0);
+}
+
+void LOLA_Output(uint8_t Enable)
+{
+	HAL_GPIO_WritePin(AIO_EN_OUT_GPIO_Port, AIO_EN_OUT_Pin, Enable);
 }
 
 //*********************************************************************************************************************

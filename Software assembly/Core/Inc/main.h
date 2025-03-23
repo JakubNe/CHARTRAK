@@ -46,6 +46,7 @@ extern "C" {
 #include "HFADC.h"
 #include "HFDAC.h"
 #include "OSC.h"
+#include "ProgPSU.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -62,12 +63,18 @@ extern LOLAconfig_struct LOLA1;
 extern HFADC_struct HFADC1;
 extern HFDAC_struct HFDAC1;
 extern OSC_struct OSC1;
+
+extern I2C_HandleTypeDef hi2c1;
+extern ADC_HandleTypeDef hadc1;
+extern TIM_HandleTypeDef htim3;
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
 
 /* USER CODE END EM */
+
+void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
@@ -81,12 +88,12 @@ void Error_Handler(void);
 #define SPI1_DACS_GPIO_Port GPIOC
 #define LDAC_Pin GPIO_PIN_14
 #define LDAC_GPIO_Port GPIOC
-#define Ain_Pin GPIO_PIN_0
-#define Ain_GPIO_Port GPIOA
-#define VselC0_Pin GPIO_PIN_1
-#define VselC0_GPIO_Port GPIOA
-#define VselC1_Pin GPIO_PIN_2
-#define VselC1_GPIO_Port GPIOA
+#define TEMPDRIVER_ADC1IN0_Pin GPIO_PIN_0
+#define TEMPDRIVER_ADC1IN0_GPIO_Port GPIOA
+#define AIO_EN_OUT_Pin GPIO_PIN_1
+#define AIO_EN_OUT_GPIO_Port GPIOA
+#define MODE_OUT_Pin GPIO_PIN_2
+#define MODE_OUT_GPIO_Port GPIOA
 #define PROGB_Pin GPIO_PIN_3
 #define PROGB_GPIO_Port GPIOA
 #define SPI1_FPGAS_Pin GPIO_PIN_4
@@ -101,8 +108,8 @@ void Error_Handler(void);
 #define VselA0_GPIO_Port GPIOB
 #define FPGA_IRQ_Pin GPIO_PIN_11
 #define FPGA_IRQ_GPIO_Port GPIOB
-#define MODE_Pin GPIO_PIN_12
-#define MODE_GPIO_Port GPIOB
+#define FLASHWP_OUT_Pin GPIO_PIN_12
+#define FLASHWP_OUT_GPIO_Port GPIOB
 #define M2_Pin GPIO_PIN_13
 #define M2_GPIO_Port GPIOB
 #define M1_Pin GPIO_PIN_14
@@ -115,8 +122,12 @@ void Error_Handler(void);
 #define INITB_GPIO_Port GPIOA
 #define UI_IRQ_Pin GPIO_PIN_10
 #define UI_IRQ_GPIO_Port GPIOA
-#define USB_detect_Pin GPIO_PIN_3
-#define USB_detect_GPIO_Port GPIOB
+#define FCFGSEL_OUT_Pin GPIO_PIN_11
+#define FCFGSEL_OUT_GPIO_Port GPIOA
+#define FAN_TIM2CH1_Pin GPIO_PIN_15
+#define FAN_TIM2CH1_GPIO_Port GPIOA
+#define RackJTAGen_OUT_Pin GPIO_PIN_3
+#define RackJTAGen_OUT_GPIO_Port GPIOB
 #define DIR_Pin GPIO_PIN_5
 #define DIR_GPIO_Port GPIOB
 

@@ -17,7 +17,7 @@ void HFDAC_SET_MAX_AMPLITUDE(HFDAC_struct* HFDAC)
 
 void HFDAC_SET_MODE(HFDAC_MODE mode)
 {
-	HAL_GPIO_WritePin(MODE_GPIO_Port, MODE_Pin, mode);
+	HAL_GPIO_WritePin(MODE_OUT_GPIO_Port, MODE_OUT_Pin, mode);
 }
 
 void HFDAC_DIRECT_DATA(HFDAC_struct* HFDAC, float value)

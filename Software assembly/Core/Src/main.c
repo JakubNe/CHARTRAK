@@ -47,6 +47,8 @@ I2C_HandleTypeDef hi2c1;
 
 SPI_HandleTypeDef hspi1;
 
+TIM_HandleTypeDef htim2;
+TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim4;
 
 UART_HandleTypeDef huart1;
@@ -61,6 +63,10 @@ HFDAC_struct HFDAC1;
 OSC_struct OSC1;
 
 uint8_t RackID = 0;
+
+uint32_t adc1_data[3] = {0};
+
+float MCUtemp = 0, DriverTemp = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -71,6 +77,8 @@ static void MX_I2C1_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_TIM4_Init(void);
+static void MX_TIM2_Init(void);
+static void MX_TIM3_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -113,6 +121,8 @@ int main(void)
   MX_SPI1_Init();
   MX_USART1_UART_Init();
   MX_TIM4_Init();
+  MX_TIM2_Init();
+  MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
 
   	//GPIO SETUP
@@ -177,7 +187,7 @@ int main(void)
 
 
     //SPARTAN3 SETUP
-    LOLA1.Config = JTAG;
+    LOLA1.Config = JTAG_Ext;
     LOLA1.Trials = 100;
     LOLA1.compatibleFirmwareID = 0xF103;
 
@@ -217,9 +227,15 @@ int main(void)
     NOISE1.Uamp = 1.0;
     NOISE1.Seed = 0x800f000f000f0001;
 
+    // ADC temperature measurement
+   	HAL_TIM_Base_Start(&htim3); // Start trigger Source For ADC1
+   	HAL_ADC_Start_DMA(&hadc1, adc1_data, 3);
+
+   	// Initialise FPGA
+    LOLA_CFGFlashWriteUnlock();
     LOLA_Init(&LOLA1);
 
-    //cfg of IN/out circuitry
+    //cfg of IN/OUT circuitry
     HFDAC_SET_ALL(&HFDAC1);
     HFADC_SET_ALL(&HFADC1);
 
@@ -325,12 +341,12 @@ static void MX_ADC1_Init(void)
   /** Common config
   */
   hadc1.Instance = ADC1;
-  hadc1.Init.ScanConvMode = ADC_SCAN_DISABLE;
+  hadc1.Init.ScanConvMode = ADC_SCAN_ENABLE;
   hadc1.Init.ContinuousConvMode = DISABLE;
   hadc1.Init.DiscontinuousConvMode = DISABLE;
-  hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
+  hadc1.Init.ExternalTrigConv = ADC_EXTERNALTRIGCONV_T3_TRGO;
   hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
-  hadc1.Init.NbrOfConversion = 1;
+  hadc1.Init.NbrOfConversion = 3;
   if (HAL_ADC_Init(&hadc1) != HAL_OK)
   {
     Error_Handler();
@@ -340,7 +356,25 @@ static void MX_ADC1_Init(void)
   */
   sConfig.Channel = ADC_CHANNEL_0;
   sConfig.Rank = ADC_REGULAR_RANK_1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_1CYCLE_5;
+  sConfig.SamplingTime = ADC_SAMPLETIME_71CYCLES_5;
+  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** Configure Regular Channel
+  */
+  sConfig.Channel = ADC_CHANNEL_TEMPSENSOR;
+  sConfig.Rank = ADC_REGULAR_RANK_2;
+  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** Configure Regular Channel
+  */
+  sConfig.Channel = ADC_CHANNEL_VREFINT;
+  sConfig.Rank = ADC_REGULAR_RANK_3;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     Error_Handler();
@@ -420,6 +454,103 @@ static void MX_SPI1_Init(void)
   /* USER CODE BEGIN SPI1_Init 2 */
 
   /* USER CODE END SPI1_Init 2 */
+
+}
+
+/**
+  * @brief TIM2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM2_Init(void)
+{
+
+  /* USER CODE BEGIN TIM2_Init 0 */
+
+  /* USER CODE END TIM2_Init 0 */
+
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+  TIM_OC_InitTypeDef sConfigOC = {0};
+
+  /* USER CODE BEGIN TIM2_Init 1 */
+
+  /* USER CODE END TIM2_Init 1 */
+  htim2.Instance = TIM2;
+  htim2.Init.Prescaler = 0;
+  htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim2.Init.Period = 65535;
+  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_PWM_Init(&htim2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sConfigOC.OCMode = TIM_OCMODE_PWM1;
+  sConfigOC.Pulse = 0;
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+  if (HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM2_Init 2 */
+
+  /* USER CODE END TIM2_Init 2 */
+  HAL_TIM_MspPostInit(&htim2);
+
+}
+
+/**
+  * @brief TIM3 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM3_Init(void)
+{
+
+  /* USER CODE BEGIN TIM3_Init 0 */
+
+  /* USER CODE END TIM3_Init 0 */
+
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+  TIM_OC_InitTypeDef sConfigOC = {0};
+
+  /* USER CODE BEGIN TIM3_Init 1 */
+
+  /* USER CODE END TIM3_Init 1 */
+  htim3.Instance = TIM3;
+  htim3.Init.Prescaler = 48000-1;
+  htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim3.Init.Period = 100;
+  htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_PWM_Init(&htim3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_UPDATE;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sConfigOC.OCMode = TIM_OCMODE_PWM1;
+  sConfigOC.Pulse = 0;
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+  if (HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_4) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM3_Init 2 */
+
+  /* USER CODE END TIM3_Init 2 */
 
 }
 
@@ -522,12 +653,13 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOC, SPI1_DACS_Pin|LDAC_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, VselC0_Pin|VselC1_Pin|PROGB_Pin|SPI1_FPGAS_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, AIO_EN_OUT_Pin|MODE_OUT_Pin|PROGB_Pin|SPI1_FPGAS_Pin
+                          |FCFGSEL_OUT_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, VselB1_Pin|VselB0_Pin|VselA1_Pin|VselA0_Pin
-                          |MODE_Pin|M2_Pin|M1_Pin|M0_Pin
-                          |DIR_Pin, GPIO_PIN_RESET);
+                          |FLASHWP_OUT_Pin|M2_Pin|M1_Pin|M0_Pin
+                          |RackJTAGen_OUT_Pin|DIR_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pins : SPI1_DACS_Pin LDAC_Pin */
   GPIO_InitStruct.Pin = SPI1_DACS_Pin|LDAC_Pin;
@@ -536,29 +668,31 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : VselC0_Pin VselC1_Pin PROGB_Pin SPI1_FPGAS_Pin */
-  GPIO_InitStruct.Pin = VselC0_Pin|VselC1_Pin|PROGB_Pin|SPI1_FPGAS_Pin;
+  /*Configure GPIO pins : AIO_EN_OUT_Pin MODE_OUT_Pin PROGB_Pin SPI1_FPGAS_Pin
+                           FCFGSEL_OUT_Pin */
+  GPIO_InitStruct.Pin = AIO_EN_OUT_Pin|MODE_OUT_Pin|PROGB_Pin|SPI1_FPGAS_Pin
+                          |FCFGSEL_OUT_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pins : VselB1_Pin VselB0_Pin VselA1_Pin VselA0_Pin
-                           MODE_Pin M2_Pin M1_Pin M0_Pin
-                           DIR_Pin */
+                           FLASHWP_OUT_Pin M2_Pin M1_Pin M0_Pin
+                           RackJTAGen_OUT_Pin DIR_Pin */
   GPIO_InitStruct.Pin = VselB1_Pin|VselB0_Pin|VselA1_Pin|VselA0_Pin
-                          |MODE_Pin|M2_Pin|M1_Pin|M0_Pin
-                          |DIR_Pin;
+                          |FLASHWP_OUT_Pin|M2_Pin|M1_Pin|M0_Pin
+                          |RackJTAGen_OUT_Pin|DIR_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : FPGA_IRQ_Pin USB_detect_Pin */
-  GPIO_InitStruct.Pin = FPGA_IRQ_Pin|USB_detect_Pin;
+  /*Configure GPIO pin : FPGA_IRQ_Pin */
+  GPIO_InitStruct.Pin = FPGA_IRQ_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  HAL_GPIO_Init(FPGA_IRQ_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : DONE_Pin INITB_Pin */
   GPIO_InitStruct.Pin = DONE_Pin|INITB_Pin;
@@ -584,9 +718,26 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 	 HAL_UARTEx_ReceiveToIdle_IT(&huart1, RXbuff, RS485BUFFSIZE);
 }
 
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim)
-{
+#define filtCoef 0.9
 
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
+{
+	float V_Ref = (float)((V_REF_INT * 4095.0) / adc1_data[0]); // get internal voltage reference
+
+	// MCU internal temperature calculation
+	float V_Sense = (float)(adc1_data[2] * V_Ref) / 4095.0;
+	float tmp_MCUtemp = (((V_AT_25C - V_Sense) * 1000.0) / AVG_SLOPE) + 25.0;
+
+	// Driver temperature calculation
+	V_Sense = (float)(adc1_data[1] * V_Ref) / 4095.0;
+	float Rntc = (V_Sense * DRIVER_NTCPULLUP)/(3.3 - V_Sense);
+	float tmp_DriverTemp = 1/(logf(Rntc/DRIVER_NTCR25)/DRIVER_NTCB + 1/298.15) - 273.15;
+
+	// IIR filter
+	DriverTemp = filtCoef*DriverTemp + (1-filtCoef)*tmp_DriverTemp;
+	MCUtemp = filtCoef*MCUtemp + (1-filtCoef)*tmp_MCUtemp;
+
+	HAL_ADC_Start_DMA(&hadc1, adc1_data, 3);
 }
 /* USER CODE END 4 */
 

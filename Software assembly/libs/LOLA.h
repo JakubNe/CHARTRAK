@@ -13,12 +13,14 @@
 
 typedef enum{
 	Master_Serial = 0,
-	SPI_FLASH,
+	SPI_FLASH1,
+	SPI_FLASH2,
 	BPI_Up,
 	BPI_Down,
 	Slave_parallel,
 	Slave_Serial,
-	JTAG
+	JTAG_Rack,
+	JTAG_Ext
 } InitType;
 
 typedef enum{
