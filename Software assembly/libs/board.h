@@ -12,7 +12,7 @@
 #ifndef BOARD_H_
 #define BOARD_H_
 
-#define MCLKfreq 	280000000.0	//Hz
+#define MCLKfreq 	40000000.0	//Hz
 
 #define DACmaxFreq 	20000000.0 	//Hz
 

@@ -55,7 +55,7 @@ void AWG_Load_Waveform(AWG_struct* AWG, HFDAC_struct* HFDAC)
 
 	// loading waveform
 
-	float relativeDACcode = AWG->Uamp * HFDAC->relativeDACcodeCoef;
+	float relativeDACcode = trimFloat((AWG->Uamp * HFDAC->relativeDACcodeCoef), 0, 4095);
 
 	for(int16_t addr = 0; addr < depth; addr++)
 	{

@@ -11,7 +11,7 @@
 
 void HFDAC_SET_MAX_AMPLITUDE(HFDAC_struct* HFDAC)
 {
-	DACREF((HFDAC->maxAmplitude)*2/6.4);	// setting DAC Voltage reference
+	DACREF((HFDAC->maxAmplitude)*2/15.0);	// setting DAC Voltage reference
 	HFDAC->relativeDACcodeCoef = 2047/(HFDAC->maxAmplitude); // multiply any number from -1 to 1 and you will get direct code for DAC
 }
 

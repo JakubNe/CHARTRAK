@@ -24,8 +24,8 @@ typedef enum{
 } InitType;
 
 typedef enum{
-	AWG_M = 1,
-	AWG_D,
+	AWG_D_MSB = 1,
+	AWG_D_LSB,
 	ENABLERS,
 	DAC_DIRECTDATA,
 	AWG_DATA,

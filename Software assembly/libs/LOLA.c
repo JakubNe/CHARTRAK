@@ -89,12 +89,12 @@ uint8_t LOLA_Init(LOLAconfig_struct* LOLAconfig)
 		AttemptsLeft = 20;
 
 		do{
-			HAL_Delay(100);
+			HAL_Delay(10);
 			FID = LOLA_GET_FIRMWAREID();
 
 			if(LOLAconfig->compatibleFirmwareID == FID) LOLAconfig->Status = FIRMWARE_OK;
 			else LOLAconfig->Status = INVALID_FIRMWARE;
-		}while(AttemptsLeft > 0 && LOLAconfig->Status != FIRMWARE_OK);
+		}while(AttemptsLeft-- > 0 && LOLAconfig->Status != FIRMWARE_OK);
 
 		TrialsLeft--;
 

@@ -194,7 +194,7 @@ int main(void)
 
 
     //SPARTAN3 SETUP
-    LOLA1.Config = JTAG_Ext;
+    LOLA1.Config = SPI_FLASH1;
     LOLA1.Trials = 100;
     LOLA1.compatibleFirmwareID = 0xF103;
 
@@ -281,16 +281,17 @@ int main(void)
     //kernel_begin(); //////////////////////////////////// CODE DOESNT GET FURTHER
 
     LOLA_enable_features(AWG_EN, 1);
-    PSUsetVoltage(4.0, -7);
+    PSUsetVoltage(6, -6);
 
-    HFDAC1.maxAmplitude = 6;
+    HFDAC1.maxAmplitude = 2.0;
     HFDAC_SET_MAX_AMPLITUDE(&HFDAC1);
 
-    AWG1.Freq = 10000;
-    AWG1.Uamp = 2;
+    AWG1.Freq = 1000.0;
+    AWG1.Uamp = 2.0;
     AWG1.waveform = Triangle;
-    AWG1.DutyCycle = 20;
+    AWG1.DutyCycle = 20.0;
     AWG_Load_Waveform(&AWG1, &HFDAC1);
+    //HFDAC_DIRECT_DATA(&HFDAC1, 10);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -304,9 +305,9 @@ int main(void)
 	 HAL_Delay(10);*/
 
 	 HAL_Delay(1000);
-	 HFDAC_DIRECT_DATA(&HFDAC1, 0);
+	 //HFDAC_DIRECT_DATA(&HFDAC1, 0);
 	 HAL_Delay(1000);
-	 HFDAC_DIRECT_DATA(&HFDAC1, 3);
+	 //HFDAC_DIRECT_DATA(&HFDAC1, 3);
 
     /* USER CODE END WHILE */
 
