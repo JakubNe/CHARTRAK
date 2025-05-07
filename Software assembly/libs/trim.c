@@ -42,7 +42,7 @@ int checkFloat(float input, float max, float min)
 
 int checkInt(int input, int max, int min)
 {
-	return (input < max)&&(input > min);
+	return (input <= max)&&(input >= min);
 }
 
 int trimString(char* str, uint16_t size)

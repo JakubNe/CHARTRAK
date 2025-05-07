@@ -13,6 +13,8 @@
 #ifndef AWG_H_
 #define AWG_H_
 
+#define AWG_MaxFreq 2000000
+
 typedef enum waveforms_{
 	Square = 0,
 	Triangle,
@@ -22,8 +24,13 @@ typedef enum waveforms_{
 
 typedef struct{
 	waveforms waveform;
+
 	float Uavg;
 	float Uamp;
+
+	float Iavg;
+	float Iamp;
+
 	float DutyCycle;
 	double Freq;
 } AWG_struct;

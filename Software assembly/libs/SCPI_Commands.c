@@ -15,7 +15,32 @@ void SCPIC_SYS_STATUS(struct subword** subwords, int length)
 
 	if(subword->paramType == EVAL_P)
 	{
-		sprintf(TXbuff, "not finished yet");
+		switch(LOLA1.Status)
+		{
+			case NO_FIRMWARE:
+				sprintf(TXbuff, "NO FPGA FIRMWARE DETECTED");
+			break;
+
+			case INVALID_FIRMWARE:
+				sprintf(TXbuff, "INVALID FPGA FIRMWARE DETECTED");
+			break;
+
+			case FIRMWARE_OK:
+				sprintf(TXbuff, "OK");
+			break;
+		}
+	}
+}
+
+void SCPIC_SYS_TEMP(struct subword** subwords, int length)
+{
+	if(length != 1) return;
+	if(subwords[0]->type != params) return;
+	Subword* subword = subwords[0];
+
+	if(subword->paramType == EVAL_P)
+	{
+		sprintf(TXbuff, "%.1fC\r\n", DriverTemp);
 	}
 }
 
@@ -25,17 +50,41 @@ void SCPIC_SYS_APPLY(struct subword** subwords, int length)
 	if(subwords[0]->type != params) return;
 	Subword* subword = subwords[0];
 
-	if(subword->paramType == INT_P)
+	if(subword->paramType == OTHER_P)
 	{
 		int* param = (int*)subword->param;
 		if(*param)
 		{
-			HFDAC_SET_ALL(&HFDAC1);
-			HFADC_SET_ALL(&HFADC1);
-			OSC_SET_ALL(&OSC1, &HFADC1);
-			AWG_Load_Waveform(&AWG1, &HFDAC1);
-
 			strcpy(TXbuff, "OK");
+
+			if(!strcmp(subword->param, "ALL") )
+			{
+				HFDAC_SET_ALL(&HFDAC1);
+				HFADC_SET_ALL(&HFADC1);
+				OSC_SET_ALL(&OSC1, &HFADC1);
+				AWG_Load_Waveform(&AWG1, &HFDAC1);
+			}
+			else if(!strcmp(subword->param, "HFDAC"))
+			{
+				HFDAC_SET_ALL(&HFDAC1);
+			}
+			else if(!strcmp(subword->param, "HFADC"))
+			{
+				HFADC_SET_ALL(&HFADC1);
+			}
+			else if(!strcmp(subword->param, "OSC"))
+			{
+				OSC_SET_ALL(&OSC1, &HFADC1);
+			}
+			else if(!strcmp(subword->param, "AWG"))
+			{
+				AWG_Load_Waveform(&AWG1, &HFDAC1);
+			}
+			else
+			{
+				strcpy(TXbuff, "Invalid value\r\n");
+			}
+
 		}
 	}
 }
@@ -71,21 +120,55 @@ void SCPIC_SYS_ID(struct subword** subwords, int length)
 
 
 
-void SCPIC_OUT_MAXAMPLITUDE(struct subword** subwords, int length)
+void SCPIC_OUT_MAXAMPU(struct subword** subwords, int length)
 {
 	if(length != 1) return;
 	if(subwords[0]->type != params) return;
 	Subword* subword = subwords[0];
 
-	if(subword->paramType == FLOAT_P)
+	float* param = NULL;
+	switch(subword->paramType)
 	{
-		float* param = (float*) subword->param;
-		if(checkFloat(*param, 20, 0))
-		{
-			HFDAC1.maxAmplitude = *param;
-			strcpy(TXbuff, "OK");
-		}
-		else strcpy(TXbuff, "ERR:VAL");
+		case EVAL_P:
+			sprintf(TXbuff, "%.3fV\r\n", HFDAC1.maxAmplitudeU_V);
+		break;
+
+		case FLOAT_P:
+			param = (float*) subword->param;
+			if(!checkFloat(*param, 0, 20))
+			{
+				strcpy(TXbuff, "Invalid value\r\n");
+				break;
+			}
+			HFDAC1.maxAmplitudeU_V = *param;
+			strcpy(TXbuff, "OK\r\n");
+		break;
+	}
+}
+
+void SCPIC_OUT_MAXAMPI(struct subword** subwords, int length)
+{
+	if(length != 1) return;
+	if(subwords[0]->type != params) return;
+	Subword* subword = subwords[0];
+
+	float* param = NULL;
+	switch(subword->paramType)
+	{
+		case EVAL_P:
+			sprintf(TXbuff, "%.3fmA\r\n", HFDAC1.maxAmplitudeI_mA);
+		break;
+
+		case FLOAT_P:
+			param = (float*) subword->param;
+			if(!checkFloat(*param, 0, 1000))
+			{
+				strcpy(TXbuff, "Invalid value\r\n");
+				break;
+			}
+			HFDAC1.maxAmplitudeI_mA = *param;
+			strcpy(TXbuff, "OK\r\n");
+		break;
 	}
 }
 
@@ -106,9 +189,13 @@ void SCPIC_OUT_MODE(struct subword** subwords, int length)
 		break;
 
 		case OTHER_P:
+
+			HFDAC_MODE previousMode = HFDAC1.mode;
+
 			if(!strcmp(subword->param, "VOLTAGE"))
 			{
 				HFDAC1.mode = Voltage_output;
+
 				strcpy(TXbuff, "OK");
 			}
 			else if(!strcmp(subword->param, "CURRENT"))
@@ -116,12 +203,48 @@ void SCPIC_OUT_MODE(struct subword** subwords, int length)
 				HFDAC1.mode = Current_output;
 				strcpy(TXbuff, "OK");
 			}
+			else
+				strcpy(TXbuff, "Invalid value");
+
+			if(previousMode != HFDAC1.mode) LOLA_enable_features(ALL_EN, 0);
 		break;
 	}
 
 }
 
+void SCPIC_OUT_EN(struct subword** subwords, int length)
+{
+	if(length != 1) return;
+	if(subwords[0]->type != params) return;
+	Subword* subword = subwords[0];
 
+	int* param = NULL;
+	switch(subword->paramType)
+	{
+		case EVAL_P:
+			if(LOLA1.outputEN) 	sprintf(TXbuff, "ON\r\n");
+			else 				sprintf(TXbuff, "OFF\r\n");
+		break;
+
+		case ON_P:
+			if(LOLA1.Status != FIRMWARE_OK)
+				sprintf(TXbuff, "ERR:CONFIG");
+			else
+			{
+				LOLA1.outputEN = 1;
+				LOLA_Output(&LOLA1, LOLA1.outputEN);
+				strcpy(TXbuff, "OK");
+			}
+
+		break;
+
+		case OFF_P:
+			LOLA1.outputEN = 0;
+			LOLA_Output(&LOLA1, LOLA1.outputEN);
+			strcpy(TXbuff, "OK");
+		break;
+	}
+}
 
 void SCPIC_DVM_RAW(struct subword** subwords, int length)
 {
@@ -269,7 +392,7 @@ void SCPIC_AWG_WF(struct subword** subwords, int length)
 			}
 			else
 			{
-				strcpy(TXbuff, "Wrong value!!\r\n");
+				strcpy(TXbuff, "Invalid value\r\n");
 				break;
 			}
 			strcpy(TXbuff, "OK\r\n");
@@ -287,17 +410,95 @@ void SCPIC_AWG_DC(struct subword** subwords, int length)
 	switch(subword->paramType)
 	{
 		case EVAL_P:
-			sprintf(TXbuff, "%f\r\n", AWG1.DutyCycle);
+			sprintf(TXbuff, "%.2f%%\r\n", AWG1.DutyCycle);
 		break;
 
 		case FLOAT_P:
 			param = (float*) subword->param;
-			if(checkFloat(*param, 0, 100))
+			if(!checkFloat(*param, 0, 100))
 			{
 				strcpy(TXbuff, "Invalid value\r\n");
 				break;
 			}
 			AWG1.DutyCycle = *param;
+			strcpy(TXbuff, "OK\r\n");
+		break;
+	}
+}
+
+void SCPIC_AWG_FREQ(struct subword** subwords, int length)
+{
+	if(length != 1) return;
+	if(subwords[0]->type != params) return;
+	Subword* subword = subwords[0];
+
+	float* param = NULL;
+	switch(subword->paramType)
+	{
+		case EVAL_P:
+			sprintf(TXbuff, "%.3fHz\r\n", AWG1.Freq);
+		break;
+
+		case FLOAT_P:
+			param = (float*) subword->param;
+			if(!checkFloat(*param, 0, AWG_MaxFreq))
+			{
+				strcpy(TXbuff, "Invalid value\r\n");
+				break;
+			}
+			AWG1.Freq = *param;
+			strcpy(TXbuff, "OK\r\n");
+		break;
+	}
+}
+
+void SCPIC_AWG_AMPU(struct subword** subwords, int length)
+{
+	if(length != 1) return;
+	if(subwords[0]->type != params) return;
+	Subword* subword = subwords[0];
+
+	float* param = NULL;
+	switch(subword->paramType)
+	{
+		case EVAL_P:
+			sprintf(TXbuff, "%.3fV\r\n", AWG1.Uamp);
+		break;
+
+		case FLOAT_P:
+			param = (float*) subword->param;
+			if(!checkFloat(*param, 0, 20))
+			{
+				strcpy(TXbuff, "Invalid value\r\n");
+				break;
+			}
+			AWG1.Uamp = *param;
+			strcpy(TXbuff, "OK\r\n");
+		break;
+	}
+}
+
+void SCPIC_AWG_AMPI(struct subword** subwords, int length)
+{
+	if(length != 1) return;
+	if(subwords[0]->type != params) return;
+	Subword* subword = subwords[0];
+
+	float* param = NULL;
+	switch(subword->paramType)
+	{
+		case EVAL_P:
+			sprintf(TXbuff, "%.3fmA\r\n", AWG1.Iamp);
+		break;
+
+		case FLOAT_P:
+			param = (float*) subword->param;
+			if(!checkFloat(*param, 0, 1000))
+			{
+				strcpy(TXbuff, "Invalid value\r\n");
+				break;
+			}
+			AWG1.Iamp = *param;
 			strcpy(TXbuff, "OK\r\n");
 		break;
 	}

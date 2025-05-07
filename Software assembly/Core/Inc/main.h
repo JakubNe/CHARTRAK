@@ -53,7 +53,7 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-
+extern float MCUtemp, DriverTemp;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/

@@ -66,6 +66,8 @@ typedef struct{
 	InitType Config;
 	uint16_t Trials; // number of tries to configure FPGA before giving up
 	uint16_t compatibleFirmwareID;
+	uint8_t outputEN;
+	uint8_t FlashLOCK;
 } LOLAconfig_struct;
 
 uint8_t LOLA_Init(LOLAconfig_struct* LOLAconfig);
@@ -74,6 +76,11 @@ void LOLA_Reset();
 
 uint16_t LOLA_GET_FIRMWAREID();
 
+void LOLA_CFGFlashWriteLock(LOLAconfig_struct* LOLAconfig);
+void LOLA_CFGFlashWriteUnlock(LOLAconfig_struct* LOLAconfig);
+
 void LOLA_enable_features(LOLAfeatures LOLAfeatures, uint8_t ENABLE);
+
+void LOLA_Output(LOLAconfig_struct* LOLAconfig, uint8_t Enable);
 
 #endif /* LOLA_H_ */

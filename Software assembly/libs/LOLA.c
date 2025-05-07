@@ -110,18 +110,21 @@ void LOLA_Reset()
 	HAL_GPIO_WritePin(PROGB_GPIO_Port, PROGB_Pin, 1);
 }
 
-void LOLA_CFGFlashWriteUnlock(void)
+void LOLA_CFGFlashWriteUnlock(LOLAconfig_struct* LOLAconfig)
 {
+	LOLAconfig->FlashLOCK = 0;
 	HAL_GPIO_WritePin(FLASHWP_OUT_GPIO_Port, FLASHWP_OUT_Pin, 1);
 }
 
-void LOLA_CFGFlashWriteLock(void)
+void LOLA_CFGFlashWriteLock(LOLAconfig_struct* LOLAconfig)
 {
+	LOLAconfig->FlashLOCK = 1;
 	HAL_GPIO_WritePin(FLASHWP_OUT_GPIO_Port, FLASHWP_OUT_Pin, 0);
 }
 
-void LOLA_Output(uint8_t Enable)
+void LOLA_Output(LOLAconfig_struct* LOLAconfig, uint8_t Enable)
 {
+	LOLAconfig->outputEN = Enable;
 	HAL_GPIO_WritePin(AIO_EN_OUT_GPIO_Port, AIO_EN_OUT_Pin, Enable);
 }
 

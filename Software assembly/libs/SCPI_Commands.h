@@ -19,12 +19,15 @@
 #include "board.h"
 
 void SCPIC_SYS_STATUS(struct subword** subwords, int length);
+void SCPIC_SYS_TEMP(struct subword** subwords, int length);
 void SCPIC_SYS_APPLY(struct subword** subwords, int length);
 void SCPIC_SYS_RESET(struct subword** subwords, int length);
 void SCPIC_SYS_ID(struct subword** subwords, int length);
 
-void SCPIC_OUT_MAXAMPLITUDE(struct subword** subwords, int length);
+void SCPIC_OUT_MAXAMPU(struct subword** subwords, int length);
+void SCPIC_OUT_MAXAMPI(struct subword** subwords, int length);
 void SCPIC_OUT_MODE(struct subword** subwords, int length);
+void SCPIC_OUT_EN(struct subword** subwords, int length);
 
 void SCPIC_DVM_RAW(struct subword** subwords, int length);
 void SCPIC_DVM_VAL(struct subword** subwords, int length);
@@ -34,5 +37,8 @@ void SCPIC_FID(struct subword** subwords, int length);
 
 void SCPIC_AWG_WF(struct subword** subwords, int length);
 void SCPIC_AWG_DC(struct subword** subwords, int length);
+void SCPIC_AWG_FREQ(struct subword** subwords, int length);
+void SCPIC_AWG_AMPU(struct subword** subwords, int length);
+void SCPIC_AWG_AMPI(struct subword** subwords, int length);
 
 #endif /* SCPI_COMMANDS_H_ */

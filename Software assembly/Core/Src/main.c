@@ -53,6 +53,7 @@ TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim4;
 
 UART_HandleTypeDef huart1;
+DMA_HandleTypeDef hdma_usart1_rx;
 
 /* USER CODE BEGIN PV */
 AWG_struct AWG1;
@@ -137,6 +138,7 @@ int main(void)
     HAL_GPIO_WritePin(LDAC_GPIO_Port, LDAC_Pin, 0);
     HAL_GPIO_WritePin(DIR_GPIO_Port, DIR_Pin, 0);
 
+
     // ADC board expander setup
     TCA_Init(0b0100001, hi2c1);
 
@@ -161,17 +163,20 @@ int main(void)
     // system functions setup
     Function SYSfunctions[] = { {.name = "ID", .run = SCPIC_SYS_ID},
     							{.name = "STATUS", .run = SCPIC_SYS_STATUS},
+								{.name = "TEMP", .run = SCPIC_SYS_TEMP},
        							{.name = "RESET", .run = SCPIC_SYS_RESET},
    								{.name = "APPLY", .run = SCPIC_SYS_APPLY}	};
 
-    Class SYSclass = { .name = "SYS", .functions = SYSfunctions, .functionsLength = 4 };
+    Class SYSclass = { .name = "SYS", .functions = SYSfunctions, .functionsLength = 5 };
     addClass(&SYSclass, 0);
 
     // output functions setup
-    Function OUTfunctions[] = { {.name = "MAXAMPLITUDE", .run = SCPIC_OUT_MAXAMPLITUDE},
-           						{.name = "MODE", .run = SCPIC_OUT_MODE} };
+    Function OUTfunctions[] = { {.name = "MAXAMPU", .run = SCPIC_OUT_MAXAMPU},
+    							{.name = "MAXAMPI", .run = SCPIC_OUT_MAXAMPI},
+           						{.name = "MODE", .run = SCPIC_OUT_MODE},
+								{.name = "EN", .run = SCPIC_OUT_EN} };
 
-    Class OUTclass = { .name = "OUT", .functions = OUTfunctions, .functionsLength = 2 };
+    Class OUTclass = { .name = "OUT", .functions = OUTfunctions, .functionsLength = 4 };
     addClass(&OUTclass, 0);
 
     //SCPI setup
@@ -188,18 +193,28 @@ int main(void)
     Class DVMclass = { .name = "DVM", .functions = DVMfunctions, .functionsLength = 2 };
     addClass(&DVMclass, 0);
 
+    Function AWGfunctions[] = { {.name = "AMPU", .run = SCPIC_AWG_AMPU},
+    							{.name = "AMPI", .run = SCPIC_AWG_AMPI},
+    							{.name = "FREQ", .run = SCPIC_AWG_FREQ},
+								{.name = "DC", .run = SCPIC_AWG_DC},
+								{.name = "WF", .run = SCPIC_AWG_WF} };
+
+    Class AWGclass = { .name = "AWG", .functions = AWGfunctions, .functionsLength = 5 };
+    addClass(&AWGclass, 0);
+
 
     //SimpleOS setup
     kernel_init(20); // max 20 tasks
 
 
     //SPARTAN3 SETUP
-    LOLA1.Config = SPI_FLASH1;
+    LOLA1.Config = JTAG_Ext;
     LOLA1.Trials = 100;
     LOLA1.compatibleFirmwareID = 0xF103;
 
     //High frequency DAC setup
-    HFDAC1.maxAmplitude = 0;
+    HFDAC1.maxAmplitudeU_V = 0;
+    HFDAC1.maxAmplitudeI_mA = 0;
     HFDAC1.mode = Voltage_output;
     HFDAC1.offset = 0;
 
@@ -224,12 +239,14 @@ int main(void)
     // Arbitrary waveform generator setup
     AWG1.waveform = Square;
     AWG1.Uavg = 0.0;
+    AWG1.Iavg = 0.0;
     AWG1.Uamp = 2.0;
+    AWG1.Iamp = 0.0;
     AWG1.DutyCycle = 20.0;
     AWG1.Freq = 10000.0;
 
     // Noise generator setup
-    NOISE1.Enable = 0;
+    NOISE1.Enable = 1;
     NOISE1.Freq = 10000.0;
     NOISE1.Uamp = 1.0;
     NOISE1.Seed = 0x800f000f000f0001;
@@ -251,16 +268,18 @@ int main(void)
     if(!PSUinit(0x60)) Error_Handler();
     PSUoutput(1);
 
-
     // ADC temperature measurement
    	HAL_TIM_Base_Start(&htim3); // Start trigger Source For ADC1
    	HAL_ADC_Start_DMA(&hadc1, adc1_data, 3);
 
    	// RS485 receive interrupt setup
-   	if(HAL_UARTEx_ReceiveToIdle_IT(&huart1, RXbuff, RS485BUFFSIZE) != HAL_OK) Error_Handler();
+   	sprintf(TXbuff, "Initializing...\r\n");
+    RS485_Transmit(TXbuff);
+    HAL_Delay(10);
+    if(HAL_UARTEx_ReceiveToIdle_DMA(&huart1, (uint8_t*)RXbuff, RS485BUFFSIZE) != HAL_OK) Error_Handler();
 
    	// Initialize FPGA
-    LOLA_CFGFlashWriteUnlock();
+    LOLA_CFGFlashWriteUnlock(&LOLA1);
     LOLA_Init(&LOLA1);
 
     //cfg of IN/OUT circuitry
@@ -270,8 +289,6 @@ int main(void)
     OSC_SET_ALL(&OSC1, &HFADC1);
 
     HFDAC_DIRECT_DATA(&HFDAC1, 0);
-    AWG_Load_Waveform(&AWG1, &HFDAC1);
-    //NOISE_Load_param(&NOISE1, &HFDAC1);
     LOLA_enable_features(ALL_EN, 0); // disable all features
 
     //NOISE_Load_param(NOISE1);
@@ -280,17 +297,18 @@ int main(void)
 
     //kernel_begin(); //////////////////////////////////// CODE DOESNT GET FURTHER
 
-    LOLA_enable_features(AWG_EN, 1);
-    PSUsetVoltage(6, -6);
+    PSUsetVoltage(17, -18);
 
-    HFDAC1.maxAmplitude = 2.0;
+    HFDAC1.maxAmplitudeU_V = 15.0;
     HFDAC_SET_MAX_AMPLITUDE(&HFDAC1);
 
     AWG1.Freq = 1000.0;
-    AWG1.Uamp = 2.0;
-    AWG1.waveform = Triangle;
-    AWG1.DutyCycle = 20.0;
+    AWG1.Uamp = 15.0;
+    AWG1.waveform = Square;
+    AWG1.DutyCycle = 40.0;
     AWG_Load_Waveform(&AWG1, &HFDAC1);
+
+    //NOISE_Load_param(&NOISE1, &HFDAC1);
     //HFDAC_DIRECT_DATA(&HFDAC1, 10);
   /* USER CODE END 2 */
 
@@ -355,7 +373,7 @@ void SystemClock_Config(void)
     Error_Handler();
   }
   PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADC;
-  PeriphClkInit.AdcClockSelection = RCC_ADCPCLK2_DIV4;
+  PeriphClkInit.AdcClockSelection = RCC_ADCPCLK2_DIV8;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
     Error_Handler();
@@ -398,7 +416,7 @@ static void MX_ADC1_Init(void)
   */
   sConfig.Channel = ADC_CHANNEL_0;
   sConfig.Rank = ADC_REGULAR_RANK_1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_71CYCLES_5;
+  sConfig.SamplingTime = ADC_SAMPLETIME_239CYCLES_5;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     Error_Handler();
@@ -687,6 +705,9 @@ static void MX_DMA_Init(void)
   /* DMA1_Channel1_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Channel1_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA1_Channel1_IRQn);
+  /* DMA1_Channel5_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Channel5_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Channel5_IRQn);
 
 }
 
@@ -773,7 +794,7 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
 	 SCPI_EXECUTE();
 	 RS485_Transmit(TXbuff);
-	 HAL_UARTEx_ReceiveToIdle_IT(&huart1, RXbuff, RS485BUFFSIZE);
+	 if(HAL_UARTEx_ReceiveToIdle_DMA(&huart1, (uint8_t*)RXbuff, RS485BUFFSIZE) != HAL_OK) Error_Handler();
 }
 
 #define filtCoef 0.9
