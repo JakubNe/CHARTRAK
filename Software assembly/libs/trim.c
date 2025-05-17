@@ -6,6 +6,7 @@
  */
 
 #include "stdint.h"
+#include "trim.h"
 
 int16_t to_signed_12bit(uint16_t value)
 {
@@ -35,12 +36,12 @@ float trimFloat(float floating, float min, float max)
 	return floating;
 }
 
-int checkFloat(float input, float max, float min)
+int checkFloat(float input, float min, float max)
 {
 	return (input <= max)&&(input >= min);
 }
 
-int checkInt(int input, int max, int min)
+int checkInt(int input, float min, float max)
 {
 	return (input <= max)&&(input >= min);
 }

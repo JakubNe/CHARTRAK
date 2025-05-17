@@ -30,7 +30,7 @@ extern SPI_HandleTypeDef hspi1;
 // Driver stuff
 #define DRIVER_MAXTEMP 		95	// exeeding this temperature will turn off the device until temperature falls under DRIVER_RECOVERYTEMP
 #define DRIVER_RECOVERYTEMP	50
-#define VoltageReserve		0.8 // when outputing sine with peak values of 1V and -0.5V, the PSU will be set to 1V+VoltageReserve and -0.5V-VoltageReserve
+#define VoltageReserve		1.2 // when outputing sine with peak values of 1V and -0.5V, the PSU will be set to 1V+VoltageReserve and -0.5V-VoltageReserve
 
 #define DRIVER_NTCPULLUP	10000
 #define DRIVER_NTCR25		10000

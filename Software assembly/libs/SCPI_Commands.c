@@ -135,7 +135,7 @@ void SCPIC_OUT_MAXAMPU(struct subword** subwords, int length)
 
 		case FLOAT_P:
 			param = (float*) subword->param;
-			if(!checkFloat(*param, 0, 20))
+			if(!checkFloat((float)*param, 0.0f, 20.0f))
 			{
 				strcpy(TXbuff, "Invalid value\r\n");
 				break;
@@ -167,6 +167,58 @@ void SCPIC_OUT_MAXAMPI(struct subword** subwords, int length)
 				break;
 			}
 			HFDAC1.maxAmplitudeI_mA = *param;
+			strcpy(TXbuff, "OK\r\n");
+		break;
+	}
+}
+
+void SCPIC_OUT_OFFSU(struct subword** subwords, int length)
+{
+	if(length != 1) return;
+	if(subwords[0]->type != params) return;
+	Subword* subword = subwords[0];
+
+	float* param = NULL;
+	switch(subword->paramType)
+	{
+		case EVAL_P:
+			sprintf(TXbuff, "%.3fV\r\n", HFDAC1.offsetU_V);
+		break;
+
+		case FLOAT_P:
+			param = (float*) subword->param;
+			if(!checkFloat((float)*param, -20.0f, 20.0f))
+			{
+				strcpy(TXbuff, "Invalid value\r\n");
+				break;
+			}
+			HFDAC1.offsetU_V = *param;
+			strcpy(TXbuff, "OK\r\n");
+		break;
+	}
+}
+
+void SCPIC_OUT_OFFSI(struct subword** subwords, int length)
+{
+	if(length != 1) return;
+	if(subwords[0]->type != params) return;
+	Subword* subword = subwords[0];
+
+	float* param = NULL;
+	switch(subword->paramType)
+	{
+		case EVAL_P:
+			sprintf(TXbuff, "%.3fmA\r\n", HFDAC1.offsetI_mA);
+		break;
+
+		case FLOAT_P:
+			param = (float*) subword->param;
+			if(!checkFloat((float)*param, -1000.0f, 1000.0f))
+			{
+				strcpy(TXbuff, "Invalid value\r\n");
+				break;
+			}
+			HFDAC1.offsetI_mA = *param;
 			strcpy(TXbuff, "OK\r\n");
 		break;
 	}
@@ -233,6 +285,7 @@ void SCPIC_OUT_EN(struct subword** subwords, int length)
 			{
 				LOLA1.outputEN = 1;
 				LOLA_Output(&LOLA1, LOLA1.outputEN);
+				PSUoutput(1);
 				strcpy(TXbuff, "OK");
 			}
 
@@ -241,6 +294,7 @@ void SCPIC_OUT_EN(struct subword** subwords, int length)
 		case OFF_P:
 			LOLA1.outputEN = 0;
 			LOLA_Output(&LOLA1, LOLA1.outputEN);
+			PSUoutput(0);
 			strcpy(TXbuff, "OK");
 		break;
 	}
@@ -415,7 +469,7 @@ void SCPIC_AWG_DC(struct subword** subwords, int length)
 
 		case FLOAT_P:
 			param = (float*) subword->param;
-			if(!checkFloat(*param, 0, 100))
+			if(!checkFloat((float)*param, 0.0f, 100.0f))
 			{
 				strcpy(TXbuff, "Invalid value\r\n");
 				break;
@@ -441,7 +495,7 @@ void SCPIC_AWG_FREQ(struct subword** subwords, int length)
 
 		case FLOAT_P:
 			param = (float*) subword->param;
-			if(!checkFloat(*param, 0, AWG_MaxFreq))
+			if(!checkFloat((float)*param, 0.0f, (float)AWG_MaxFreq))
 			{
 				strcpy(TXbuff, "Invalid value\r\n");
 				break;
@@ -467,7 +521,7 @@ void SCPIC_AWG_AMPU(struct subword** subwords, int length)
 
 		case FLOAT_P:
 			param = (float*) subword->param;
-			if(!checkFloat(*param, 0, 20))
+			if(!checkFloat((float)*param, 0.0f, 20.0f))
 			{
 				strcpy(TXbuff, "Invalid value\r\n");
 				break;
@@ -493,7 +547,7 @@ void SCPIC_AWG_AMPI(struct subword** subwords, int length)
 
 		case FLOAT_P:
 			param = (float*) subword->param;
-			if(!checkFloat(*param, 0, 1000))
+			if(!checkFloat((float)*param, 0.0f, 1000.0f))
 			{
 				strcpy(TXbuff, "Invalid value\r\n");
 				break;
@@ -503,3 +557,4 @@ void SCPIC_AWG_AMPI(struct subword** subwords, int length)
 		break;
 	}
 }
+

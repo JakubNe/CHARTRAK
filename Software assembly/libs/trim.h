@@ -13,4 +13,7 @@ int trimInt(int integer, int min, int max);
 float trimFloat(float floating, float min, float max);
 int trimString(char* str, uint16_t size);
 
+int checkInt(int input, float min, float max);
+int checkFloat(float input, float min, float max);
+
 #endif /* TRIM_H_ */

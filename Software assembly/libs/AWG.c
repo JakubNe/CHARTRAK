@@ -82,7 +82,7 @@ void AWG_Load_Waveform(AWG_struct* AWG, HFDAC_struct* HFDAC)
 
 		switch(AWG->waveform)
 		{
-			case Square: data = 2*(int16_t)round((addr>=(Depth*AWG->DutyCycle/100))*relativeDACcode-(relativeDACcode/2.0)); break;
+			case Square: data = 2*(int16_t)round((addr<=(Depth*AWG->DutyCycle/100))*relativeDACcode-(relativeDACcode/2.0)); break;
 
 			case Triangle:	if(addr <= DepthPos) data = 2*(int16_t)round(relativeDACcode*addr/(DepthPos*1.0)-(relativeDACcode/2.0)); // rising edge
 							else data = 2*(int16_t)round(relativeDACcode*(1-(addr-DepthPos)/(DepthNeg*1.0))-(relativeDACcode/2.0)); break; // falling edge

@@ -26,6 +26,8 @@ void SCPIC_SYS_ID(struct subword** subwords, int length);
 
 void SCPIC_OUT_MAXAMPU(struct subword** subwords, int length);
 void SCPIC_OUT_MAXAMPI(struct subword** subwords, int length);
+void SCPIC_OUT_OFFSU(struct subword** subwords, int length);
+void SCPIC_OUT_OFFSI(struct subword** subwords, int length);
 void SCPIC_OUT_MODE(struct subword** subwords, int length);
 void SCPIC_OUT_EN(struct subword** subwords, int length);
 

@@ -173,10 +173,12 @@ int main(void)
     // output functions setup
     Function OUTfunctions[] = { {.name = "MAXAMPU", .run = SCPIC_OUT_MAXAMPU},
     							{.name = "MAXAMPI", .run = SCPIC_OUT_MAXAMPI},
+								{.name = "OFFSU", .run = SCPIC_OUT_OFFSU},
+								{.name = "OFFSI", .run = SCPIC_OUT_OFFSI},
            						{.name = "MODE", .run = SCPIC_OUT_MODE},
 								{.name = "EN", .run = SCPIC_OUT_EN} };
 
-    Class OUTclass = { .name = "OUT", .functions = OUTfunctions, .functionsLength = 4 };
+    Class OUTclass = { .name = "OUT", .functions = OUTfunctions, .functionsLength = 6 };
     addClass(&OUTclass, 0);
 
     //SCPI setup
@@ -215,8 +217,9 @@ int main(void)
     //High frequency DAC setup
     HFDAC1.maxAmplitudeU_V = 0;
     HFDAC1.maxAmplitudeI_mA = 0;
+    HFDAC1.offsetU_V = 0;
+    HFDAC1.offsetI_mA = 0;
     HFDAC1.mode = Voltage_output;
-    HFDAC1.offset = 0;
 
     //Hight Frequency ADC setup
     HFADC1.ADCref = 2.5;
@@ -240,15 +243,15 @@ int main(void)
     AWG1.waveform = Square;
     AWG1.Uavg = 0.0;
     AWG1.Iavg = 0.0;
-    AWG1.Uamp = 2.0;
+    AWG1.Uamp = 0.0;
     AWG1.Iamp = 0.0;
-    AWG1.DutyCycle = 20.0;
+    AWG1.DutyCycle = 50.0;
     AWG1.Freq = 10000.0;
 
     // Noise generator setup
     NOISE1.Enable = 1;
-    NOISE1.Freq = 10000.0;
-    NOISE1.Uamp = 1.0;
+    NOISE1.Freq = 1000.0;
+    NOISE1.Uamp = 0.0;
     NOISE1.Seed = 0x800f000f000f0001;
 
     //****************************************************** scan for I2C devices
@@ -266,7 +269,7 @@ int main(void)
 
     // Programmable power supply setup
     if(!PSUinit(0x60)) Error_Handler();
-    PSUoutput(1);
+    PSUoutput(0);
 
     // ADC temperature measurement
    	HAL_TIM_Base_Start(&htim3); // Start trigger Source For ADC1
@@ -297,8 +300,7 @@ int main(void)
 
     //kernel_begin(); //////////////////////////////////// CODE DOESNT GET FURTHER
 
-    PSUsetVoltage(17, -18);
-
+/*
     HFDAC1.maxAmplitudeU_V = 15.0;
     HFDAC_SET_MAX_AMPLITUDE(&HFDAC1);
 
@@ -306,7 +308,7 @@ int main(void)
     AWG1.Uamp = 15.0;
     AWG1.waveform = Square;
     AWG1.DutyCycle = 40.0;
-    AWG_Load_Waveform(&AWG1, &HFDAC1);
+    AWG_Load_Waveform(&AWG1, &HFDAC1);*/
 
     //NOISE_Load_param(&NOISE1, &HFDAC1);
     //HFDAC_DIRECT_DATA(&HFDAC1, 10);

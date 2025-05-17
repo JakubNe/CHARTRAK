@@ -8,6 +8,7 @@
 #include "HFDAC.h"
 #include "main.h"
 #include "LOLA.h"
+#include "ProgPSU.h"
 
 void HFDAC_SET_MAX_AMPLITUDE(HFDAC_struct* HFDAC)
 {
@@ -25,6 +26,20 @@ void HFDAC_SET_MAX_AMPLITUDE(HFDAC_struct* HFDAC)
 			HFDAC->relativeDACcodeCoefI_mA = 2047/(HFDAC->maxAmplitudeI_mA); // multiply any number from -1 to 1 and you will get direct code for DAC
 
 			DACREF((HFDAC->maxAmplitudeI_mA) * CurrentFeedback_GAIN);	// setting DAC Voltage reference (fb = 2k/15k)
+		break;
+	}
+}
+
+void HFDAC_SET_OFFSET(HFDAC_struct* HFDAC)
+{
+	switch(HFDAC1.mode)
+	{
+		case Voltage_output:
+			DACOFFS(HFDAC1.offsetU_V * VoltageOffset_GAIN);
+		break;
+
+		case Current_output:
+			DACOFFS(HFDAC1.offsetI_mA * CurrentOffset_GAIN);
 		break;
 	}
 }
@@ -55,5 +70,6 @@ void HFDAC_SET_ALL(HFDAC_struct* HFDAC)
 {
 	HFDAC_SET_MAX_AMPLITUDE(HFDAC);
 	HFDAC_SET_MODE(HFDAC->mode);
-
+	PSUsetVoltage(HFDAC->maxAmplitudeU_V + VoltageReserve, -1*(HFDAC->maxAmplitudeU_V + VoltageReserve));
+	HFDAC_SET_OFFSET(HFDAC);
 }
